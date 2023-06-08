@@ -105,6 +105,8 @@ public class Add extends Commands {
             NoteEntity newNote = new NoteEntity(args[0], args[1], encrptPass);
             TestingClass.notes.add(newNote);
 
+            CheckingForUpdate.isUpdated = true;
+
             return "Запись добавлена успешно";
         } else
             return "Запись не добавлена";
