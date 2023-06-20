@@ -17,7 +17,9 @@ public class Tools {
     public static void changingNameOfAccount(String serviceName) {
         String[] numberOfAccount = { "1-st", "2-nd", "3-rd", "4-th", "5-th", "6-th", "7-th", "8-th", "9-th", "10-th" }; // 10 "аккаунтов" максимум
 
-        for(int i = 0, k = 0, accountLeft_count = 0, save = 0; i < TestingClass.notes.size(); i++) {
+        int firstAccountService = 0;
+        int accountNeededNumber = 0;
+        for(int i = 0, k = 0, accountLeft_count = 0; i < TestingClass.notes.size(); i++) {
 
             String currentName = TestingClass.notes.get(i).getIdService(); // Текущее рассмативаемое название аккаунта
 
@@ -27,7 +29,7 @@ public class Tools {
                     accountLeft_count++; // Считает сколько аккаунтов осталось у сервиса
 
                     if(accountLeft_count <= 1) { // Нет смысла запоминать позицию первого аккаунта, если их больше 1, удалять из названия (№-th account) не нужно
-                        save = i; // Запоминает первый встречанный аккаунт, для того, в случае, если это последний аккаунт,
+                        firstAccountService = i; // Запоминает первый встречанный аккаунт, для того, в случае, если это последний аккаунт,
                         // нужно будет удалить из названия аккаунта (№-th account)
                     }
 
@@ -39,13 +41,24 @@ public class Tools {
                     }
 
                     k++; // Счётчик для массива numberOfAccount
+                } else {
+                    accountNeededNumber = i;
                 }
 
             }
 
+            // При переименовывании: новое название переименовонного сервиса есть уже в другом сервисе
+            // (Exp: Test replace -> Vk.com, Vk.com уже содержит № кол. аккаунтов)
+            if(i + 1 == TestingClass.notes.size() && accountNeededNumber > 0) {
+
+                TestingClass.notes.get(accountNeededNumber).setIdService( serviceName + " " + numberOfAccount[accountLeft_count] + " account" );
+
+               //TestingClass.notes.get(save).setIdService( TestingClass.notes.get(save).getIdService().split(" ")[0] );
+            }
+
             // Если достигнут последний аккаунт из ВСЕХ И количество аккаунтов сервиса после удаления остался 1, то удалить у названия сервиса (№-th account)
             if(i + 1 == TestingClass.notes.size() && accountLeft_count == 1) {
-                TestingClass.notes.get(save).setIdService( TestingClass.notes.get(save).getIdService().split(" ")[0] );
+                TestingClass.notes.get(firstAccountService).setIdService( TestingClass.notes.get(firstAccountService).getIdService().split(" ")[0] );
             }
 
         }

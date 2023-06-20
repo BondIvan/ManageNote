@@ -58,6 +58,8 @@ public class Replace extends Commands {
 
                     if (nameOfParameter.equalsIgnoreCase("service")) {
                         findNote.setIdService(args[2]);
+
+                        Tools.changingNameOfAccount(args[0]); // Изменить номерацию у аккаунтов
                     }
                     else if (nameOfParameter.equalsIgnoreCase("login")) {
                         findNote.setLogin(args[2]);
@@ -76,6 +78,7 @@ public class Replace extends Commands {
 
                     if (nameOfParameter.equalsIgnoreCase("service")) {
                         note.setIdService(args[2]);
+                        Tools.changingNameOfAccount(args[2]);
                     } else if (nameOfParameter.equalsIgnoreCase("login")) {
                         note.setLogin(args[2]);
                     } else if (nameOfParameter.equalsIgnoreCase("password")) {
