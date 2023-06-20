@@ -1,6 +1,7 @@
 package Tools;
 
 import Commands.TestingClass;
+
 import Entity.NoteEntity;
 
 import java.io.FileReader;
@@ -142,12 +143,13 @@ public class Tools {
     } // Ok
 
     // Чтение всех сервисов из файла и схранение их в виде NoteEntity в список
-    public static void getAllNoteFromFile(String path) throws IOException {
+    public static List<NoteEntity> getAllNoteFromFile(String path) throws IOException {
 
         //TODO Переписать данный метод
 
         FileReader fileReader = new FileReader(path);
         Scanner file = new Scanner(fileReader);
+        List<NoteEntity> allNoteFromFile = new ArrayList<>();
 
         String data; // Текущая строка, то есть (название сервиса)
         while(file.hasNextLine()) {
@@ -155,13 +157,15 @@ public class Tools {
             data = file.nextLine();
             if(!data.isEmpty()) {
                 NoteEntity noteEntity = new NoteEntity(data, file.nextLine().substring(7), file.nextLine().substring(10));
-                TestingClass.notes.add(noteEntity);
+                allNoteFromFile.add(noteEntity);
             }
 
         }
 
         file.close();
         fileReader.close();
+
+        return allNoteFromFile;
     }
 
 }

@@ -16,7 +16,6 @@ public class Delete extends Commands {
      ***/
 
     private final String postfix;
-
     public Delete(String postfix) {
         this.postfix = postfix;
     }

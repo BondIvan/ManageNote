@@ -60,12 +60,12 @@ public class Replace extends Commands {
                         findNote.setIdService(args[2]);
                     }
                     else if (nameOfParameter.equalsIgnoreCase("login")) {
-                        findNote.setLogin("Login: " + args[2]);
+                        findNote.setLogin(args[2]);
                     }
                     else if (nameOfParameter.equalsIgnoreCase("password")) {
                         String encrptPass = TestFormula.analysisString(args[2]);
 
-                        findNote.setPassword("Password: " + encrptPass);
+                        findNote.setPassword(encrptPass);
                     } else
                         throw new UnknownArgsException("Неизвестный параметр изменения"); // Exception если в параметрах указано неизвестное изменение (Exp: replace id)
 
@@ -77,11 +77,11 @@ public class Replace extends Commands {
                     if (nameOfParameter.equalsIgnoreCase("service")) {
                         note.setIdService(args[2]);
                     } else if (nameOfParameter.equalsIgnoreCase("login")) {
-                        note.setLogin("Login: " + args[2]);
+                        note.setLogin(args[2]);
                     } else if (nameOfParameter.equalsIgnoreCase("password")) {
                         String encrptPass = TestFormula.analysisString(args[2]);
 
-                        note.setPassword("Password: " + encrptPass);
+                        note.setPassword(encrptPass);
                     } else
                         throw new UnknownArgsException("Неизвестный параметр изменения"); // Exception если в параметрах указано неизвестное изменение (Exp: replace id)
 

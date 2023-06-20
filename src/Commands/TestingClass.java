@@ -37,7 +37,7 @@ public class TestingClass {
 
     public static void main(String[] args) throws Exception {
 
-        Tools.getAllNoteFromFile(path); // Заполнение списка доступами
+        notes = Tools.getAllNoteFromFile(path); // Заполнение списка доступами
 
         Scanner scanner = new Scanner(System.in);
         while (true) {
