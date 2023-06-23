@@ -47,8 +47,9 @@ public class Add extends Commands {
 
         for(NoteEntity note: TestingClass.notes) {
 
-            if(note.getIdService().toLowerCase().contains(args[0].toLowerCase())) {
-                if(note.getIdService().contains("account")) {
+            String currentServiceName = note.getIdService();
+            if(currentServiceName.split(" ")[0].equalsIgnoreCase(args[0])) { // Сравнивается первое слово текущего сервиса с требуемым
+                if(currentServiceName.contains("account")) { // Если у сервиса больше одного аккаунта
 
                     String[] numberOfAccount = { "1-st", "2-nd", "3-rd", "4-th", "5-th", "6-th", "7-th", "8-th", "9-th", "10-th" }; // 10 "аккаунтов" максимум
 
@@ -74,11 +75,11 @@ public class Add extends Commands {
                         return "Аккаунт не был добавлен";
                     }
                 }
-                else {
+                else { // Если у сервиса всего 1 аккаунт
                     System.out.println("Данный сервис уже существует, создать второй аккаунт ? (y/n)\n" + args[0] + "\nLogin: " + args[1] + "\nPassword: " + args[2]);
                     if(confirm.nextLine().equalsIgnoreCase("y")) {
 
-                        note.setIdService( note.getIdService() + " 1-st account" );
+                        note.setIdService( currentServiceName + " 1-st account" );
 
                         NoteEntity newNote = new NoteEntity( args[0] + " 2-nd account", args[1], TestFormula.analysisString(args[2]) );
                         TestingClass.notes.add(newNote);

@@ -51,8 +51,9 @@ public class Replace extends Commands {
 
         for (NoteEntity note : TestingClass.notes) {
 
-            if (note.getIdService().toLowerCase().contains(args[0].toLowerCase())) {
-                if (note.getIdService().contains("account")) {
+            String currentServiceName = note.getIdService();
+            if (currentServiceName.split(" ")[0].equalsIgnoreCase(args[0])) { // Сравнивается первое слово текущего сервиса с требуемым
+                if (currentServiceName.contains("account")) {
 
                     NoteEntity findNote = Tools.getWithLogin(args[0]);
 

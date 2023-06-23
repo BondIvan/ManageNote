@@ -24,7 +24,7 @@ public class TestingClass {
 
     private final static String testFile = "ForTesting.txt";
     private static final String workFile = "Access.txt";
-    private static final String path = "C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\" + workFile;
+    private static final String path = "C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\" + testFile;
 
 //      For get access: -get- [название]  [true] - получить похожие
 //      For get names of all services: -getall-
@@ -44,18 +44,8 @@ public class TestingClass {
             System.out.print("Введите команду: ");
             String input = scanner.nextLine().trim();
 
-            if (input.isEmpty()) {
+            if (input.isEmpty())
                 continue;
-            } else if (input.equals("exit")) {
-
-                if(CheckingForUpdate.isUpdated) {
-                    Commands save = new Save(path);
-                    save.perform();
-                }
-
-                scanner.close();
-                System.exit(0);
-            }
 
             String prefix = input.split(" ")[0]; // Введённая команда
             String postfix = input.substring(prefix.length()).trim(); // Аргументы введённой команды
@@ -93,10 +83,14 @@ public class TestingClass {
                             Commands getall = new GetAll();
                             System.out.println(getall.perform());
                         }
-                        case "stream" -> { // Не не не
-                            System.out.println(TestingClass.notes.stream()
-                                    .anyMatch(name -> name.getIdService().equalsIgnoreCase("telegram.com")));
+                        case "exit" -> {
+                            if(CheckingForUpdate.isUpdated) {
+                                Commands save = new Save(path);
+                                save.perform();
+                            }
 
+                            scanner.close();
+                            System.exit(0);
                         }
 
                     }

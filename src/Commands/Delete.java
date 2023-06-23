@@ -48,15 +48,14 @@ public class Delete extends Commands {
     // Удаление сервиса беря название из аргументов команды
     private String deleteNote(String[] args) throws Exception {
 
-        String currentName; // Текущий (рассматриваемый сервис)
+        String currentServiceName; // Текущий (рассматриваемый сервис)
         for(int i = 0; i < TestingClass.notes.size(); i++) {
-            currentName = TestingClass.notes.get(i).getIdService();
+            currentServiceName = TestingClass.notes.get(i).getIdService();
 
             Scanner confirmForDelete = new Scanner(System.in);
 
-            // Привёл к нижнему регистру, чтобы не зависить от регистра при проверке на содержимое
-            if(currentName.toLowerCase().contains(args[0].toLowerCase())) {
-                if(currentName.contains("account")) { // Удаление сервиса у которого есть несколько аккаунтов
+            if(currentServiceName.split(" ")[0].equalsIgnoreCase(args[0])) { // Сравнивается первое слово текущего сервиса с требуемым
+                if(currentServiceName.contains("account")) { // Удаление сервиса у которого есть несколько аккаунтов
                     NoteEntity deletedNote = Tools.getWithLogin(args[0]); // Аккаунт, который выбран как удаляемый
 
                     System.out.println("Вы уверены, что хотите удалить аккаунт: " + deletedNote.getIdService() + " ? (y/n)");
@@ -75,7 +74,7 @@ public class Delete extends Commands {
                         return "Аккаунт удалён не был";
 
                 }  else { // Удаление сервиса у которого нет аккаунтов
-                    NoteEntity deletedNote= TestingClass.notes.get(i); // Сервис, который выбран как удаляемый (через переменную, для лучшей читаемости)
+                    NoteEntity deletedNote= TestingClass.notes.get(i); // Сервис, который выбран как удаляемый
 
                     System.out.println("Вы уверены, что хотите удалить аккаунт: " + deletedNote.getIdService() + " ? (y/n)");
                     if(confirmForDelete.nextLine().equalsIgnoreCase("y")) { // Подтверждение на удаление

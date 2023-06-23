@@ -1,7 +1,7 @@
 package Commands;
 
 public abstract class Commands {
-    private static final String[] allCommand = { "get", "add", "replace", "delete", "help", "save", "getall" };
+    private static final String[] allCommand = { "get", "add", "replace", "delete", "help", "exit", "save", "getall" };
 
     public static boolean isExist(String commandName) {
 
