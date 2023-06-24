@@ -6,6 +6,8 @@ import Entity.NoteEntity;
 import Tools.Tools;
 import Tools.CheckingForUpdate;
 
+import java.util.List;
+
 public class Replace extends Commands {
 
     /***
@@ -58,9 +60,13 @@ public class Replace extends Commands {
                     NoteEntity findNote = Tools.getWithLogin(args[0]);
 
                     if (nameOfParameter.equalsIgnoreCase("service")) {
-                        findNote.setIdService(args[2]);
 
-                        Tools.changingNameOfAccount(args[0]); // Изменить номерацию у аккаунтов
+                        List<NoteEntity> allAccountsOfService = Tools.getAllAccounts(args[2]);
+                        if(allAccountsOfService.isEmpty())
+                            findNote.setIdService(args[2]);
+                        else
+                            return "Сервис " + allAccountsOfService.get(0).getIdService() + " уже существует";
+
                     }
                     else if (nameOfParameter.equalsIgnoreCase("login")) {
                         findNote.setLogin(args[2]);
@@ -78,8 +84,12 @@ public class Replace extends Commands {
                 } else { // Сервис с 1 аккаунтом
 
                     if (nameOfParameter.equalsIgnoreCase("service")) {
-                        note.setIdService(args[2]);
-                        Tools.changingNameOfAccount(args[2]);
+                        List<NoteEntity> allAccountsOfService = Tools.getAllAccounts(args[2]);
+                        if(allAccountsOfService.isEmpty())
+                            note.setIdService(args[2]);
+                        else
+                            return "Сервис " + allAccountsOfService.get(0).getIdService() + " уже существует";
+
                     } else if (nameOfParameter.equalsIgnoreCase("login")) {
                         note.setLogin(args[2]);
                     } else if (nameOfParameter.equalsIgnoreCase("password")) {

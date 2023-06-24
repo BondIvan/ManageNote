@@ -1,0 +1,46 @@
+1. Genshin Impact
+2. ForTesting
+3. Vk.com 1-st account
+4. Test
+5. Vk.com 2-nd account
+6. Vk.com 3-rd account
+7. GitHub.com
+8. GitLab.com
+9. Codewars.com
+N. ***
+________________________________________________________________________________________________________________________
+
+get test должно вернуть Test
+
+replace test service Vk.com должно добавить к сервису Vk.com 4-ый аккаунт
+replace нельзя делать замену названия одного сервиса на "второй", если "второй" сервис уже есть -> выдать ошибку
+
+Delete vk.com предлагает выбрать аккаунт через логин, при выборе Vk.com 2-sn account должен измениться порядок аакаунтов
+у Vk.com с (Vk.com 1-st account+Vk.com 3-rd account) -> (Vk.com 1-st account+Vk.com 2-nd account)
+
+_____________________________________________________________________________________________________________________
+get test => {
+    4. Test
+}
+
+add Test log pass => {
+    1 case: { add newService.com --> N. newService.com }
+    2 case: { 4. Test --> 4. Test 1-st account && N. Test 2-nd account }
+}
+
+delete vk.com => {
+    choose(3. Vk.com 1-st account/->5. Vk.com 2-nd account<-/6. Vk.com 3-rd account)
+    5. Vk.com 2-nd account should be deleted && accounts left (3. Vk.com 1-st account/6-1. Vk.com 2-nd account)
+}
+
+replace => {
+    service name:
+    1 case: { replace Vk.com 1-st account -> Turbo.tv
+              accounts vk.com --> (Vk.com 2-nd account/Vk.com 3-rd account) should stay (Vk.com 1-st account/Vk.com 2-nd account) }
+    2 case: { replace Vk.com 1-st account -> GitHub.com
+              this operation should not work (GitHub.com service already exist) }
+    3 case: { replace
+
+    login: classic (just replace string)
+    password: classic (just replace string)
+}

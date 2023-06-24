@@ -13,12 +13,11 @@ import java.util.Scanner;
 
 public class Tools {
 
-    // Изменяет номер аккаунта у сервиса + удаляет из названия сервиса (№-th account), если он последний. (Максимум 10 аккаунтов у 1 сервиса)
+    // Изменяет номера аккаунтов при удалении одного из аккаунта у сервиса + удаляет из названия сервиса (№-th account), если он последний. (Максимум 10 аккаунтов у 1 сервиса)
     public static void changingNameOfAccount(String serviceName) {
         String[] numberOfAccount = { "1-st", "2-nd", "3-rd", "4-th", "5-th", "6-th", "7-th", "8-th", "9-th", "10-th" }; // 10 "аккаунтов" максимум
 
         int firstAccountService = 0;
-        int accountNeededNumber = 0;
         for(int i = 0, k = 0, accountLeft_count = 0; i < TestingClass.notes.size(); i++) {
 
             String currentName = TestingClass.notes.get(i).getIdService(); // Текущее рассмативаемое название аккаунта
@@ -36,24 +35,12 @@ public class Tools {
                     // Если текущее название не содержит номер по порядку (проверяется с помощью массива numberOfAccount с счётчиком k),
                     // то заменяем следующий номер по счёту (Exp 1: если у текущего 3-rd, а должно быть 2-nd).
                     if(!currentName.contains(numberOfAccount[k])) {
-                        // Для Exp 1: заменяем 3-rd на 2-nd
-                        TestingClass.notes.get(i).setIdService(currentName.replace(numberOfAccount[k+1], numberOfAccount[k]));
+                        TestingClass.notes.get(i).setIdService(currentName.replace(numberOfAccount[k+1], numberOfAccount[k])); // Для Exp 1: заменяем 3-rd на 2-nd
                     }
 
                     k++; // Счётчик для массива numberOfAccount
-                } else {
-                    accountNeededNumber = i;
                 }
 
-            }
-
-            // При переименовывании: новое название переименовонного сервиса есть уже в другом сервисе
-            // (Exp: Test replace -> Vk.com, Vk.com уже содержит № кол. аккаунтов)
-            if(i + 1 == TestingClass.notes.size() && accountNeededNumber > 0) {
-
-                TestingClass.notes.get(accountNeededNumber).setIdService( serviceName + " " + numberOfAccount[accountLeft_count] + " account" );
-
-               //TestingClass.notes.get(save).setIdService( TestingClass.notes.get(save).getIdService().split(" ")[0] );
             }
 
             // Если достигнут последний аккаунт из ВСЕХ И количество аккаунтов сервиса после удаления остался 1, то удалить у названия сервиса (№-th account)
