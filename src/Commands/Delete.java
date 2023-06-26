@@ -2,7 +2,7 @@ package Commands;
 
 import Entity.NoteEntity;
 
-import Tools.Tools;
+import Tools.UsefulMethods;
 import Tools.CheckingForUpdate;
 
 import java.util.Scanner;
@@ -23,7 +23,7 @@ public class Delete extends Commands {
     @Override
     public String perform() throws Exception {
 
-        String[] args = Tools.makeArgsTrue(postfix); // Разбитие postfix-а на состовляющие (конкретные аргументы команды)
+        String[] args = UsefulMethods.makeArgsTrue(postfix); // Разбитие postfix-а на состовляющие (конкретные аргументы команды)
 
         // Если нужно добавить какие-либо аргументы, расскоментировать if содержащий: "args[1].equalsIgnoreCase("-a")"
 
@@ -56,7 +56,7 @@ public class Delete extends Commands {
 
             if(currentServiceName.split(" ")[0].equalsIgnoreCase(args[0])) { // Сравнивается первое слово текущего сервиса с требуемым
                 if(currentServiceName.contains("account")) { // Удаление сервиса у которого есть несколько аккаунтов
-                    NoteEntity deletedNote = Tools.getWithLogin(args[0]); // Аккаунт, который выбран как удаляемый
+                    NoteEntity deletedNote = UsefulMethods.getWithLogin(args[0]); // Аккаунт, который выбран как удаляемый
 
                     System.out.println("Вы уверены, что хотите удалить аккаунт: " + deletedNote.getIdService() + " ? (y/n)");
                     if(confirmForDelete.nextLine().equalsIgnoreCase("y")) { // Подтверждение на удаление
@@ -64,7 +64,7 @@ public class Delete extends Commands {
                         TestingClass.notes.remove(deletedNote); // Удаление аккаунта сервиса по ведённому логину
 
                         // После удаления аккаунта проход по всем сервисам, чтобы изменить номер у аккантов сервиса у которого был удалён аккаунт
-                        Tools.changingNameOfAccount(args[0]);
+                        UsefulMethods.changingNameOfAccount(args[0]);
 
                         CheckingForUpdate.isUpdated = true; // Информация, что данные были изменены
 

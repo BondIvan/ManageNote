@@ -3,7 +3,7 @@ package Commands;
 import Encrypting.TestFormula;
 import Entity.NoteEntity;
 
-import Tools.Tools;
+import Tools.UsefulMethods;
 import Tools.CheckingForUpdate;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class Add extends Commands {
     @Override
     public String perform() throws UnknownArgsException {
 
-        String[] args = Tools.makeArgsTrue(postfix); // Разбитие postfix-а на состовляющие (конкретные аргументы команды)
+        String[] args = UsefulMethods.makeArgsTrue(postfix); // Разбитие postfix-а на состовляющие (конкретные аргументы команды)
 
         if(args.length > 3) // Проверка на количество параметров в команде
             throw new UnknownArgsException("Параметров больше чем нужно");
@@ -53,7 +53,7 @@ public class Add extends Commands {
 
                     String[] numberOfAccount = { "1-st", "2-nd", "3-rd", "4-th", "5-th", "6-th", "7-th", "8-th", "9-th", "10-th" }; // 10 "аккаунтов" максимум
 
-                    List<NoteEntity> allAccountsOfService = Tools.getAllAccounts(args[0]);
+                    List<NoteEntity> allAccountsOfService = UsefulMethods.getAllAccounts(args[0]);
                     System.out.println("У данного сервиса уже есть " + allAccountsOfService.size() + " аккаунта(ов), " +
                             "добавить " + (allAccountsOfService.size()+1) + " ? (y/n)");
 

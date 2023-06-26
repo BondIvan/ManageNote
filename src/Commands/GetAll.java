@@ -1,5 +1,8 @@
 package Commands;
 
+
+import Tools.UsefulMethods;
+
 public class GetAll extends Commands {
 
     /***
@@ -11,7 +14,8 @@ public class GetAll extends Commands {
     @Override
     public String perform() throws Exception {
 
-        getNamesOfAllServices();
+        UsefulMethods.sortNoteEntityByServiceName(TestingClass.notes)
+                .forEach(note -> System.out.println(note.getIdService()));
 
         return """
                 -----------------
@@ -21,10 +25,4 @@ public class GetAll extends Commands {
                 """;
     }
 
-    public void getNamesOfAllServices() {
-
-        TestingClass.notes
-                .forEach(note -> System.out.println(note.getIdService()));
-
-    }
 }

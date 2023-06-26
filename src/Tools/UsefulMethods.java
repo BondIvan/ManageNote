@@ -6,12 +6,9 @@ import Entity.NoteEntity;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
-public class Tools {
+public class UsefulMethods {
 
     // Изменяет номера аккаунтов при удалении одного из аккаунта у сервиса + удаляет из названия сервиса (№-th account), если он последний. (Максимум 10 аккаунтов у 1 сервиса)
     public static void changingNameOfAccount(String serviceName) {
@@ -155,4 +152,20 @@ public class Tools {
         return allNoteFromFile;
     }
 
+    // Сортирует массив NoteEntity по названию сервиса
+    public static List<NoteEntity> sortNoteEntityByServiceName(List<NoteEntity> noteEntityList) {
+
+        Comparator<NoteEntity> comparator = new Comparator<NoteEntity>() {
+            @Override
+            public int compare(NoteEntity note1, NoteEntity note2) {
+                return note1.getIdService().compareTo(note2.getIdService());
+            }
+        };
+
+        noteEntityList.sort(comparator);
+
+        CheckingForUpdate.isUpdated = true; // Изменение массива были
+
+        return noteEntityList;
+    }
 }

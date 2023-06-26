@@ -3,7 +3,7 @@ package Commands;
 import Entity.NoteEntity;
 
 import Tools.CheckingForUpdate;
-import Tools.Tools;
+import Tools.UsefulMethods;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ public class TestingClass {
 
     public static void main(String[] args) throws Exception {
 
-        notes = Tools.getAllNoteFromFile(path); // Заполнение списка доступами
+        notes = UsefulMethods.getAllNoteFromFile(path); // Заполнение списка доступами
 
         Scanner scanner = new Scanner(System.in);
         while (true) {

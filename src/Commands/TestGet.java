@@ -5,7 +5,7 @@ import Entity.NoteEntity;
 import java.util.List;
 import java.util.Optional;
 
-import Tools.Tools;
+import Tools.UsefulMethods;
 
 public class TestGet extends Commands {
 
@@ -17,7 +17,7 @@ public class TestGet extends Commands {
 
     @Override
     public String perform() throws Exception {
-        String[] args = Tools.makeArgsTrue(postfix); // Разбитие postfix-а на состовляющие (конкретные аргументы команды)
+        String[] args = UsefulMethods.makeArgsTrue(postfix); // Разбитие postfix-а на состовляющие (конкретные аргументы команды)
 
         if (postfix.length() == 0)
             throw new UnknownArgsException("Нет параметров");

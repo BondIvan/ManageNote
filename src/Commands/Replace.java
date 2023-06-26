@@ -3,7 +3,7 @@ package Commands;
 import Encrypting.TestFormula;
 import Entity.NoteEntity;
 
-import Tools.Tools;
+import Tools.UsefulMethods;
 import Tools.CheckingForUpdate;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public class Replace extends Commands {
     @Override
     public String perform() throws Exception {
 
-        String[] args = Tools.makeArgsTrue(postfix);
+        String[] args = UsefulMethods.makeArgsTrue(postfix);
 
         if(args.length < 3)
             throw new UnknownArgsException("Параметров меньше чем нужно");
@@ -57,11 +57,11 @@ public class Replace extends Commands {
             if (currentServiceName.split(" ")[0].equalsIgnoreCase(args[0])) { // Сравнивается первое слово текущего сервиса с требуемым
                 if (currentServiceName.contains("account")) {
 
-                    NoteEntity findNote = Tools.getWithLogin(args[0]);
+                    NoteEntity findNote = UsefulMethods.getWithLogin(args[0]);
 
                     if (nameOfParameter.equalsIgnoreCase("service")) {
 
-                        List<NoteEntity> allAccountsOfService = Tools.getAllAccounts(args[2]);
+                        List<NoteEntity> allAccountsOfService = UsefulMethods.getAllAccounts(args[2]);
                         if(allAccountsOfService.isEmpty())
                             findNote.setIdService(args[2]);
                         else
@@ -84,7 +84,7 @@ public class Replace extends Commands {
                 } else { // Сервис с 1 аккаунтом
 
                     if (nameOfParameter.equalsIgnoreCase("service")) {
-                        List<NoteEntity> allAccountsOfService = Tools.getAllAccounts(args[2]);
+                        List<NoteEntity> allAccountsOfService = UsefulMethods.getAllAccounts(args[2]);
                         if(allAccountsOfService.isEmpty())
                             note.setIdService(args[2]);
                         else

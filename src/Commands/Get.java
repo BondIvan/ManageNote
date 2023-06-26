@@ -2,7 +2,7 @@ package Commands;
 
 import Encrypting.TryDecrypt;
 import Entity.NoteEntity;
-import Tools.Tools;
+import Tools.UsefulMethods;
 
 public class Get extends Commands {
 
@@ -22,7 +22,7 @@ public class Get extends Commands {
     @Override
     public String perform() throws Exception {
 
-        String[] args = Tools.makeArgsTrue(postfix); // Разбитие postfix-а на состовляющие (конкретные аргументы команды)
+        String[] args = UsefulMethods.makeArgsTrue(postfix); // Разбитие postfix-а на состовляющие (конкретные аргументы команды)
 
         if(postfix.length() == 0)
             throw  new UnknownArgsException("Нет параметров");
@@ -51,14 +51,14 @@ public class Get extends Commands {
     protected String getNote(String[] args, boolean searchSimilar) throws Exception {
 
         if(searchSimilar)
-            return "Вот все сервисы, которые начинаются на такую же букву: \n" + Tools.getSimilar(args);
+            return "Вот все сервисы, которые начинаются на такую же букву: \n" + UsefulMethods.getSimilar(args);
 
         for(NoteEntity note: TestingClass.notes) {
 
             String currentServiceName = note.getIdService();
             if (currentServiceName.split(" ")[0].equalsIgnoreCase(args[0])) { // Сравнивается первое слово текущего сервиса с требуемым
                 if(currentServiceName.contains("account")) {
-                    NoteEntity findNote = Tools.getWithLogin(args[0]); // Получить аккаунт сервиса по введённому логину
+                    NoteEntity findNote = UsefulMethods.getWithLogin(args[0]); // Получить аккаунт сервиса по введённому логину
                     String decPass = TryDecrypt.decrypt(findNote.getPassword()); // Расшифровка пароля
 
                     return findNote.getIdService() + "\nLogin: " + findNote.getLogin() + "\nPassword: " + decPass;
