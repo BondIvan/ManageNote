@@ -1,23 +1,17 @@
 package Commands;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public abstract class Commands {
-    private static final String[] allCommand = { "get", "add", "replace", "delete", "help", "exit", "save", "getall" };
+    private static final String[] allCommands = { "get", "add", "replace", "delete", "help", "exit", "save", "getall", "copyfile" };
 
     public static boolean isExist(String commandName) {
+        Set<String> listCommands = new HashSet<>(Set.of(allCommands));
 
-        for(String command: allCommand) { // Проверка на наличие команды
-            if(command.equals(commandName))
-                return true;
-        }
-
-        return false;
+        return listCommands.contains(commandName);
     }
 
     public abstract String perform() throws Exception; // Во всех командах это проверка введённых аргументов и выполнение самой команды
-
-
-    //TODO написать пример, как должны выглядеть поля в файле, чтобы они правильно считывались
-
-
 
 }

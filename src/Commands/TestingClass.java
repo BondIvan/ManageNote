@@ -26,15 +26,6 @@ public class TestingClass {
     private static final String workFile = "Access.txt";
     private static final String path = "C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\" + testFile;
 
-//      For get access: -get- [название]  [true] - получить похожие
-//      For get names of all services: -getall-
-//      For add new access: -add-[название] [login] [password]
-//      Replace access: -replace- [название] [service/login/password] [новая строка]
-//      Delete access: -delete- [название]
-//      Save file: -save-
-//      Help: -help-
-//      Exit: -exit-
-
     public static void main(String[] args) throws Exception {
 
         notes = UsefulMethods.getAllNoteFromFile(path); // Заполнение списка доступами
@@ -78,6 +69,10 @@ public class TestingClass {
                         case "save" -> {
                             Commands save = new Save(path);
                             System.out.println(save.perform());
+                        }
+                        case "copyfile" -> {
+                            Commands copyFile = new CopyFile(path);
+                            System.out.println(copyFile.perform());
                         }
                         case "getall" -> {
                             Commands getall = new GetAll();

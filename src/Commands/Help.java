@@ -23,6 +23,8 @@ public class Help extends Commands {
                         
                         Save file: -save-
                         
+                        Copy file to clipboard  windows: -copyfile-
+                        
                         Help: -help-
                         
                         Exit: -exit-
