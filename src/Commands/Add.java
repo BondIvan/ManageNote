@@ -1,6 +1,7 @@
 package Commands;
 
-import Encrypting.TestFormula;
+import Encrypting.Alphabet.Alphabet;
+import Encrypting.ViewEncrypt;
 import Entity.NoteEntity;
 
 import Tools.UsefulMethods;
@@ -45,6 +46,8 @@ public class Add extends Commands {
 
         Scanner confirm = new Scanner(System.in);
 
+        ViewEncrypt viewEncrypt = new ViewEncrypt( Alphabet.getAlpha() ); // Объект для шифрования
+
         for(NoteEntity note: TestingClass.notes) {
 
             String currentServiceName = note.getIdService();
@@ -62,7 +65,7 @@ public class Add extends Commands {
                         // то есть он и будет указывать на нужный новый номер аакаунта
                         String accountName = args[0] + " " + numberOfAccount[allAccountsOfService.size()] + " account"; // Добавление номера аккаунта
                         String login = args[1];
-                        String password = TestFormula.analysisString(args[2]); // Шифрование пароля
+                        String password = viewEncrypt.encrypting(args[2]); // Шифрование пароля
 
                         NoteEntity newNote = new NoteEntity(accountName, login, password);
                         TestingClass.notes.add(newNote);
@@ -81,7 +84,7 @@ public class Add extends Commands {
 
                         note.setIdService( currentServiceName + " 1-st account" );
 
-                        NoteEntity newNote = new NoteEntity( args[0] + " 2-nd account", args[1], TestFormula.analysisString(args[2]) );
+                        NoteEntity newNote = new NoteEntity( args[0] + " 2-nd account", args[1], viewEncrypt.encrypting(args[2]) );
                         TestingClass.notes.add(newNote);
 
                         CheckingForUpdate.isUpdated = true; // Информация, что данные были изменены
@@ -101,7 +104,7 @@ public class Add extends Commands {
         System.out.println("Вы уверены что хотите добавить такую запись? (y/n)\n" + args[0] + "\nLogin: " + args[1] + "\nPassword: " + args[2]);
 
         if(confirm.nextLine().equalsIgnoreCase("y")) {
-            String encrptPass = TestFormula.analysisString(args[2]); // Шифрование пароля
+            String encrptPass = viewEncrypt.encrypting(args[2]); // Шифрование пароля
 
             NoteEntity newNote = new NoteEntity(args[0], args[1], encrptPass);
             TestingClass.notes.add(newNote);

@@ -164,7 +164,7 @@ public class UsefulMethods {
 
         noteEntityList.sort(comparator);
 
-        CheckingForUpdate.isUpdated = true; // Изменение массива были
+        // CheckingForUpdate.isUpdated = true; // Изменение массива были
 
         return noteEntityList;
     }

@@ -14,4 +14,7 @@ public abstract class Commands {
 
     public abstract String perform() throws Exception; // Во всех командах это проверка введённых аргументов и выполнение самой команды
 
+    //TODO добавить перегрузочный метод и переписать методы в командах, где логично было бы использовать метод perform с параметрами
+    // public abstract String perform(String postfix) throws Exception;
+
 }

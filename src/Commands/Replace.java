@@ -1,6 +1,7 @@
 package Commands;
 
-import Encrypting.TestFormula;
+import Encrypting.Alphabet.Alphabet;
+import Encrypting.ViewEncrypt;
 import Entity.NoteEntity;
 
 import Tools.UsefulMethods;
@@ -51,6 +52,8 @@ public class Replace extends Commands {
 
         // String[] nameOfParam = { "service",  "login", "password" };
 
+        ViewEncrypt viewEncrypt = new ViewEncrypt(Alphabet.getAlpha()); // Объект для шифрования
+
         for (NoteEntity note : TestingClass.notes) {
 
             String currentServiceName = note.getIdService();
@@ -72,7 +75,7 @@ public class Replace extends Commands {
                         findNote.setLogin(args[2]);
                     }
                     else if (nameOfParameter.equalsIgnoreCase("password")) {
-                        String encrptPass = TestFormula.analysisString(args[2]);
+                        String encrptPass = viewEncrypt.encrypting(args[2]);
 
                         findNote.setPassword(encrptPass);
                     } else
@@ -93,7 +96,7 @@ public class Replace extends Commands {
                     } else if (nameOfParameter.equalsIgnoreCase("login")) {
                         note.setLogin(args[2]);
                     } else if (nameOfParameter.equalsIgnoreCase("password")) {
-                        String encrptPass = TestFormula.analysisString(args[2]);
+                        String encrptPass = viewEncrypt.encrypting(args[2]);
 
                         note.setPassword(encrptPass);
                     } else

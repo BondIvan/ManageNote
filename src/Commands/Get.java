@@ -1,6 +1,7 @@
 package Commands;
 
-import Encrypting.TryDecrypt;
+import Encrypting.Alphabet.Alphabet;
+import Encrypting.ViewDecrypt;
 import Entity.NoteEntity;
 import Tools.UsefulMethods;
 
@@ -50,6 +51,8 @@ public class Get extends Commands {
     // Получить все данные сервиса из параметров введённой команды
     protected String getNote(String[] args, boolean searchSimilar) throws Exception {
 
+        ViewDecrypt viewDecrypt = new ViewDecrypt(Alphabet.getAlpha()); // Объект для дешифрования
+
         if(searchSimilar)
             return "Вот все сервисы, которые начинаются на такую же букву: \n" + UsefulMethods.getSimilar(args);
 
@@ -59,12 +62,12 @@ public class Get extends Commands {
             if (currentServiceName.split(" ")[0].equalsIgnoreCase(args[0])) { // Сравнивается первое слово текущего сервиса с требуемым
                 if(currentServiceName.contains("account")) {
                     NoteEntity findNote = UsefulMethods.getWithLogin(args[0]); // Получить аккаунт сервиса по введённому логину
-                    String decPass = TryDecrypt.decrypt(findNote.getPassword()); // Расшифровка пароля
+                    String decPass = viewDecrypt.decrypt(findNote.getPassword()); // Расшифровка пароля
 
                     return findNote.getIdService() + "\nLogin: " + findNote.getLogin() + "\nPassword: " + decPass;
                 }
                 else {
-                    String decPass = TryDecrypt.decrypt(note.getPassword()); // Расшифровка пароля
+                    String decPass = viewDecrypt.decrypt(note.getPassword()); // Расшифровка пароля
 
                     return note.getIdService() + "\nLogin: " + note.getLogin() + "\nPassword: " + decPass;
                 }

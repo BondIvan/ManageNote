@@ -24,7 +24,7 @@ public class TestingClass {
 
     private final static String testFile = "ForTesting.txt";
     private static final String workFile = "Access.txt";
-    private static final String path = "C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\" + testFile;
+    private static final String path = "C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\" + workFile;
 
     public static void main(String[] args) throws Exception {
 
@@ -67,7 +67,7 @@ public class TestingClass {
                             System.out.println(help.perform());
                         }
                         case "save" -> {
-                            Commands save = new Save(path);
+                            Commands save = new Save(path, TestingClass.notes);
                             System.out.println(save.perform());
                         }
                         case "copyfile" -> {
@@ -80,7 +80,7 @@ public class TestingClass {
                         }
                         case "exit" -> {
                             if(CheckingForUpdate.isUpdated) {
-                                Commands save = new Save(path);
+                                Commands save = new Save(path, TestingClass.notes);
                                 save.perform();
                             }
 
