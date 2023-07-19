@@ -1,9 +1,12 @@
 package Commands;
 
-import Encrypting.Alphabet.Alphabet;
-import Encrypting.ViewDecrypt;
 import Entity.NoteEntity;
+import OptionsExceptions.AccessNotFoundException;
+import OptionsExceptions.UnknownArgsException;
+import OptionsExceptions.WrongPostfixMethodException;
 import Tools.UsefulMethods;
+
+import java.util.List;
 
 public class Get extends Commands {
 
@@ -14,68 +17,50 @@ public class Get extends Commands {
 
      ***/
 
-    private final String postfix;
+    private final List<NoteEntity> listWithNotes;
 
-    public Get(String postfix) {
-        this.postfix = postfix;
+    public Get(List<NoteEntity> list) {
+        this.listWithNotes = list;
     }
 
     @Override
     public String perform() throws Exception {
+        throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
+    }
+
+    @Override
+    public String perform(String postfix) throws Exception {
 
         String[] args = UsefulMethods.makeArgsTrue(postfix); // Разбитие postfix-а на состовляющие (конкретные аргументы команды)
 
-        if(postfix.length() == 0)
+        if(args.length == 0)
             throw  new UnknownArgsException("Нет параметров");
-
-        if(args.length > 1) { // Проверка на количество параметров в команде
-
-            // Если нужно добавить какие-либо аргументы, расскоментировать if содержащий: "args[1].equalsIgnoreCase("-a")"
-
-            if(args.length > 2) // На данный момент не используется аргументов больше чем обычно
-                throw new UnknownArgsException("Параметров больше чем нужно");
-            else {
-                if(args[1].equalsIgnoreCase("true")) // Получить сервисы начинающиеся на такую же букву
-                    return getNote(args, true);
-//                if(args[1].equalsIgnoreCase("-a")) // Получить сервисы по введённому логину при 2 аргументе -а
-//                    return gettingInfo(getWithLogin(args));
-                else
-                    throw new UnknownArgsException("Параметров больше чем нужно");
-            }
-        }
+        if(args.length > 1)
+            throw new UnknownArgsException("Параметров больше чем нужно");
         else
-            return getNote(args, false);
+            return getNote(args).toString();
 
     }
 
     // Получить все данные сервиса из параметров введённой команды
-    protected String getNote(String[] args, boolean searchSimilar) throws Exception {
+    protected NoteEntity getNote(String[] args) throws Exception {
 
-        ViewDecrypt viewDecrypt = new ViewDecrypt(Alphabet.getAlpha()); // Объект для дешифрования
-
-        if(searchSimilar)
-            return "Вот все сервисы, которые начинаются на такую же букву: \n" + UsefulMethods.getSimilar(args);
-
-        for(NoteEntity note: TestingClass.notes) {
+        for(NoteEntity note: listWithNotes) {
 
             String currentServiceName = note.getIdService();
             if (currentServiceName.split(" ")[0].equalsIgnoreCase(args[0])) { // Сравнивается первое слово текущего сервиса с требуемым
-                if(currentServiceName.contains("account")) {
-                    NoteEntity findNote = UsefulMethods.getWithLogin(args[0]); // Получить аккаунт сервиса по введённому логину
-                    String decPass = viewDecrypt.decrypt(findNote.getPassword()); // Расшифровка пароля
+                if(currentServiceName.contains("account")) { // Содержит ли сервис аккаунты
 
-                    return findNote.getIdService() + "\nLogin: " + findNote.getLogin() + "\nPassword: " + decPass;
+                    return UsefulMethods.getWithLogin(listWithNotes, args[0]); // Получить аккаунт сервиса по введённому логину
                 }
                 else {
-                    String decPass = viewDecrypt.decrypt(note.getPassword()); // Расшифровка пароля
-
-                    return note.getIdService() + "\nLogin: " + note.getLogin() + "\nPassword: " + decPass;
+                    return note;
                 }
             }
 
         }
 
-        return "Такого сервиса нет";
+        throw new AccessNotFoundException("Такого сервиса нет");
     }
 
 

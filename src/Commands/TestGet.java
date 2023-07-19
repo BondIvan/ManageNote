@@ -5,6 +5,9 @@ import Entity.NoteEntity;
 import java.util.List;
 import java.util.Optional;
 
+import OptionsExceptions.UnknownArgsException;
+import OptionsExceptions.WrongPostfixMethodException;
+
 import Tools.UsefulMethods;
 
 public class TestGet extends Commands {
@@ -27,6 +30,11 @@ public class TestGet extends Commands {
             throw new UnknownArgsException("Параметров больше чем нужно");
 
         return getNote(args).toString();
+    }
+
+    @Override
+    public String perform(String postfix) throws Exception {
+        throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
     }
 
     private String getNote(String[] args) {

@@ -1,25 +1,30 @@
 package Commands;
 
+import OptionsExceptions.WrongPostfixMethodException;
+
 import java.awt.*;
 import java.awt.datatransfer.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class CopyFile extends Commands{
 
-    private final String path; // Путь копируемого файла
+    private final String pathToFile; // Путь копируемого файла
 
     public CopyFile(String path) {
-        this.path = path;
+        this.pathToFile = path;
     }
 
     @Override
     public String perform() throws Exception {
 
-        return copy(path);
+        return copy(pathToFile);
+    }
+
+    @Override
+    public String perform(String postfix) throws Exception {
+        throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
     }
 
     public String copy(String pathToFile) {

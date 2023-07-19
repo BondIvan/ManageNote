@@ -47,11 +47,11 @@ public class TestingClass {
                     switch (prefix) {
 
                         case "get" -> {
-                            Commands get = new Get(postfix);
-                            System.out.println(get.perform());
+                            //Commands get = new Get(postfix);
+                            //System.out.println(get.perform());
                         }
                         case "add" -> {
-                            Commands add = new Add(postfix);
+                            Commands add = new Add(TestingClass.notes);
                             System.out.println(add.perform());
                         }
                         case "replace" -> {

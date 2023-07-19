@@ -43,4 +43,10 @@ replace => {
 
     login: classic (just replace string)
     password: classic (just replace string)
+
+Help => {
+       Help without parameters: usual command help
+
+       help with parameters: exception
+    }
 }

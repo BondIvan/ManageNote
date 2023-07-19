@@ -1,6 +1,7 @@
 package Commands;
 
 
+import OptionsExceptions.WrongPostfixMethodException;
 import Tools.UsefulMethods;
 
 public class GetAll extends Commands {
@@ -23,6 +24,11 @@ public class GetAll extends Commands {
                         |
                 Это был последний
                 """;
+    }
+
+    @Override
+    public String perform(String postfix) throws Exception {
+        throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
     }
 
 }

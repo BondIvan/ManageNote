@@ -2,6 +2,9 @@ package Commands;
 
 import Entity.NoteEntity;
 
+import OptionsExceptions.UnknownArgsException;
+import OptionsExceptions.WrongPostfixMethodException;
+
 import Tools.UsefulMethods;
 import Tools.CheckingForUpdate;
 
@@ -45,6 +48,11 @@ public class Delete extends Commands {
         return deleteNote(args); // Удаление одного из сервисов
     }
 
+    @Override
+    public String perform(String postfix) throws Exception {
+        throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
+    }
+
     // Удаление сервиса беря название из аргументов команды
     private String deleteNote(String[] args) throws Exception {
 
@@ -56,7 +64,7 @@ public class Delete extends Commands {
 
             if(currentServiceName.split(" ")[0].equalsIgnoreCase(args[0])) { // Сравнивается первое слово текущего сервиса с требуемым
                 if(currentServiceName.contains("account")) { // Удаление сервиса у которого есть несколько аккаунтов
-                    NoteEntity deletedNote = UsefulMethods.getWithLogin(args[0]); // Аккаунт, который выбран как удаляемый
+                    NoteEntity deletedNote = UsefulMethods.getWithLogin(TestingClass.notes, args[0]); // Аккаунт, который выбран как удаляемый
 
                     System.out.println("Вы уверены, что хотите удалить аккаунт: " + deletedNote.getIdService() + " ? (y/n)");
                     if(confirmForDelete.nextLine().equalsIgnoreCase("y")) { // Подтверждение на удаление
@@ -64,7 +72,7 @@ public class Delete extends Commands {
                         TestingClass.notes.remove(deletedNote); // Удаление аккаунта сервиса по ведённому логину
 
                         // После удаления аккаунта проход по всем сервисам, чтобы изменить номер у аккантов сервиса у которого был удалён аккаунт
-                        UsefulMethods.changingNameOfAccount(args[0]);
+                        UsefulMethods.changingNameOfAccount(TestingClass.notes, args[0]);
 
                         CheckingForUpdate.isUpdated = true; // Информация, что данные были изменены
 

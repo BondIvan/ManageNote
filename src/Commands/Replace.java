@@ -4,6 +4,9 @@ import Encrypting.Alphabet.Alphabet;
 import Encrypting.ViewEncrypt;
 import Entity.NoteEntity;
 
+import OptionsExceptions.UnknownArgsException;
+import OptionsExceptions.WrongPostfixMethodException;
+
 import Tools.UsefulMethods;
 import Tools.CheckingForUpdate;
 
@@ -36,6 +39,11 @@ public class Replace extends Commands {
         return replaceNote(args, args[1]);
     }
 
+    @Override
+    public String perform(String postfix) throws Exception {
+        throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
+    }
+
     //TODO Текущая конструкция аргументов команды под сомнением
 
     // System.out.println(note.getIdService() + " -> " + args[2] + "\nLogin: " + note.getLogin() + "\n" + note.getPassword());
@@ -60,11 +68,11 @@ public class Replace extends Commands {
             if (currentServiceName.split(" ")[0].equalsIgnoreCase(args[0])) { // Сравнивается первое слово текущего сервиса с требуемым
                 if (currentServiceName.contains("account")) {
 
-                    NoteEntity findNote = UsefulMethods.getWithLogin(args[0]);
+                    NoteEntity findNote = UsefulMethods.getWithLogin(TestingClass.notes, args[0]);
 
                     if (nameOfParameter.equalsIgnoreCase("service")) {
 
-                        List<NoteEntity> allAccountsOfService = UsefulMethods.getAllAccounts(args[2]);
+                        List<NoteEntity> allAccountsOfService = UsefulMethods.getAllAccounts(TestingClass.notes, args[2]);
                         if(allAccountsOfService.isEmpty())
                             findNote.setIdService(args[2]);
                         else
@@ -83,11 +91,11 @@ public class Replace extends Commands {
 
                     CheckingForUpdate.isUpdated = true; // Информация, что данные были изменены
 
-                    return "Значение измененно, вот результат:\n" + findNote.getIdService() + "\nLogin: " + findNote.getLogin() + "\nPassword: " + findNote.getPassword();
+                    return "Значение измененно, вот результат:\n" + findNote.getIdService() + "\nLogin: " + findNote.getLogin() + "\nPassword: " + findNote.getPassword(true);
                 } else { // Сервис с 1 аккаунтом
 
                     if (nameOfParameter.equalsIgnoreCase("service")) {
-                        List<NoteEntity> allAccountsOfService = UsefulMethods.getAllAccounts(args[2]);
+                        List<NoteEntity> allAccountsOfService = UsefulMethods.getAllAccounts(TestingClass.notes, args[2]);
                         if(allAccountsOfService.isEmpty())
                             note.setIdService(args[2]);
                         else
@@ -104,7 +112,7 @@ public class Replace extends Commands {
 
                     CheckingForUpdate.isUpdated = true; // Информация, что данные были изменены
 
-                    return "Значение измененно, вот результат:\n" + note.getIdService() + "\nLogin: " + note.getLogin() + "\nPassword: " + note.getPassword();
+                    return "Значение измененно, вот результат:\n" + note.getIdService() + "\nLogin: " + note.getLogin() + "\nPassword: " + note.getPassword(true);
                 }
             }
 

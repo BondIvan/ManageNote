@@ -1,5 +1,7 @@
 package Commands;
 
+import OptionsExceptions.WrongPostfixMethodException;
+
 public class Help extends Commands {
 
     /***
@@ -29,5 +31,10 @@ public class Help extends Commands {
                         
                         Exit: -exit-
                         """;
+    }
+
+    @Override
+    public String perform(String postfix) throws Exception {
+        throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
     }
 }
