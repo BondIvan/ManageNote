@@ -47,19 +47,19 @@ public class TestingClass {
                     switch (prefix) {
 
                         case "get" -> {
-                            //Commands get = new Get(postfix);
-                            //System.out.println(get.perform());
+                            Commands get = new Get(TestingClass.notes);
+                            System.out.println(get.perform());
                         }
                         case "add" -> {
                             Commands add = new Add(TestingClass.notes);
                             System.out.println(add.perform());
                         }
                         case "replace" -> {
-                            Commands replace = new Replace(postfix);
+                            Commands replace = new Replace(TestingClass.notes);
                             System.out.println(replace.perform());
                         }
                         case "delete" -> {
-                            Commands delete = new Delete(postfix);
+                            Commands delete = new Delete(TestingClass.notes);
                             System.out.println(delete.perform());
                         }
                         case "help" -> {
@@ -75,7 +75,7 @@ public class TestingClass {
                             System.out.println(copyFile.perform());
                         }
                         case "getall" -> {
-                            Commands getall = new GetAll();
+                            Commands getall = new GetAll(TestingClass.notes);
                             System.out.println(getall.perform());
                         }
                         case "exit" -> {

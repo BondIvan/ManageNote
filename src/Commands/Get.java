@@ -51,7 +51,7 @@ public class Get extends Commands {
             if (currentServiceName.split(" ")[0].equalsIgnoreCase(args[0])) { // Сравнивается первое слово текущего сервиса с требуемым
                 if(currentServiceName.contains("account")) { // Содержит ли сервис аккаунты
 
-                    return UsefulMethods.getWithLogin(listWithNotes, args[0]); // Получить аккаунт сервиса по введённому логину
+                    return UsefulMethods.getAccountFromServiceByLogin(listWithNotes, args[0]); // Получить аккаунт сервиса по введённому логину
                 }
                 else {
                     return note;

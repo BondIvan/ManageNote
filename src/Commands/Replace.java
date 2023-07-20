@@ -4,6 +4,7 @@ import Encrypting.Alphabet.Alphabet;
 import Encrypting.ViewEncrypt;
 import Entity.NoteEntity;
 
+import OptionsExceptions.AccessNotFoundException;
 import OptionsExceptions.UnknownArgsException;
 import OptionsExceptions.WrongPostfixMethodException;
 
@@ -20,14 +21,19 @@ public class Replace extends Commands {
 
      ***/
 
-    private final String postfix;
+    private final List<NoteEntity> listWithNotes;
 
-    public Replace(String postfix) {
-        this.postfix = postfix;
+    public Replace(List<NoteEntity> listWithNotes) {
+        this.listWithNotes = listWithNotes;
     }
 
     @Override
     public String perform() throws Exception {
+        throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
+    }
+
+    @Override
+    public String perform(String postfix) throws Exception {
 
         String[] args = UsefulMethods.makeArgsTrue(postfix);
 
@@ -37,11 +43,6 @@ public class Replace extends Commands {
             throw new UnknownArgsException("Параметров больше чем нужно");
 
         return replaceNote(args, args[1]);
-    }
-
-    @Override
-    public String perform(String postfix) throws Exception {
-        throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
     }
 
     //TODO Текущая конструкция аргументов команды под сомнением
@@ -60,32 +61,26 @@ public class Replace extends Commands {
 
         // String[] nameOfParam = { "service",  "login", "password" };
 
-        ViewEncrypt viewEncrypt = new ViewEncrypt(Alphabet.getAlpha()); // Объект для шифрования
-
-        for (NoteEntity note : TestingClass.notes) {
+        for (NoteEntity note : listWithNotes) {
 
             String currentServiceName = note.getIdService();
             if (currentServiceName.split(" ")[0].equalsIgnoreCase(args[0])) { // Сравнивается первое слово текущего сервиса с требуемым
                 if (currentServiceName.contains("account")) {
 
-                    NoteEntity findNote = UsefulMethods.getWithLogin(TestingClass.notes, args[0]);
+                    NoteEntity findNote = UsefulMethods.getAccountFromServiceByLogin(listWithNotes, args[0]);
 
                     if (nameOfParameter.equalsIgnoreCase("service")) {
 
-                        List<NoteEntity> allAccountsOfService = UsefulMethods.getAllAccounts(TestingClass.notes, args[2]);
-                        if(allAccountsOfService.isEmpty())
+                        List<NoteEntity> allAccountsOfService = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[2]);
+                        if (allAccountsOfService.isEmpty())
                             findNote.setIdService(args[2]);
                         else
                             return "Сервис " + allAccountsOfService.get(0).getIdService() + " уже существует";
 
-                    }
-                    else if (nameOfParameter.equalsIgnoreCase("login")) {
+                    } else if (nameOfParameter.equalsIgnoreCase("login")) {
                         findNote.setLogin(args[2]);
-                    }
-                    else if (nameOfParameter.equalsIgnoreCase("password")) {
-                        String encrptPass = viewEncrypt.encrypting(args[2]);
-
-                        findNote.setPassword(encrptPass);
+                    } else if (nameOfParameter.equalsIgnoreCase("password")) {
+                        findNote.setPassword(args[2]);
                     } else
                         throw new UnknownArgsException("Неизвестный параметр изменения"); // Exception если в параметрах указано неизвестное изменение (Exp: replace id)
 
@@ -95,8 +90,8 @@ public class Replace extends Commands {
                 } else { // Сервис с 1 аккаунтом
 
                     if (nameOfParameter.equalsIgnoreCase("service")) {
-                        List<NoteEntity> allAccountsOfService = UsefulMethods.getAllAccounts(TestingClass.notes, args[2]);
-                        if(allAccountsOfService.isEmpty())
+                        List<NoteEntity> allAccountsOfService = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[2]);
+                        if (allAccountsOfService.isEmpty())
                             note.setIdService(args[2]);
                         else
                             return "Сервис " + allAccountsOfService.get(0).getIdService() + " уже существует";
@@ -104,9 +99,7 @@ public class Replace extends Commands {
                     } else if (nameOfParameter.equalsIgnoreCase("login")) {
                         note.setLogin(args[2]);
                     } else if (nameOfParameter.equalsIgnoreCase("password")) {
-                        String encrptPass = viewEncrypt.encrypting(args[2]);
-
-                        note.setPassword(encrptPass);
+                        note.setPassword(args[2]);
                     } else
                         throw new UnknownArgsException("Неизвестный параметр изменения"); // Exception если в параметрах указано неизвестное изменение (Exp: replace id)
 
@@ -118,7 +111,7 @@ public class Replace extends Commands {
 
         }
 
-            return "Такого сервиса нет";
-        }
+        throw new AccessNotFoundException("Такого сервиса нет");
+    }
 
 }

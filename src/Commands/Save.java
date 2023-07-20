@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
-import Source.StartConsole;
-
 public class Save extends Commands {
 
     /***
@@ -38,16 +36,8 @@ public class Save extends Commands {
     @Override
     public String perform() throws Exception {
 
-        if(CheckingForUpdate.isUpdated) {
-
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Вы уверены, что хотите сохранить файл ? (y/n)");
-
-            if (scanner.nextLine().equalsIgnoreCase("y"))
-                return saving(listWithNotes, pathToSave);
-
-            return "Файл не сохранён";
-        }
+        if(CheckingForUpdate.isUpdated)
+            return "Файл сохранён: " + saving(pathToSave, listWithNotes);
 
         return "Изменений не произошло";
     }
@@ -57,19 +47,25 @@ public class Save extends Commands {
         throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
     }
 
-    private String saving(List<NoteEntity> listWithNotesForSave, String path) throws IOException {
+    private boolean saving(String path, List<NoteEntity> listWithNotesForSave) throws IOException {
 
-        FileWriter fileWriter = new FileWriter(path);
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Вы уверены, что хотите сохранить файл ? (y/n)");
 
-        // Построчная запись в файл всех объктов NoteEntity
-        for (NoteEntity note : listWithNotesForSave)
-            fileWriter.write(note.getIdService() + "\nLogin: " + note.getLogin() + "\nPassword: " + note.getPassword(false) + "\n\n");
+        if(scanner.nextLine().equalsIgnoreCase("y")) {
 
-        fileWriter.close();
+            FileWriter fileWriter = new FileWriter(path);
+            // Построчная запись в файл всех объктов NoteEntity
+            for (NoteEntity note : listWithNotesForSave)
+                fileWriter.write(note.getIdService() + "\nLogin: " + note.getLogin() + "\nPassword: " + note.getPassword(false) + "\n\n");
+            fileWriter.close();
 
-        CheckingForUpdate.isUpdated = false;
+            CheckingForUpdate.isUpdated = false;
 
-        return "Файл сохранён";
+            return true;
+        }
+
+        return false;
     }
 
 }

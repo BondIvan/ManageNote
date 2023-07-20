@@ -3,6 +3,7 @@ package Entity;
 import Encrypting.Alphabet.Alphabet;
 import Encrypting.ViewDecrypt;
 import Encrypting.ViewEncrypt;
+import OptionsExceptions.UnknownArgsException;
 
 public class NoteEntity {
     private String idService; // id -> name
@@ -33,9 +34,12 @@ public class NoteEntity {
         return this.login;
     }
 
-    public void setPassword(String password) { //TODO Подумать, насколько это разумно
-        ViewEncrypt viewEncrypt = new ViewEncrypt(Alphabet.getAlpha());
+    public void setPassword(String password) throws UnknownArgsException { //TODO Подумать, насколько это разумно
 
+        if(password.contains(".")) // Символ '.' используется для шифрования и расшифрования
+            throw new UnknownArgsException("В пароле не должен содержаться символ '.'");
+
+        ViewEncrypt viewEncrypt = new ViewEncrypt(Alphabet.getAlpha());
         this.password = viewEncrypt.encrypting(password); // password = "Without -> Password: ..."
     }
     public String getPassword(boolean needDecrypt) { // needDecrypt - будет говорить, нужно ли расшифровать пароль

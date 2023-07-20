@@ -1,8 +1,11 @@
 package Commands;
 
 
+import Entity.NoteEntity;
 import OptionsExceptions.WrongPostfixMethodException;
 import Tools.UsefulMethods;
+
+import java.util.List;
 
 public class GetAll extends Commands {
 
@@ -12,10 +15,18 @@ public class GetAll extends Commands {
 
      ***/
 
+    private final List<NoteEntity> listWithNotes;
+
+    public GetAll(List<NoteEntity> listWithNotes) {
+        this.listWithNotes = listWithNotes;
+    }
+
     @Override
     public String perform() throws Exception {
 
-        UsefulMethods.sortNoteEntityByServiceName(TestingClass.notes)
+        System.out.println("-----------------");
+
+        UsefulMethods.sortNoteEntityByServiceName(listWithNotes)
                 .forEach(note -> System.out.println(note.getIdService()));
 
         return """

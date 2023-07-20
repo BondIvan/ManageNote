@@ -53,6 +53,7 @@ public class Add extends Commands {
 
         Scanner confirm = new Scanner(System.in);
 
+        // Подумать на шифрованием здесь
         ViewEncrypt viewEncrypt = new ViewEncrypt( Alphabet.getAlpha() ); // Объект для шифрования
 
         for(NoteEntity note: listWithNotes) {
@@ -63,7 +64,7 @@ public class Add extends Commands {
 
                     String[] numberOfAccount = { "1-st", "2-nd", "3-rd", "4-th", "5-th", "6-th", "7-th", "8-th", "9-th", "10-th" }; // 10 "аккаунтов" максимум
 
-                    List<NoteEntity> allAccountsOfService = UsefulMethods.getAllAccounts(listWithNotes, args[0]);
+                    List<NoteEntity> allAccountsOfService = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[0]);
                     System.out.println("У данного сервиса уже есть " + allAccountsOfService.size() + " аккаунта(ов), " +
                             "добавить " + (allAccountsOfService.size()+1) + " ? (y/n)");
 

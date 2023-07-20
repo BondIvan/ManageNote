@@ -6,12 +6,11 @@ import Tools.CheckingForUpdate;
 
 public class Exit extends Commands {
 
-// TODO Разобраться с этой командой
     @Override
     public String perform() throws Exception {
 
         if(CheckingForUpdate.isUpdated) {
-            Commands save = new Save(StartConsole.PATH_TEST);
+            Commands save = new Save(StartConsole.PATH_TEST, StartConsole.NOTES);
             System.out.println( save.perform() );
         }
 

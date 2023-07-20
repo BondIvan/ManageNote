@@ -50,7 +50,7 @@ public class UsefulMethods {
     }
 
     // Получение всех аккаунтов одного сервиса
-    public static List<NoteEntity> getAllAccounts(List<NoteEntity> listWithNotes, String serviceName) {
+    public static List<NoteEntity> getAllAccountsForOneService(List<NoteEntity> listWithNotes, String serviceName) {
         ArrayList<NoteEntity> otherAccounts = new ArrayList<>(); // Список аккаунтов одного сервиса
 
         for(NoteEntity note: listWithNotes) {
@@ -66,7 +66,7 @@ public class UsefulMethods {
     // Если у сервиса несколько аккаунтов, этот метод позволяет получить доступ к конкретному аккаунту по логину
     // Или же у названия сервиса 2 слова или больше, можно ввести первое слово названия и затем ввести логин этого сервиса
 
-    public static NoteEntity getWithLogin(List<NoteEntity> listWithNotes, String searchedName) throws Exception {
+    public static NoteEntity getAccountFromServiceByLogin(List<NoteEntity> listWithNotes, String searchedName) throws Exception {
 
         List<NoteEntity> otherAccounts = new ArrayList<>(); // Список аккаунтов одного сервиса
 
