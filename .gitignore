@@ -1,4 +1,5 @@
-/src/ForTxtFiles/
+/src/ForTxtFiles/*
+!/src/ForTxtFiles/.gitkeep
 /.idea/
 /lib/
 /out/
