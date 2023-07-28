@@ -8,6 +8,17 @@ import java.util.*;
 
 public class StartConsole {
 
+    // Изменение названия сервиса, сервис с таким названием уже существует
+
+    /***
+
+     При запуске считывает файл с доступами в список. На протяжении выполнения программы, все записи хранятся в этом списке.
+     По окончанию выполнения программы, файл перезапишется c информацией, которую содержит список.
+
+     Всё редактирование доступов происходит в списке.
+
+     ***/
+
     public static final String PATH_TEST = "C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\ForTesting.txt";
     public static final String PATH_ACCESS = "C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\Access.txt";
 
@@ -17,8 +28,6 @@ public class StartConsole {
 
         NOTES = UsefulMethods.getAllNoteFromFile(PATH_TEST);
 
-        //TODO Некоторые методы perform вызывают exception, значит нужно каждый метод perform вызывать через try-catch
-
         Map<String, Commands> map = new HashMap<>();
         map.put("get", new Get(NOTES));
         map.put("getall", new GetAll(NOTES));
@@ -26,9 +35,9 @@ public class StartConsole {
         map.put("delete", new Delete(NOTES));
         map.put("replace", new Replace(NOTES));
         map.put("save", new Save(PATH_TEST, NOTES));
-        map.put("help", new Help());
         map.put("copyfile", new CopyFile(PATH_TEST));
-        map.put("exit", new Exit());
+        map.put("help", new Help());
+        map.put("exit", new Exit(PATH_TEST, NOTES));
 
         String[] commandWithPostfix = { "add", "get", "delete", "replace" };
 
@@ -47,14 +56,16 @@ public class StartConsole {
 
                 try {
                     if (Arrays.asList(commandWithPostfix).contains(prefix)) {
-                        System.out.println(map.get(prefix).perform(postfix));
+                        System.out.println(map.get(prefix).perform(postfix)); // С postfix
                     } else {
-                        System.out.println(map.get(prefix).perform());
+                        System.out.println(map.get(prefix).perform()); // Без postfix
                     }
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
 
+            } else {
+                System.out.println("Такой команды нет");
             }
         }
 

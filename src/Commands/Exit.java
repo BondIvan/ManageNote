@@ -1,20 +1,32 @@
 package Commands;
 
+import Entity.NoteEntity;
 import OptionsExceptions.WrongPostfixMethodException;
 import Source.StartConsole;
 import Tools.CheckingForUpdate;
 
+import java.util.List;
+
 public class Exit extends Commands {
+
+    private final String pathToSave; // Путь перезаписываемого файла
+
+    private final List<NoteEntity> listWithNotes; // Что сохранять
+
+    public Exit(String pathToSave, List<NoteEntity> listWithNotes) {
+        this.pathToSave = pathToSave;
+        this.listWithNotes = listWithNotes;
+    }
 
     @Override
     public String perform() throws Exception {
 
         if(CheckingForUpdate.isUpdated) {
-            Commands save = new Save(StartConsole.PATH_TEST, StartConsole.NOTES);
+            Commands save = new Save(pathToSave, listWithNotes);
             System.out.println( save.perform() );
         }
 
-        System.out.println("Exiting the application");
+        System.out.println("Выход из приложения");
 
         System.exit(0);
         return "";

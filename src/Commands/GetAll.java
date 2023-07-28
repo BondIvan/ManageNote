@@ -5,15 +5,10 @@ import Entity.NoteEntity;
 import OptionsExceptions.WrongPostfixMethodException;
 import Tools.UsefulMethods;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GetAll extends Commands {
-
-    /***
-
-     -getall-
-
-     ***/
 
     private final List<NoteEntity> listWithNotes;
 
@@ -26,7 +21,9 @@ public class GetAll extends Commands {
 
         System.out.println("-----------------");
 
-        UsefulMethods.sortNoteEntityByServiceName(listWithNotes)
+        List<NoteEntity> sortListWithNotes = new ArrayList<>(listWithNotes); // Этот список будет отображаться, чтобы не сортировать основной список
+
+        UsefulMethods.sortNoteEntityByServiceName(sortListWithNotes)
                 .forEach(note -> System.out.println(note.getIdService()));
 
         return """

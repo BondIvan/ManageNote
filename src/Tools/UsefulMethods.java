@@ -151,8 +151,6 @@ public class UsefulMethods {
 
         listWithNotes.sort(comparator);
 
-        // CheckingForUpdate.isUpdated = true; // Изменение массива были
-
         return listWithNotes;
     }
 

@@ -13,12 +13,6 @@ import java.util.Scanner;
 
 public class Save extends Commands {
 
-    /***
-
-     -save-
-
-     ***/
-
     private final String pathToSave; // Путь перезаписываемого файла
 
     // Что сохранять (Позволяет использовать этот класс в ином "контексте" (Например: в случае изменения метода шифрования))
@@ -49,23 +43,22 @@ public class Save extends Commands {
 
     private boolean saving(String path, List<NoteEntity> listWithNotesForSave) throws IOException {
 
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Вы уверены, что хотите сохранить файл ? (y/n)");
+        Scanner confirm = new Scanner(System.in);
+        System.out.println("Сохранить файл ? (y/n)");
 
-        if(scanner.nextLine().equalsIgnoreCase("y")) {
-
-            FileWriter fileWriter = new FileWriter(path);
-            // Построчная запись в файл всех объктов NoteEntity
-            for (NoteEntity note : listWithNotesForSave)
-                fileWriter.write(note.getIdService() + "\nLogin: " + note.getLogin() + "\nPassword: " + note.getPassword(false) + "\n\n");
-            fileWriter.close();
-
-            CheckingForUpdate.isUpdated = false;
-
-            return true;
+        if( !confirm.nextLine().equals("y") ) {
+            return false;
         }
 
-        return false;
+        FileWriter fileWriter = new FileWriter(path);
+        // Построчная запись в файл всех объктов NoteEntity
+        for (NoteEntity note : listWithNotesForSave)
+            fileWriter.write(note.getIdService() + "\nLogin: " + note.getLogin() + "\nPassword: " + note.getPassword(false) + "\n\n");
+        fileWriter.close();
+
+        CheckingForUpdate.isUpdated = false;
+
+        return true;
     }
 
 }

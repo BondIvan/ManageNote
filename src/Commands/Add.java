@@ -60,11 +60,11 @@ public class Add extends Commands {
             int positionOfFindNoteInMainList = listWithNotes.indexOf(searchedServices.get(0)); // Позиция требуемого сервиса в списке (главного), который был считан с файла
             NoteEntity currentNoteInMainList = listWithNotes.get(positionOfFindNoteInMainList); // Сервис непосредственно взят из (главного) списка
 
-            currentNoteInMainList.setIdService(currentNoteInMainList.getIdService() + " 1-st account"); // Добавление порядкового номера к существующему сервису
+            currentNoteInMainList.setIdService(currentNoteInMainList.getIdService() + " (1-st account)"); // Добавление порядкового номера к существующему сервису
         }
 
         String serviceId = searchedServices.size() >= 1 ?
-                args[0] + " " + numberOfAccount[searchedServices.size()] + " account"
+                args[0] + " (" + numberOfAccount[searchedServices.size()] + " account)"
                 :args[0];
 
         NoteEntity newNote = new NoteEntity( // Добавляемый сервис/аккаунт

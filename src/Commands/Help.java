@@ -4,12 +4,6 @@ import OptionsExceptions.WrongPostfixMethodException;
 
 public class Help extends Commands {
 
-    /***
-
-     -help-
-
-     ***/
-
     @Override
     public String perform() {
         return """

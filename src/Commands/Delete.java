@@ -57,7 +57,7 @@ public class Delete extends Commands {
 
         System.out.println("Будет удалён сервис: " + deletedNote.getIdService());
 
-        System.out.println("Подтвердить? ");
+        System.out.println("Подтвердить? (y/n)");
         if( !confirm.nextLine().equals("y") ) {
             return false;
         }

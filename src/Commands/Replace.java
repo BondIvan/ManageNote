@@ -33,9 +33,9 @@ public class Replace extends Commands {
         if(args.length > 3)
             throw new UnknownArgsException("Параметров больше чем нужно");
 
-        if(replaceNote(args) == null)
+        if(replaceNote(args) == null) {
             return "Изменения не произошли";
-        else {
+        } else {
             CheckingForUpdate.isUpdated = true;
             return "Изменения приняты";
         }
@@ -73,7 +73,8 @@ public class Replace extends Commands {
         }
 
         switch (args[1]) {
-            case "service" -> { //TODO Здесь будут изменения связанные с ограничение на изменение названия сервиса
+            case "service" -> {
+                //TODO Здесь будут изменения связанные с ограничение на изменение названия сервиса
                 currentNoteInMainList.setIdService(args[2]);
                 UsefulMethods.changingNameOfAccount(listWithNotes, args[0]);
             }
