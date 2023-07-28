@@ -1,27 +1,23 @@
 package Tools;
 
-import Commands.TestingClass;
-
 import Entity.NoteEntity;
+
+import OptionsExceptions.AccessNotFoundException;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
-public class Tools {
+public class UsefulMethods {
 
-    // Изменяет номер аккаунта у сервиса + удаляет из названия сервиса (№-th account), если он последний. (Максимум 10 аккаунтов у 1 сервиса)
-    public static void changingNameOfAccount(String serviceName) {
+    // Изменяет номера аккаунтов при удалении одного из аккаунта у сервиса + удаляет из названия сервиса (№-th account), если он последний. (Максимум 10 аккаунтов у 1 сервиса)
+    public static void changingNameOfAccount(List<NoteEntity> listWithNotes, String serviceName) {
         String[] numberOfAccount = { "1-st", "2-nd", "3-rd", "4-th", "5-th", "6-th", "7-th", "8-th", "9-th", "10-th" }; // 10 "аккаунтов" максимум
 
         int firstAccountService = 0;
-        int accountNeededNumber = 0;
-        for(int i = 0, k = 0, accountLeft_count = 0; i < TestingClass.notes.size(); i++) {
+        for(int i = 0, k = 0, accountLeft_count = 0; i < listWithNotes.size(); i++) {
 
-            String currentName = TestingClass.notes.get(i).getIdService(); // Текущее рассмативаемое название аккаунта
+            String currentName = listWithNotes.get(i).getIdService(); // Текущее рассмативаемое название аккаунта
 
             if(currentName.toLowerCase().contains(serviceName.toLowerCase())) {
                 if (currentName.contains("account")) { // Если сервис содержит искомый сервис + у него в названии есть слово "аккаунт" (то есть не один аккаунт)
@@ -36,29 +32,17 @@ public class Tools {
                     // Если текущее название не содержит номер по порядку (проверяется с помощью массива numberOfAccount с счётчиком k),
                     // то заменяем следующий номер по счёту (Exp 1: если у текущего 3-rd, а должно быть 2-nd).
                     if(!currentName.contains(numberOfAccount[k])) {
-                        // Для Exp 1: заменяем 3-rd на 2-nd
-                        TestingClass.notes.get(i).setIdService(currentName.replace(numberOfAccount[k+1], numberOfAccount[k]));
+                        listWithNotes.get(i).setIdService(currentName.replace(numberOfAccount[k+1], numberOfAccount[k])); // Для Exp 1: заменяем 3-rd на 2-nd
                     }
 
                     k++; // Счётчик для массива numberOfAccount
-                } else {
-                    accountNeededNumber = i;
                 }
 
             }
 
-            // При переименовывании: новое название переименовонного сервиса есть уже в другом сервисе
-            // (Exp: Test replace -> Vk.com, Vk.com уже содержит № кол. аккаунтов)
-            if(i + 1 == TestingClass.notes.size() && accountNeededNumber > 0) {
-
-                TestingClass.notes.get(accountNeededNumber).setIdService( serviceName + " " + numberOfAccount[accountLeft_count] + " account" );
-
-               //TestingClass.notes.get(save).setIdService( TestingClass.notes.get(save).getIdService().split(" ")[0] );
-            }
-
             // Если достигнут последний аккаунт из ВСЕХ И количество аккаунтов сервиса после удаления остался 1, то удалить у названия сервиса (№-th account)
-            if(i + 1 == TestingClass.notes.size() && accountLeft_count == 1) {
-                TestingClass.notes.get(firstAccountService).setIdService( TestingClass.notes.get(firstAccountService).getIdService().split(" ")[0] );
+            if(i + 1 == listWithNotes.size() && accountLeft_count == 1) {
+                listWithNotes.get(firstAccountService).setIdService( listWithNotes.get(firstAccountService).getIdService().split(" ")[0] );
             }
 
         }
@@ -66,81 +50,55 @@ public class Tools {
     }
 
     // Получение всех аккаунтов одного сервиса
-    public static List<NoteEntity> getAllAccounts(String serviceName) {
+    public static List<NoteEntity> getAllAccountsForOneService(List<NoteEntity> listWithNotes, String serviceName) {
         ArrayList<NoteEntity> otherAccounts = new ArrayList<>(); // Список аккаунтов одного сервиса
 
-        for(NoteEntity note: TestingClass.notes) {
-            if(note.getIdService().toLowerCase().contains(serviceName.toLowerCase())) { // Чтобы избежать различий в регистре названий, всё привёл к нижнему
-                if(otherAccounts.size() == 0) {
-                    otherAccounts.add(note);
-                } else { // Совпадение по первым 3 буквам (пока тестовая логика)
-                    if( note.getIdService().substring(0, 3).equalsIgnoreCase(otherAccounts.get(0).getIdService().substring(0, 3))) {
-                        otherAccounts.add(note);
-                    }
-                }
+        for(NoteEntity note: listWithNotes) {
+            String currentServiceName = note.getIdService();
+            if(currentServiceName.split(" ")[0].equalsIgnoreCase(serviceName)) { // Сравнивается первое слово текущего сервиса с требуемым
+                otherAccounts.add(note);
             }
         }
 
         return otherAccounts;
     }
 
-    // Поиск "похожего" сервиса по совпадению первых букв
-    public static String getSimilar(String[] args) {
-        StringBuilder resultSimilar = new StringBuilder();
-        for(NoteEntity note: TestingClass.notes) {
-
-            if( note.getIdService().substring(0, 1).equalsIgnoreCase(args[0].substring(0, 1)) ) // substring(0, 1) первая буква названия сервиса
-                resultSimilar.append(note.getIdService()).append("\n");
-
-        }
-
-        return resultSimilar.toString();
-    } // Ok
-
-    //TODO Метод ниже синхронизирован с командами: get, delete
-    // Нет синхронизации с методом replace
-
     // Если у сервиса несколько аккаунтов, этот метод позволяет получить доступ к конкретному аккаунту по логину
-    // Или же у названия сервиса 2 слова или больше, то можно ввести первое слово названия и затем ввести логин этого сервиса
-    public static NoteEntity getWithLogin(String serviceName) throws Exception {
+    // Или же у названия сервиса 2 слова или больше, можно ввести первое слово названия и затем ввести логин этого сервиса
 
-        ArrayList<NoteEntity> otherAccounts = new ArrayList<>(); // Список аккаунтов одного сервиса
+    public static NoteEntity getAccountFromServiceByLogin(List<NoteEntity> listWithNotes, String searchedName) throws Exception {
 
-        for(NoteEntity note: TestingClass.notes) {
-            if(note.getIdService().toLowerCase().contains(serviceName.toLowerCase())) { // Чтобы избежать различий в регистре названий, всё привёл к нижнему
-                if(otherAccounts.size() == 0) {
-                    otherAccounts.add(note);
-                } else { // Совпадение по первым 3 буквам (пока тестовая логика)
-                    if( note.getIdService().substring(0, 3).equalsIgnoreCase(otherAccounts.get(0).getIdService().substring(0, 3))) {
-                        otherAccounts.add(note);
-                    }
-                }
+        List<NoteEntity> otherAccounts = new ArrayList<>(); // Список аккаунтов одного сервиса
+
+        for(NoteEntity note: listWithNotes) {
+            String currName = note.getIdService();
+            if( currName.split(" ")[0].equalsIgnoreCase(searchedName) ) { // Сравнивается первое слово текущего сервиса с требуемым
+                otherAccounts.add(note);
             }
         }
 
         if(!otherAccounts.isEmpty()) { // Если несколько аккаунтов у сервиса, то необходимый аккаунт можно получить по логину
 
-            for(NoteEntity str: otherAccounts)
+            for (NoteEntity str : otherAccounts)
                 System.out.println(str.getIdService() + " -> " + str.getLogin());
 
             System.out.println("Выбирете учётную запись из логинов: ");
             Scanner scanner = new Scanner(System.in); // Для ввода необходимого логина
 
             String inputLogin = scanner.nextLine().trim();
-            for(NoteEntity note: otherAccounts) {
+            for (NoteEntity note : otherAccounts) {
 
                 // Если введённый логин совпадёт с логином одного из аккаунта
-                if(note.getLogin().equalsIgnoreCase(inputLogin)) {
+                if (note.getLogin().equalsIgnoreCase(inputLogin)) { //TODO Посмотреть для чего это вообще
                     // Удаление аккаунта из otherAccounts для изменения его размера, чтобы можно было определить сколько ещё аккаунтов у этого сервиса
                     otherAccounts.remove(note);
 
                     return note;
                 }
             }
-
         }
 
-        throw new Exception("Такой записи нет");
+        throw new AccessNotFoundException("Такой записи нет");
     }
 
     // Убирает лишние пробелы между аргументами команды
@@ -181,4 +139,25 @@ public class Tools {
         return allNoteFromFile;
     }
 
+    // Сортирует массив NoteEntity по названию сервиса
+    public static List<NoteEntity> sortNoteEntityByServiceName(List<NoteEntity> listWithNotes) {
+
+        Comparator<NoteEntity> comparator = new Comparator<NoteEntity>() {
+            @Override
+            public int compare(NoteEntity note1, NoteEntity note2) {
+                return note1.getIdService().compareTo(note2.getIdService());
+            }
+        };
+
+        listWithNotes.sort(comparator);
+
+        return listWithNotes;
+    }
+
+    public static void replaceFirstNoteToSecondNote(List<NoteEntity> listWithNotes, NoteEntity firstNote, NoteEntity secondNote) {
+
+        int positionFirstNoteInList = listWithNotes.indexOf(firstNote);
+
+        listWithNotes.set( positionFirstNoteInList, secondNote );
+    }
 }

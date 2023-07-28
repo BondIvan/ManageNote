@@ -1,78 +1,54 @@
 package Commands;
 
-import Encrypting.TryDecrypt;
 import Entity.NoteEntity;
-import Tools.Tools;
+
+import java.util.List;
+
+import OptionsExceptions.AccessNotFoundException;
+import OptionsExceptions.UnknownArgsException;
+import OptionsExceptions.WrongPostfixMethodException;
+
+import Tools.UsefulMethods;
 
 public class Get extends Commands {
 
-    /***
+    private final List<NoteEntity> listWithNotes;
 
-     -get- [название]
-                      [true] - искать похожие (по первой букве)
-
-     ***/
-
-    private final String postfix;
-
-    public Get(String postfix) {
-        this.postfix = postfix;
+    public Get(List<NoteEntity> list) {
+        this.listWithNotes = list;
+    }
+    @Override
+    public String perform() throws Exception {
+        throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
     }
 
     @Override
-    public String perform() throws Exception {
+    public String perform(String postfix) throws Exception {
 
-        String[] args = Tools.makeArgsTrue(postfix); // Разбитие postfix-а на состовляющие (конкретные аргументы команды)
+        String[] args = UsefulMethods.makeArgsTrue(postfix); // Разбитие postfix-а на состовляющие (конкретные аргументы команды)
 
-        if(postfix.length() == 0)
+        if(args.length == 0)
             throw  new UnknownArgsException("Нет параметров");
-
-        if(args.length > 1) { // Проверка на количество параметров в команде
-
-            // Если нужно добавить какие-либо аргументы, расскоментировать if содержащий: "args[1].equalsIgnoreCase("-a")"
-
-            if(args.length > 2) // На данный момент не используется аргументов больше чем обычно
-                throw new UnknownArgsException("Параметров больше чем нужно");
-            else {
-                if(args[1].equalsIgnoreCase("true")) // Получить сервисы начинающиеся на такую же букву
-                    return getNote(args, true);
-//                if(args[1].equalsIgnoreCase("-a")) // Получить сервисы по введённому логину при 2 аргументе -а
-//                    return gettingInfo(getWithLogin(args));
-                else
-                    throw new UnknownArgsException("Параметров больше чем нужно");
-            }
-        }
+        if(args.length > 1)
+            throw new UnknownArgsException("Параметров больше чем нужно");
         else
-            return getNote(args, false);
-
+            return getNote(args).toString();
     }
 
-    // Получить все данные сервиса из параметров введённой команды
-    protected String getNote(String[] args, boolean searchSimilar) throws Exception {
+    private NoteEntity getNote(String[] args) throws Exception {
 
-        if(searchSimilar)
-            return "Вот все сервисы, которые начинаются на такую же букву: \n" + Tools.getSimilar(args);
+        List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[0]);
 
-        for(NoteEntity note: TestingClass.notes) {
+        if(searchedServices.isEmpty())
+            throw new AccessNotFoundException("Сервис не найден");
 
-            if (note.getIdService().toLowerCase().contains(args[0].toLowerCase())) {
-                if(note.getIdService().contains("account")) {
-                    NoteEntity findNote = Tools.getWithLogin(args[0]); // Получить аккаунт сервиса по введённому логину
-                    String decPass = TryDecrypt.decrypt(findNote.getPassword()); // Расшифровка пароля
-
-                    return findNote.getIdService() + "\nLogin: " + findNote.getLogin() + "\nPassword: " + decPass;
-                }
-                else {
-                    String decPass = TryDecrypt.decrypt(note.getPassword()); // Расшифровка пароля
-
-                    return note.getIdService() + "\nLogin: " + note.getLogin() + "\nPassword: " + decPass;
-                }
-            }
-
+        NoteEntity findNote;
+        if(searchedServices.size() == 1) {
+            findNote = searchedServices.get(0);
+        } else {
+            findNote = UsefulMethods.getAccountFromServiceByLogin(searchedServices, args[0]);
         }
 
-        return "Такого сервиса нет";
+        return findNote;
     }
-
-
 }

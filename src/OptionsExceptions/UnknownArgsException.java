@@ -1,4 +1,4 @@
-package Commands;
+package OptionsExceptions;
 
 public class UnknownArgsException extends Exception {
 

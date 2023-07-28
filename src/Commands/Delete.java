@@ -1,98 +1,70 @@
 package Commands;
 
 import Entity.NoteEntity;
-
-import Tools.Tools;
+import OptionsExceptions.AccessNotFoundException;
+import OptionsExceptions.UnknownArgsException;
+import OptionsExceptions.WrongPostfixMethodException;
 import Tools.CheckingForUpdate;
+import Tools.UsefulMethods;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Delete extends Commands {
 
-    /***
-
-     -delete- [название]
-
-     ***/
-
-    private final String postfix;
-    public Delete(String postfix) {
-        this.postfix = postfix;
+    private final List<NoteEntity> listWithNotes;
+    public Delete(List<NoteEntity> listWithNotes) {
+        this.listWithNotes = listWithNotes;
     }
 
     @Override
     public String perform() throws Exception {
+        throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
+    }
 
-        String[] args = Tools.makeArgsTrue(postfix); // Разбитие postfix-а на состовляющие (конкретные аргументы команды)
+    @Override
+    public String perform(String postfix) throws Exception {
 
-        // Если нужно добавить какие-либо аргументы, расскоментировать if содержащий: "args[1].equalsIgnoreCase("-a")"
+        String[] args = UsefulMethods.makeArgsTrue(postfix); // Разбитие postfix-а на состовляющие (конкретные аргументы команды)
 
         if(postfix.length() == 0)
             throw  new UnknownArgsException("Нет параметров");
+        if(args.length > 2)
+            throw new UnknownArgsException("Параметров больше чем нужно");
 
-        if(args.length > 1) {
-
-            if(args.length > 2)
-                throw new UnknownArgsException("Параметров больше чем нужно");
-//            else {
-//                if(args[1].equalsIgnoreCase("-a")) // Удаление одного из аккаунта сервиса по ведённому логину
-//                    return deleteNote( getWithLogin(args[0]) );
-//            }
-//
-//            throw new UnknownArgsException("Параметров больше чем нужно (неверный 2-ой аргумент)");
-        }
-
-        return deleteNote(args); // Удаление одного из сервисов
+        if( deleteNote(args) ) {
+            CheckingForUpdate.isUpdated = true;
+            return "Сервис удалён";
+        } else
+            return "Удаление НЕ произошло";
     }
 
-    // Удаление сервиса беря название из аргументов команды
-    private String deleteNote(String[] args) throws Exception {
+    private boolean deleteNote(String[] args) throws Exception {
 
-        String currentName; // Текущий (рассматриваемый сервис)
-        for(int i = 0; i < TestingClass.notes.size(); i++) {
-            currentName = TestingClass.notes.get(i).getIdService();
+        List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[0]); // Содержит необходимы-й/е аккаунт-/ы
 
-            Scanner confirmForDelete = new Scanner(System.in);
+        Scanner confirm = new Scanner(System.in);
 
-            // Привёл к нижнему регистру, чтобы не зависить от регистра при проверке на содержимое
-            if(currentName.toLowerCase().contains(args[0].toLowerCase())) {
-                if(currentName.contains("account")) { // Удаление сервиса у которого есть несколько аккаунтов
-                    NoteEntity deletedNote = Tools.getWithLogin(args[0]); // Аккаунт, который выбран как удаляемый
+        if(searchedServices.isEmpty())
+            throw new AccessNotFoundException("Сервис не найден");
 
-                    System.out.println("Вы уверены, что хотите удалить аккаунт: " + deletedNote.getIdService() + " ? (y/n)");
-                    if(confirmForDelete.nextLine().equalsIgnoreCase("y")) { // Подтверждение на удаление
-
-                        TestingClass.notes.remove(deletedNote); // Удаление аккаунта сервиса по ведённому логину
-
-                        // После удаления аккаунта проход по всем сервисам, чтобы изменить номер у аккантов сервиса у которого был удалён аккаунт
-                        Tools.changingNameOfAccount(args[0]);
-
-                        CheckingForUpdate.isUpdated = true; // Информация, что данные были изменены
-
-                        return "Аккаунт удалён";
-                    }
-                    else
-                        return "Аккаунт удалён не был";
-
-                }  else { // Удаление сервиса у которого нет аккаунтов
-                    NoteEntity deletedNote= TestingClass.notes.get(i); // Сервис, который выбран как удаляемый (через переменную, для лучшей читаемости)
-
-                    System.out.println("Вы уверены, что хотите удалить аккаунт: " + deletedNote.getIdService() + " ? (y/n)");
-                    if(confirmForDelete.nextLine().equalsIgnoreCase("y")) { // Подтверждение на удаление
-                        TestingClass.notes.remove(deletedNote); // Удаление сервиса
-
-                        CheckingForUpdate.isUpdated = true; // Информация, что данные были изменены
-
-                        return "Сервис удалён";
-                    }
-                    else
-                        return "Сервис удалён не был";
-                }
-            }
-
+        NoteEntity deletedNote;
+        if(searchedServices.size() == 1) {
+            deletedNote = searchedServices.get(0);
+        } else {
+            deletedNote = UsefulMethods.getAccountFromServiceByLogin(searchedServices, args[0]);
         }
 
-        return "Такого сервиса нет";
-    }
+        System.out.println("Будет удалён сервис: " + deletedNote.getIdService());
 
+        System.out.println("Подтвердить? (y/n)");
+        if( !confirm.nextLine().equals("y") ) {
+            return false;
+        }
+
+        listWithNotes.remove(deletedNote);
+        UsefulMethods.changingNameOfAccount(listWithNotes, args[0]);
+
+        return true;
+    }
 }
