@@ -1,25 +1,16 @@
 package Commands;
 
-import Encrypting.Alphabet.Alphabet;
-import Encrypting.ViewEncrypt;
 import Entity.NoteEntity;
-
 import OptionsExceptions.AccessNotFoundException;
 import OptionsExceptions.UnknownArgsException;
 import OptionsExceptions.WrongPostfixMethodException;
-
-import Tools.UsefulMethods;
 import Tools.CheckingForUpdate;
+import Tools.UsefulMethods;
 
 import java.util.List;
+import java.util.Scanner;
 
 public class Replace extends Commands {
-
-    /***
-
-     -replace- [название] [название изменяемого] [новая строка]
-
-     ***/
 
     private final List<NoteEntity> listWithNotes;
 
@@ -42,76 +33,56 @@ public class Replace extends Commands {
         if(args.length > 3)
             throw new UnknownArgsException("Параметров больше чем нужно");
 
-        return replaceNote(args, args[1]);
+        if(replaceNote(args) == null)
+            return "Изменения не произошли";
+        else {
+            CheckingForUpdate.isUpdated = true;
+            return "Изменения приняты";
+        }
     }
 
-    //TODO Текущая конструкция аргументов команды под сомнением
+    private NoteEntity replaceNote(String[] args) throws Exception {
 
-    // System.out.println(note.getIdService() + " -> " + args[2] + "\nLogin: " + note.getLogin() + "\n" + note.getPassword());
-    // System.out.println(note.getIdService() + "\n" + note.getLogin() + " -> " + args[2] + "\n" + note.getPassword());
-    // System.out.println(note.getIdService() + "\n" + note.getLogin() + "\n" + note.getPassword() + " -> " + args[2]);
+        List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[0]); // Содержит необходимы-й/е аккаунт-/ы
+        Scanner confirm = new Scanner(System.in);
 
-    // Scanner confirm = new Scanner(System.in);
-    // System.out.println("Вы уверены что хотите изменить запись? (y/n)");
+        if(searchedServices.isEmpty())
+            throw new AccessNotFoundException("Сервис не найден");
 
-
-    private String replaceNote(String[] args, String nameOfParameter) throws Exception {
-
-        //TODO Возможно есть лучшее решение, не через такое количество if
-
-        // String[] nameOfParam = { "service",  "login", "password" };
-
-        for (NoteEntity note : listWithNotes) {
-
-            String currentServiceName = note.getIdService();
-            if (currentServiceName.split(" ")[0].equalsIgnoreCase(args[0])) { // Сравнивается первое слово текущего сервиса с требуемым
-                if (currentServiceName.contains("account")) {
-
-                    NoteEntity findNote = UsefulMethods.getAccountFromServiceByLogin(listWithNotes, args[0]);
-
-                    if (nameOfParameter.equalsIgnoreCase("service")) {
-
-                        List<NoteEntity> allAccountsOfService = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[2]);
-                        if (allAccountsOfService.isEmpty())
-                            findNote.setIdService(args[2]);
-                        else
-                            return "Сервис " + allAccountsOfService.get(0).getIdService() + " уже существует";
-
-                    } else if (nameOfParameter.equalsIgnoreCase("login")) {
-                        findNote.setLogin(args[2]);
-                    } else if (nameOfParameter.equalsIgnoreCase("password")) {
-                        findNote.setPassword(args[2]);
-                    } else
-                        throw new UnknownArgsException("Неизвестный параметр изменения"); // Exception если в параметрах указано неизвестное изменение (Exp: replace id)
-
-                    CheckingForUpdate.isUpdated = true; // Информация, что данные были изменены
-
-                    return "Значение измененно, вот результат:\n" + findNote.getIdService() + "\nLogin: " + findNote.getLogin() + "\nPassword: " + findNote.getPassword(true);
-                } else { // Сервис с 1 аккаунтом
-
-                    if (nameOfParameter.equalsIgnoreCase("service")) {
-                        List<NoteEntity> allAccountsOfService = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[2]);
-                        if (allAccountsOfService.isEmpty())
-                            note.setIdService(args[2]);
-                        else
-                            return "Сервис " + allAccountsOfService.get(0).getIdService() + " уже существует";
-
-                    } else if (nameOfParameter.equalsIgnoreCase("login")) {
-                        note.setLogin(args[2]);
-                    } else if (nameOfParameter.equalsIgnoreCase("password")) {
-                        note.setPassword(args[2]);
-                    } else
-                        throw new UnknownArgsException("Неизвестный параметр изменения"); // Exception если в параметрах указано неизвестное изменение (Exp: replace id)
-
-                    CheckingForUpdate.isUpdated = true; // Информация, что данные были изменены
-
-                    return "Значение измененно, вот результат:\n" + note.getIdService() + "\nLogin: " + note.getLogin() + "\nPassword: " + note.getPassword(true);
-                }
-            }
-
+        NoteEntity replacedNote; // Этот сервис взят из списка notes
+        // поэтому, если изменять его просто так, то он будет изменён только в списке notes, не в главном списке
+        if(searchedServices.size() == 1) {
+            replacedNote = searchedServices.get(0);
+        } else {
+            replacedNote = UsefulMethods.getAccountFromServiceByLogin(searchedServices, args[0]);
         }
 
-        throw new AccessNotFoundException("Такого сервиса нет");
+        int positionOfFindNoteInMainList = listWithNotes.indexOf(replacedNote); // Позиция требуемого сервиса в списке (главного), который был считан с файла
+        NoteEntity currentNoteInMainList = listWithNotes.get(positionOfFindNoteInMainList); // Сервис непосредственно взят из (главного) списка
+
+        // Тернарный оператор с 3 условиями (вложенные)
+        System.out.println( "Будут произведены следующие изменения в сервисе " + currentNoteInMainList.getIdService() + " с параметром " + args[1] + ": "
+                + ( args[1].equals("service") ? currentNoteInMainList.getIdService()
+                :args[1].equals("login") ? currentNoteInMainList.getLogin()
+                :currentNoteInMainList.getPassword(true) )
+                + " -> " + args[2] );
+
+        System.out.println("Подтвердить ? (y/n)");
+        if( !confirm.nextLine().equals("y") ) {
+            return null;
+        }
+
+        switch (args[1]) {
+            case "service" -> { //TODO Здесь будут изменения связанные с ограничение на изменение названия сервиса
+                currentNoteInMainList.setIdService(args[2]);
+                UsefulMethods.changingNameOfAccount(listWithNotes, args[0]);
+            }
+            case "login" -> currentNoteInMainList.setLogin(args[2]);
+            case "password" -> currentNoteInMainList.setPassword(args[2]);
+            default -> throw new UnknownArgsException("Неизвестный параметр в изменении");
+        }
+
+        return currentNoteInMainList;
     }
 
 }

@@ -155,4 +155,11 @@ public class UsefulMethods {
 
         return listWithNotes;
     }
+
+    public static void replaceFirstNoteToSecondNote(List<NoteEntity> listWithNotes, NoteEntity firstNote, NoteEntity secondNote) {
+
+        int positionFirstNoteInList = listWithNotes.indexOf(firstNote);
+
+        listWithNotes.set( positionFirstNoteInList, secondNote );
+    }
 }

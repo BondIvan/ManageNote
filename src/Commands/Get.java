@@ -1,28 +1,22 @@
 package Commands;
 
 import Entity.NoteEntity;
-import OptionsExceptions.AccessNotFoundException;
-import OptionsExceptions.UnknownArgsException;
-import OptionsExceptions.WrongPostfixMethodException;
-import Tools.UsefulMethods;
 
 import java.util.List;
 
+import OptionsExceptions.AccessNotFoundException;
+import OptionsExceptions.UnknownArgsException;
+import OptionsExceptions.WrongPostfixMethodException;
+
+import Tools.UsefulMethods;
+
 public class Get extends Commands {
-
-    /***
-
-     -get- [название]
-                      [true] - искать похожие (по первой букве)
-
-     ***/
 
     private final List<NoteEntity> listWithNotes;
 
     public Get(List<NoteEntity> list) {
         this.listWithNotes = list;
     }
-
     @Override
     public String perform() throws Exception {
         throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
@@ -39,29 +33,22 @@ public class Get extends Commands {
             throw new UnknownArgsException("Параметров больше чем нужно");
         else
             return getNote(args).toString();
-
     }
 
-    // Получить все данные сервиса из параметров введённой команды
-    protected NoteEntity getNote(String[] args) throws Exception {
+    private NoteEntity getNote(String[] args) throws Exception {
 
-        for(NoteEntity note: listWithNotes) {
+        List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[0]);
 
-            String currentServiceName = note.getIdService();
-            if (currentServiceName.split(" ")[0].equalsIgnoreCase(args[0])) { // Сравнивается первое слово текущего сервиса с требуемым
-                if(currentServiceName.contains("account")) { // Содержит ли сервис аккаунты
+        if(searchedServices.isEmpty())
+            throw new AccessNotFoundException("Сервис не найден");
 
-                    return UsefulMethods.getAccountFromServiceByLogin(listWithNotes, args[0]); // Получить аккаунт сервиса по введённому логину
-                }
-                else {
-                    return note;
-                }
-            }
-
+        NoteEntity findNote;
+        if(searchedServices.size() == 1) {
+            findNote = searchedServices.get(0);
+        } else {
+            findNote = UsefulMethods.getAccountFromServiceByLogin(searchedServices, args[0]);
         }
 
-        throw new AccessNotFoundException("Такого сервиса нет");
+        return findNote;
     }
-
-
 }

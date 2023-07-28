@@ -14,6 +14,11 @@ public class NoteEntity {
 
     }
 
+    public NoteEntity(String idService, String login) {
+        this.idService = idService; // id -> name
+        this.login = login;
+    }
+
     public NoteEntity(String idService, String login, String password) {
         this.idService = idService; // id -> name
         this.login = login;
