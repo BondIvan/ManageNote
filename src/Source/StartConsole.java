@@ -8,7 +8,7 @@ import java.util.*;
 
 public class StartConsole {
 
-    // Изменение названия сервиса, сервис с таким названием уже существует
+    //TODO Изменение названия сервиса, сервис с таким названием уже существует
 
     /***
 
@@ -38,6 +38,7 @@ public class StartConsole {
         map.put("copyfile", new CopyFile(PATH_TEST));
         map.put("help", new Help());
         map.put("exit", new Exit(PATH_TEST, NOTES));
+        map.put("backup-tg", new Backup_tg());
 
         String[] commandWithPostfix = { "add", "get", "delete", "replace" };
 

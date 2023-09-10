@@ -1,5 +1,8 @@
+#Myself
 /src/ForTxtFiles/*
 !/src/ForTxtFiles/.gitkeep
 /.idea/
 /lib/
 /out/
+/MyNewTest.jar
+/startBat.bat
