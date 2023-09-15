@@ -3,7 +3,6 @@ package Tools;
 import Entity.NoteEntity;
 
 import OptionsExceptions.AccessNotFoundException;
-import org.glassfish.grizzly.http.Note;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -166,17 +165,16 @@ public class UsefulMethods {
     // Список с уникальными названиями сервисов (без учёта аккаунтов)
     public static List<String> getAllUniqueServiceName(List<NoteEntity> listWithNotes) {
 
-        List<String> allUniqueServiceName = new ArrayList<>();
+        Set<String> allUniqueServiceName = new HashSet<>();
 
         for(NoteEntity note: listWithNotes) {
             String serviceName = note.getIdService();
             if(serviceName.contains("account"))
                 serviceName = serviceName.split(" ")[0];
 
-            if(!allUniqueServiceName.contains(serviceName))
-                allUniqueServiceName.add(serviceName);
+            allUniqueServiceName.add(serviceName);
         }
 
-        return allUniqueServiceName;
+        return new ArrayList<>(allUniqueServiceName);
     }
 }
