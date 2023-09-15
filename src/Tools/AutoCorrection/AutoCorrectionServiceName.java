@@ -1,70 +1,85 @@
 package Tools.AutoCorrection;
 
-import java.util.Arrays;
+import Entity.NoteEntity;
+import Source.StartConsole;
+import Tools.UsefulMethods;
+
+import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 
 public class AutoCorrectionServiceName {
 
-    // Словарь правильных названий
-    private static final List<String> dictionary = Arrays.asList( "Google.com (1-st account)", "Google.com (2-nd account)");
+    // Словарь не должен содержать дубликаты слов, поэтому используется Set
+    private static Set<String> dictionary;
 
-    public static String suggestCorrection(String inputString) {
+    public static void main(String[] args) throws IOException {
 
-        inputString = inputString.toLowerCase();
+        List<NoteEntity> notes = UsefulMethods.getAllNoteFromFile(StartConsole.PATH_TEST);
+        List<String> dic = UsefulMethods.getAllUniqueServiceName(notes);
 
-        int minDistance = Integer.MAX_VALUE;
-        String closestWord = inputString;
+        dictionary = new HashSet<>(dic);
 
-        for(String nameFromDictionary: dictionary) {
-            int distanceForInputString = levenshteinDistance(inputString, nameFromDictionary);
-
-            if( distanceForInputString < minDistance ) {
-                minDistance = distanceForInputString;
-                closestWord = nameFromDictionary;
-            }
-        }
-
-        return closestWord;
-    }
-
-    // Вычисление расстояния Левенштейна между двумя строками
-    private static int levenshteinDistance(String s1, String s2) {
-
-        int m = s1.length();
-        int n = s2.length();
-
-        int[][] dp = new int[m + 1][n + 1];
-
-        for (int i = 0; i <= m; i++) {
-            for (int j = 0; j <= n; j++) {
-                if (i == 0) {
-                    dp[i][j] = j;
-                } else if (j == 0) {
-                    dp[i][j] = i;
-                } else if (s1.charAt(i - 1) == s2.charAt(j - 1)) {
-                    dp[i][j] = dp[i - 1][j - 1];
-                } else {
-                    dp[i][j] = 1 + Math.min(Math.min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]);
-                }
-            }
-        }
-
-        return dp[m][n];
-    }
-
-    public static void main(String[] args) {
-
-        String inputString = "gle.com";
+        String inputWithError = "jacdoe";
 
         long start = System.currentTimeMillis();
 
-        String correctWord = suggestCorrection(inputString);
+        autoCorrect(inputWithError);
 
         long end = System.currentTimeMillis();
         System.out.println("Time: " + (end-start));
 
-        System.out.println("Введённое слово: " + inputString);
-        System.out.println("Нужное слово: " + correctWord);
+        System.out.println(dic);
+
+//        System.out.println("Введённое: " + inputWithError);
+//        System.out.println("Верное: " + autoCorrect(inputWithError));
+
     }
+
+    public static String autoCorrect(String input) {
+        String[] words = input.split(" ");
+        StringBuilder correctedText = new StringBuilder();
+
+        for (String word : words) {
+            String correctedWord = findBestCorrection(word);
+            correctedText.append(correctedWord).append(" ");
+        }
+
+        return correctedText.toString().trim();
+    }
+
+    private static String findBestCorrection(String word) {
+        String bestMatch = word;
+        int maxSequenceLength = 0;
+
+        for (String candidate : dictionary) {
+            int sequenceLength = findMaxSequenceLength(word, candidate);
+            if (sequenceLength > maxSequenceLength) {
+                maxSequenceLength = sequenceLength;
+                bestMatch = candidate;
+            }
+        }
+
+        return bestMatch;
+    }
+
+    private static int findMaxSequenceLength(String word, String candidate) {
+        int[][] dp = new int[word.length() + 1][candidate.length() + 1];
+
+        for (int i = 1; i <= word.length(); i++) {
+            for (int j = 1; j <= candidate.length(); j++) {
+                if (word.charAt(i - 1) == candidate.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+
+        return dp[word.length()][candidate.length()];
+    }
+
 
 }
