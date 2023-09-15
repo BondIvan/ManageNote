@@ -2,6 +2,7 @@ package Source;
 
 import Commands.*;
 import Entity.NoteEntity;
+import Tools.AutoCorrection.Dictionaries;
 import Tools.UsefulMethods;
 
 import java.util.*;
@@ -22,11 +23,15 @@ public class StartConsole {
     public static final String PATH_TEST = "C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\ForTesting.txt";
     public static final String PATH_ACCESS = "C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\Access.txt";
 
+    // Список всех записей (сервисов)
     public static List<NoteEntity> NOTES = new ArrayList<>();
 
     public static void main(String[] args) throws Exception {
 
-        NOTES = UsefulMethods.getAllNoteFromFile(PATH_TEST);
+        NOTES = UsefulMethods.getAllNoteFromFile(PATH_ACCESS);
+
+        Dictionaries dictionaries = new Dictionaries(NOTES);
+        dictionaries.fillingDictionaries();
 
         Map<String, Commands> map = new HashMap<>();
         map.put("get", new Get(NOTES));
@@ -38,7 +43,6 @@ public class StartConsole {
         map.put("copyfile", new CopyFile(PATH_TEST));
         map.put("help", new Help());
         map.put("exit", new Exit(PATH_TEST, NOTES));
-        map.put("backup-tg", new Backup_tg());
 
         String[] commandWithPostfix = { "add", "get", "delete", "replace" };
 

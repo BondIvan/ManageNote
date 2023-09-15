@@ -8,6 +8,9 @@ import OptionsExceptions.AccessNotFoundException;
 import OptionsExceptions.UnknownArgsException;
 import OptionsExceptions.WrongPostfixMethodException;
 
+import Source.StartConsole;
+import Tools.AutoCorrection.AutoCorrectionServiceName;
+import Tools.AutoCorrection.Dictionaries;
 import Tools.UsefulMethods;
 
 public class Get extends Commands {
@@ -39,8 +42,13 @@ public class Get extends Commands {
 
         List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[0]);
 
-        if(searchedServices.isEmpty())
+        if(searchedServices.isEmpty()) {
+
+            String possibleVariant = AutoCorrectionServiceName.autoCorrect(args[0], Dictionaries.uniqueServiceNames);
+            System.out.println("Возможно вы имели в виду: " + possibleVariant);
+
             throw new AccessNotFoundException("Сервис не найден");
+        }
 
         NoteEntity findNote;
         if(searchedServices.size() == 1) {
