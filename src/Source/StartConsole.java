@@ -1,6 +1,9 @@
 package Source;
 
 import Commands.*;
+import Encrypting.Alphabet.Alphabet;
+import Encrypting.ViewDecrypt;
+import Encrypting.ViewEncrypt;
 import Entity.NoteEntity;
 import Tools.AutoCorrection.Dictionaries;
 import Tools.UsefulMethods;
@@ -39,10 +42,10 @@ public class StartConsole {
         map.put("add", new Add(NOTES));
         map.put("delete", new Delete(NOTES));
         map.put("replace", new Replace(NOTES));
-        map.put("save", new Save(PATH_TEST, NOTES));
-        map.put("copyfile", new CopyFile(PATH_TEST));
+        map.put("save", new Save(PATH_ACCESS, NOTES));
+        map.put("copyfile", new CopyFile(PATH_ACCESS));
         map.put("help", new Help());
-        map.put("exit", new Exit(PATH_TEST, NOTES));
+        map.put("exit", new Exit(PATH_ACCESS, NOTES));
 
         String[] commandWithPostfix = { "add", "get", "delete", "replace" };
 

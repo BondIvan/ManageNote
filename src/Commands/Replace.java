@@ -4,6 +4,8 @@ import Entity.NoteEntity;
 import OptionsExceptions.AccessNotFoundException;
 import OptionsExceptions.UnknownArgsException;
 import OptionsExceptions.WrongPostfixMethodException;
+import Tools.AutoCorrection.AutoCorrectionServiceName;
+import Tools.AutoCorrection.Dictionaries;
 import Tools.CheckingForUpdate;
 import Tools.UsefulMethods;
 
@@ -46,8 +48,13 @@ public class Replace extends Commands {
         List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[0]); // Содержит необходимы-й/е аккаунт-/ы
         Scanner confirm = new Scanner(System.in);
 
-        if(searchedServices.isEmpty())
+        if(searchedServices.isEmpty()) {
+
+            String possibleVariant = AutoCorrectionServiceName.autoCorrect(args[0], Dictionaries.uniqueServiceNames);
+            System.out.println("Возможно вы имели в виду: " + possibleVariant);
+
             throw new AccessNotFoundException("Сервис не найден");
+        }
 
         NoteEntity replacedNote; // Этот сервис взят из списка notes
         // поэтому, если изменять его просто так, то он будет изменён только в списке notes, не в главном списке
