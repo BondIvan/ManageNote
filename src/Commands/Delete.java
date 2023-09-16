@@ -4,6 +4,8 @@ import Entity.NoteEntity;
 import OptionsExceptions.AccessNotFoundException;
 import OptionsExceptions.UnknownArgsException;
 import OptionsExceptions.WrongPostfixMethodException;
+import Tools.AutoCorrection.AutoCorrectionServiceName;
+import Tools.AutoCorrection.Dictionaries;
 import Tools.CheckingForUpdate;
 import Tools.UsefulMethods;
 
@@ -45,8 +47,13 @@ public class Delete extends Commands {
 
         Scanner confirm = new Scanner(System.in);
 
-        if(searchedServices.isEmpty())
+        if(searchedServices.isEmpty()) {
+
+            String possibleVariant = AutoCorrectionServiceName.autoCorrect(args[0], Dictionaries.uniqueServiceNames);
+            System.out.println("Возможно вы имели в виду: " + possibleVariant);
+
             throw new AccessNotFoundException("Сервис не найден");
+        }
 
         NoteEntity deletedNote;
         if(searchedServices.size() == 1) {
