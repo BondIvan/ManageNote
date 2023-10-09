@@ -154,10 +154,27 @@ public class UsefulMethods {
         return listWithNotes;
     }
 
+    //TODO Что это???
     public static void replaceFirstNoteToSecondNote(List<NoteEntity> listWithNotes, NoteEntity firstNote, NoteEntity secondNote) {
 
         int positionFirstNoteInList = listWithNotes.indexOf(firstNote);
 
         listWithNotes.set( positionFirstNoteInList, secondNote );
+    }
+
+    // Список с уникальными названиями сервисов (без учёта аккаунтов)
+    public static List<String> getAllUniqueServiceName(List<NoteEntity> listWithNotes) {
+
+        Set<String> allUniqueServiceName = new HashSet<>();
+
+        for(NoteEntity note: listWithNotes) {
+            String serviceName = note.getIdService();
+            if(serviceName.contains("account"))
+                serviceName = serviceName.split(" ")[0];
+
+            allUniqueServiceName.add(serviceName);
+        }
+
+        return new ArrayList<>(allUniqueServiceName);
     }
 }
