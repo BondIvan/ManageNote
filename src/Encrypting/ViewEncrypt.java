@@ -49,9 +49,6 @@ public class ViewEncrypt {
         String digitsInNumbers = ""; // Содержит все цифры встреченного числа, чтобы добавить в resultOfEncrypting (.0х + digitsInNumbers)
         for(char sym: text.toCharArray()) {
 
-            if( !Character.isLetterOrDigit(sym) )
-                resultOfEncrypting.append(sym);
-
             if( Character.isDigit(sym) ) { // Если символ - цифра
                 digitsInNumbers += sym;
 
@@ -67,6 +64,9 @@ public class ViewEncrypt {
                     resultOfEncrypting.append(".").append(digitsInNumbers.length()).append(digitsInNumbers);
                 digitsInNumbers = "";
             }
+
+            if( !Character.isLetterOrDigit(sym) ) // Если рассматриваемый символ - специальный символ
+                resultOfEncrypting.append(sym);
 
             for (int i = 0; i < characters.size(); i++) { // Перебор по внутренним спискам characters
                 if (characters.get(i).contains(sym)) {
