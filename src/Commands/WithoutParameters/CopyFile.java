@@ -1,7 +1,6 @@
 package Commands.WithoutParameters;
 
-import Commands.Commands;
-import OptionsExceptions.WrongPostfixMethodException;
+import Commands.CommandsWithoutParameters;
 
 import java.awt.*;
 import java.awt.datatransfer.*;
@@ -9,7 +8,7 @@ import java.awt.datatransfer.*;
 import java.io.File;
 import java.io.IOException;
 
-public class CopyFile extends Commands {
+public class CopyFile extends CommandsWithoutParameters {
 
     private final String pathToFile; // Путь копируемого файла
 
@@ -21,11 +20,6 @@ public class CopyFile extends Commands {
     public String perform() throws Exception {
 
         return copy(pathToFile);
-    }
-
-    @Override
-    public String perform(String postfix) throws Exception {
-        throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
     }
 
     public String copy(String pathToFile) {

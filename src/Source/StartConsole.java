@@ -1,10 +1,7 @@
 package Source;
 
 import Commands.*;
-import Commands.WithParameters.Add;
-import Commands.WithParameters.Delete;
-import Commands.WithParameters.Get;
-import Commands.WithParameters.Replace;
+import Commands.WithParameters.*;
 import Commands.WithoutParameters.*;
 import Entity.NoteEntity;
 import Tools.AutoCorrection.Dictionaries;
@@ -33,21 +30,34 @@ public class StartConsole {
 
     public static void main(String[] args) throws Exception {
 
-        NOTES = UsefulMethods.getAllNoteFromFile(PATH_ACCESS);
+        NOTES = UsefulMethods.getAllNoteFromFile(PATH_TEST);
 
         Dictionaries dictionaries = new Dictionaries(NOTES);
-        dictionaries.fillingDictionaries();
+        dictionaries.fillingDictionaries(); // Заполнение словаря для автокоррекции
 
-        Map<String, Commands> map = new HashMap<>();
-        map.put("get", new Get(NOTES));
-        map.put("getall", new GetAll(NOTES));
-        map.put("add", new Add(NOTES));
-        map.put("delete", new Delete(NOTES));
-        map.put("replace", new Replace(NOTES));
-        map.put("save", new Save(PATH_ACCESS, NOTES));
-        map.put("copyfile", new CopyFile(PATH_ACCESS));
-        map.put("help", new Help());
-        map.put("exit", new Exit(PATH_ACCESS, NOTES));
+        CommandFactoryWithParameters factoryWithParameters = new CommandFactoryWithParameters();
+        factoryWithParameters.registerCommand("get", Get.class);
+        factoryWithParameters.registerCommand("delete", Delete.class);
+        factoryWithParameters.registerCommand("add", Add.class);
+        factoryWithParameters.registerCommand("replace", Replace.class);
+
+        CommandFactoryWithoutParameters factoryWithoutParameters = new CommandFactoryWithoutParameters();
+        factoryWithoutParameters.registerCommand("copyfile", CopyFile.class);
+        factoryWithoutParameters.registerCommand("exit", Exit.class);
+        factoryWithoutParameters.registerCommand("getall", GetAll.class);
+        factoryWithoutParameters.registerCommand("help", Help.class);
+        factoryWithoutParameters.registerCommand("save", Save.class);
+
+//        Map<String, CommandsWithParameters> map = new HashMap<>();
+//        map.put("get", new Get(NOTES));
+//        map.put("getall", new GetAll(NOTES));
+//        map.put("add", new Add(NOTES));
+//        map.put("delete", new Delete(NOTES));
+//        map.put("replace", new Replace(NOTES));
+//        map.put("save", new Save(PATH_TEST, NOTES));
+//        map.put("copyfile", new CopyFile(PATH_TEST));
+//        map.put("help", new Help());
+//        map.put("exit", new Exit(PATH_TEST, NOTES));
 
         String[] commandWithPostfix = { "add", "get", "delete", "replace" };
 
@@ -62,21 +72,21 @@ public class StartConsole {
             String prefix = input.split(" ")[0]; // Введённая команда
             String postfix = input.substring(prefix.length()).trim(); // Аргументы введённой команды
 
-            if( map.containsKey(prefix) ) {
-
-                try {
-                    if (Arrays.asList(commandWithPostfix).contains(prefix)) {
-                        System.out.println(map.get(prefix).perform(postfix)); // С postfix
-                    } else {
-                        System.out.println(map.get(prefix).perform()); // Без postfix
-                    }
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
-
-            } else {
-                System.out.println("Такой команды нет");
-            }
+//            if( map.containsKey(prefix) ) {
+//
+//                try {
+//                    if (Arrays.asList(commandWithPostfix).contains(prefix)) {
+//                        System.out.println(map.get(prefix).perform(postfix)); // С postfix
+//                    } else {
+//                        System.out.println(map.get(prefix).perform()); // Без postfix
+//                    }
+//                } catch (Exception e) {
+//                    System.out.println(e.getMessage());
+//                }
+//
+//            } else {
+//                System.out.println("Такой команды нет");
+//            }
         }
 
     }

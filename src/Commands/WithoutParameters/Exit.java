@@ -1,14 +1,12 @@
 package Commands.WithoutParameters;
 
-import Commands.Commands;
+import Commands.CommandsWithoutParameters;
 import Entity.NoteEntity;
-import OptionsExceptions.WrongPostfixMethodException;
-import Source.StartConsole;
 import Tools.CheckingForUpdate;
 
 import java.util.List;
 
-public class Exit extends Commands {
+public class Exit extends CommandsWithoutParameters {
 
     private final String pathToSave; // Путь перезаписываемого файла
 
@@ -23,7 +21,7 @@ public class Exit extends Commands {
     public String perform() throws Exception {
 
         if(CheckingForUpdate.isUpdated) {
-            Commands save = new Save(pathToSave, listWithNotes);
+            CommandsWithoutParameters save = new Save(pathToSave, listWithNotes);
             System.out.println( save.perform() );
         }
 
@@ -33,8 +31,4 @@ public class Exit extends Commands {
         return "";
     }
 
-    @Override
-    public String perform(String postfix) throws Exception {
-        throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
-    }
 }
