@@ -1,5 +1,6 @@
-package Commands;
+package Commands.WithoutParameters;
 
+import Commands.Commands;
 import OptionsExceptions.WrongPostfixMethodException;
 
 public class Help extends Commands {

@@ -1,9 +1,11 @@
 package Source;
 
 import Commands.*;
-import Encrypting.Alphabet.Alphabet;
-import Encrypting.ViewDecrypt;
-import Encrypting.ViewEncrypt;
+import Commands.WithParameters.Add;
+import Commands.WithParameters.Delete;
+import Commands.WithParameters.Get;
+import Commands.WithParameters.Replace;
+import Commands.WithoutParameters.*;
 import Entity.NoteEntity;
 import Tools.AutoCorrection.Dictionaries;
 import Tools.UsefulMethods;

@@ -1,6 +1,7 @@
-package Commands;
+package Commands.WithoutParameters;
 
 
+import Commands.Commands;
 import Entity.NoteEntity;
 import OptionsExceptions.WrongPostfixMethodException;
 import Tools.UsefulMethods;

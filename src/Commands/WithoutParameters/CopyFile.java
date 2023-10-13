@@ -1,5 +1,6 @@
-package Commands;
+package Commands.WithoutParameters;
 
+import Commands.Commands;
 import OptionsExceptions.WrongPostfixMethodException;
 
 import java.awt.*;
@@ -8,7 +9,7 @@ import java.awt.datatransfer.*;
 import java.io.File;
 import java.io.IOException;
 
-public class CopyFile extends Commands{
+public class CopyFile extends Commands {
 
     private final String pathToFile; // Путь копируемого файла
 
