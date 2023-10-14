@@ -4,6 +4,7 @@ import Commands.Commands;
 import Entity.NoteEntity;
 import OptionsExceptions.UnknownArgsException;
 import OptionsExceptions.WrongPostfixMethodException;
+import Source.StartConsole;
 import Tools.CheckingForUpdate;
 import Tools.UsefulMethods;
 
@@ -12,11 +13,7 @@ import java.util.Scanner;
 
 public class Add extends Commands {
 
-    private final List<NoteEntity> listWithNotes;
-
-    public Add(List<NoteEntity> listWithNotes) {
-        this.listWithNotes = listWithNotes;
-    }
+    private final List<NoteEntity> listWithNotes = StartConsole.NOTES;
 
     @Override
     public String perform() throws Exception {

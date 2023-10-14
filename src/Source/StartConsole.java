@@ -25,8 +25,9 @@ public class StartConsole {
 
      ***/
 
-    public static final String PATH_TEST = "C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\ForTesting.txt";
-    public static final String PATH_ACCESS = "C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\Access.txt";
+    public static final String PATH_ACCESS = "C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\" +
+            "ForTesting.txt"; // Тестовый файл
+            //"Access.txt"; // Рабочий файл
 
     // Список всех записей (сервисов)
     public static List<NoteEntity> NOTES = new ArrayList<>();
@@ -39,11 +40,11 @@ public class StartConsole {
         dictionaries.fillingDictionaries();
 
         Map<String, Commands> map = new HashMap<>();
-        map.put("get", new Get(NOTES));
-        map.put("getall", new GetAll(NOTES));
-        map.put("add", new Add(NOTES));
-        map.put("delete", new Delete(NOTES));
-        map.put("replace", new Replace(NOTES));
+        map.put("get", new Get());
+        map.put("getall", new GetAll());
+        map.put("add", new Add());
+        map.put("delete", new Delete());
+        map.put("replace", new Replace());
         map.put("save", new Save(PATH_ACCESS, NOTES));
         map.put("copyfile", new CopyFile(PATH_ACCESS));
         map.put("help", new Help());

@@ -4,6 +4,7 @@ package Commands.WithoutParameters;
 import Commands.Commands;
 import Entity.NoteEntity;
 import OptionsExceptions.WrongPostfixMethodException;
+import Source.StartConsole;
 import Tools.UsefulMethods;
 
 import java.util.ArrayList;
@@ -11,11 +12,7 @@ import java.util.List;
 
 public class GetAll extends Commands {
 
-    private final List<NoteEntity> listWithNotes;
-
-    public GetAll(List<NoteEntity> listWithNotes) {
-        this.listWithNotes = listWithNotes;
-    }
+    private final List<NoteEntity> listWithNotes = StartConsole.NOTES;
 
     @Override
     public String perform() throws Exception {

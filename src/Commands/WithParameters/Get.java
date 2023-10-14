@@ -16,11 +16,11 @@ import Tools.UsefulMethods;
 
 public class Get extends Commands {
 
-    private final List<NoteEntity> listWithNotes;
-
-    public Get(List<NoteEntity> list) {
-        this.listWithNotes = list;
+    public Get() {
     }
+
+    private final List<NoteEntity> listWithNotes = StartConsole.NOTES;
+
     @Override
     public String perform() throws Exception {
         throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");

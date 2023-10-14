@@ -5,6 +5,7 @@ import Entity.NoteEntity;
 import OptionsExceptions.AccessNotFoundException;
 import OptionsExceptions.UnknownArgsException;
 import OptionsExceptions.WrongPostfixMethodException;
+import Source.StartConsole;
 import Tools.AutoCorrection.AutoCorrectionServiceName;
 import Tools.AutoCorrection.Dictionaries;
 import Tools.CheckingForUpdate;
@@ -15,11 +16,7 @@ import java.util.Scanner;
 
 public class Replace extends Commands {
 
-    private final List<NoteEntity> listWithNotes;
-
-    public Replace(List<NoteEntity> listWithNotes) {
-        this.listWithNotes = listWithNotes;
-    }
+    private final List<NoteEntity> listWithNotes = StartConsole.NOTES;
 
     @Override
     public String perform() throws Exception {
