@@ -29,8 +29,7 @@ public class StartConsole {
             "ForTesting.txt"; // Тестовый файл
             //"Access.txt"; // Рабочий файл
 
-    // Список всех записей (сервисов)
-    public static List<NoteEntity> NOTES = new ArrayList<>();
+    public static List<NoteEntity> NOTES = new ArrayList<>(); // Список всех записей (сервисов)
 
     public static void main(String[] args) throws Exception {
 
@@ -45,10 +44,10 @@ public class StartConsole {
         map.put("add", new Add());
         map.put("delete", new Delete());
         map.put("replace", new Replace());
-        map.put("save", new Save(PATH_ACCESS, NOTES));
-        map.put("copyfile", new CopyFile(PATH_ACCESS));
+        map.put("save", new Save());
+        map.put("copyfile", new CopyFile());
         map.put("help", new Help());
-        map.put("exit", new Exit(PATH_ACCESS, NOTES));
+        map.put("exit", new Exit());
 
         String[] commandWithPostfix = { "add", "get", "delete", "replace" };
 

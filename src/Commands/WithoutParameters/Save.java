@@ -5,6 +5,7 @@ import Entity.NoteEntity;
 
 import OptionsExceptions.WrongPostfixMethodException;
 
+import Source.StartConsole;
 import Tools.CheckingForUpdate;
 
 import java.io.FileWriter;
@@ -14,25 +15,14 @@ import java.util.Scanner;
 
 public class Save extends Commands {
 
-    private final String pathToSave; // Путь перезаписываемого файла
-
-    // Что сохранять (Позволяет использовать этот класс в ином "контексте" (Например: в случае изменения метода шифрования))
-    private List<NoteEntity> listWithNotes;
-
-    public Save(String pathToSave, List<NoteEntity> listNotes) {
-        this.pathToSave = pathToSave;
-        this.listWithNotes = listNotes;
-    }
-
-    public Save(String pathToSave) {
-        this.pathToSave = pathToSave;
-    }
+    private final String pathToSave = StartConsole.PATH_ACCESS; // Куда сохранять
+    private final List<NoteEntity> listWithNotes = StartConsole.NOTES; // Что сохранять
 
     @Override
     public String perform() throws Exception {
 
         if(CheckingForUpdate.isUpdated)
-            return "Файл сохранён: " + saving(pathToSave, listWithNotes);
+            return "Файл сохранён: " + saving(listWithNotes);
 
         return "Изменений не произошло";
     }
@@ -42,7 +32,7 @@ public class Save extends Commands {
         throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
     }
 
-    private boolean saving(String path, List<NoteEntity> listWithNotesForSave) throws IOException {
+    private boolean saving(List<NoteEntity> listWithNotesForSave) throws IOException {
 
         Scanner confirm = new Scanner(System.in);
         System.out.println("Сохранить файл ? (y/n)");
@@ -51,7 +41,7 @@ public class Save extends Commands {
             return false;
         }
 
-        FileWriter fileWriter = new FileWriter(path);
+        FileWriter fileWriter = new FileWriter(pathToSave);
         // Построчная запись в файл всех объктов NoteEntity
         for (NoteEntity note : listWithNotesForSave)
             fileWriter.write(note.getIdService() + "\nLogin: " + note.getLogin() + "\nPassword: " + note.getPassword(false) + "\n\n");

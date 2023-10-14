@@ -2,6 +2,7 @@ package Commands.WithoutParameters;
 
 import Commands.Commands;
 import OptionsExceptions.WrongPostfixMethodException;
+import Source.StartConsole;
 
 import java.awt.*;
 import java.awt.datatransfer.*;
@@ -11,16 +12,12 @@ import java.io.IOException;
 
 public class CopyFile extends Commands {
 
-    private final String pathToFile; // Путь копируемого файла
-
-    public CopyFile(String path) {
-        this.pathToFile = path;
-    }
+    private final String pathToTheCopiedFile = StartConsole.PATH_ACCESS; // Путь копируемого файла
 
     @Override
     public String perform() throws Exception {
 
-        return copy(pathToFile);
+        return copy(pathToTheCopiedFile);
     }
 
     @Override
