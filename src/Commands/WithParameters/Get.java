@@ -1,23 +1,29 @@
 package Commands.WithParameters;
 
-import Commands.CommandsWithParameters;
+import Commands.Commands;
 import Entity.NoteEntity;
 
 import java.util.List;
 
 import OptionsExceptions.AccessNotFoundException;
 import OptionsExceptions.UnknownArgsException;
+import OptionsExceptions.WrongPostfixMethodException;
 
+import Source.StartConsole;
 import Tools.AutoCorrection.AutoCorrectionServiceName;
 import Tools.AutoCorrection.Dictionaries;
 import Tools.UsefulMethods;
 
-public class Get extends CommandsWithParameters {
+public class Get extends Commands {
 
     private final List<NoteEntity> listWithNotes;
 
     public Get(List<NoteEntity> list) {
         this.listWithNotes = list;
+    }
+    @Override
+    public String perform() throws Exception {
+        throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
     }
 
     @Override

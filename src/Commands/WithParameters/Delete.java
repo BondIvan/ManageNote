@@ -1,9 +1,10 @@
 package Commands.WithParameters;
 
-import Commands.CommandsWithParameters;
+import Commands.Commands;
 import Entity.NoteEntity;
 import OptionsExceptions.AccessNotFoundException;
 import OptionsExceptions.UnknownArgsException;
+import OptionsExceptions.WrongPostfixMethodException;
 import Tools.AutoCorrection.AutoCorrectionServiceName;
 import Tools.AutoCorrection.Dictionaries;
 import Tools.CheckingForUpdate;
@@ -12,11 +13,16 @@ import Tools.UsefulMethods;
 import java.util.List;
 import java.util.Scanner;
 
-public class Delete extends CommandsWithParameters {
+public class Delete extends Commands {
 
     private final List<NoteEntity> listWithNotes;
     public Delete(List<NoteEntity> listWithNotes) {
         this.listWithNotes = listWithNotes;
+    }
+
+    @Override
+    public String perform() throws Exception {
+        throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
     }
 
     @Override

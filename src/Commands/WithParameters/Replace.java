@@ -1,9 +1,10 @@
 package Commands.WithParameters;
 
-import Commands.CommandsWithParameters;
+import Commands.Commands;
 import Entity.NoteEntity;
 import OptionsExceptions.AccessNotFoundException;
 import OptionsExceptions.UnknownArgsException;
+import OptionsExceptions.WrongPostfixMethodException;
 import Tools.AutoCorrection.AutoCorrectionServiceName;
 import Tools.AutoCorrection.Dictionaries;
 import Tools.CheckingForUpdate;
@@ -12,12 +13,17 @@ import Tools.UsefulMethods;
 import java.util.List;
 import java.util.Scanner;
 
-public class Replace extends CommandsWithParameters {
+public class Replace extends Commands {
 
     private final List<NoteEntity> listWithNotes;
 
     public Replace(List<NoteEntity> listWithNotes) {
         this.listWithNotes = listWithNotes;
+    }
+
+    @Override
+    public String perform() throws Exception {
+        throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
     }
 
     @Override

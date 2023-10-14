@@ -1,14 +1,15 @@
 package Commands.WithoutParameters;
 
 
-import Commands.CommandsWithoutParameters;
+import Commands.Commands;
 import Entity.NoteEntity;
+import OptionsExceptions.WrongPostfixMethodException;
 import Tools.UsefulMethods;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetAll extends CommandsWithoutParameters {
+public class GetAll extends Commands {
 
     private final List<NoteEntity> listWithNotes;
 
@@ -32,6 +33,11 @@ public class GetAll extends CommandsWithoutParameters {
                         |
                 Это был последний
                 """;
+    }
+
+    @Override
+    public String perform(String postfix) throws Exception {
+        throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
     }
 
 }

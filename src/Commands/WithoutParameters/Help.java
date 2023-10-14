@@ -1,8 +1,9 @@
 package Commands.WithoutParameters;
 
-import Commands.CommandsWithoutParameters;
+import Commands.Commands;
+import OptionsExceptions.WrongPostfixMethodException;
 
-public class Help extends CommandsWithoutParameters {
+public class Help extends Commands {
 
     @Override
     public String perform() {
@@ -19,4 +20,8 @@ public class Help extends CommandsWithoutParameters {
                         """;
     }
 
+    @Override
+    public String perform(String postfix) throws Exception {
+        throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
+    }
 }
