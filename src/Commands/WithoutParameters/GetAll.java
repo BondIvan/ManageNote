@@ -3,19 +3,18 @@ package Commands.WithoutParameters;
 
 import Commands.Commands;
 import Entity.NoteEntity;
-import OptionsExceptions.WrongPostfixMethodException;
 import Source.StartConsole;
 import Tools.UsefulMethods;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetAll extends Commands {
+public class GetAll implements Commands {
 
     private final List<NoteEntity> listWithNotes = StartConsole.NOTES;
 
     @Override
-    public String perform() throws Exception {
+    public String perform(String postfix) throws Exception {
 
         System.out.println("-----------------");
 
@@ -30,11 +29,6 @@ public class GetAll extends Commands {
                         |
                 Это был последний
                 """;
-    }
-
-    @Override
-    public String perform(String postfix) throws Exception {
-        throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
     }
 
 }

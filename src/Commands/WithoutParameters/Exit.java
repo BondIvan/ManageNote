@@ -1,17 +1,16 @@
 package Commands.WithoutParameters;
 
 import Commands.Commands;
-import OptionsExceptions.WrongPostfixMethodException;
 import Tools.CheckingForUpdate;
 
-public class Exit extends Commands {
+public class Exit implements Commands {
 
     @Override
-    public String perform() throws Exception {
+    public String perform(String postfix) throws Exception {
 
         if(CheckingForUpdate.isUpdated) {
-            Commands save = new Save();
-            System.out.println( save.perform() );
+            Save save = new Save();
+            System.out.println( save.perform(postfix) );
         }
 
         System.out.println("Выход из приложения");
@@ -20,8 +19,4 @@ public class Exit extends Commands {
         return "";
     }
 
-    @Override
-    public String perform(String postfix) throws Exception {
-        throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
-    }
 }

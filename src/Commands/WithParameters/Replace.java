@@ -14,14 +14,9 @@ import Tools.UsefulMethods;
 import java.util.List;
 import java.util.Scanner;
 
-public class Replace extends Commands {
+public class Replace implements Commands {
 
     private final List<NoteEntity> listWithNotes = StartConsole.NOTES;
-
-    @Override
-    public String perform() throws Exception {
-        throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
-    }
 
     @Override
     public String perform(String postfix) throws Exception {

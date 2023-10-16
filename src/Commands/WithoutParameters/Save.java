@@ -2,9 +2,6 @@ package Commands.WithoutParameters;
 
 import Commands.Commands;
 import Entity.NoteEntity;
-
-import OptionsExceptions.WrongPostfixMethodException;
-
 import Source.StartConsole;
 import Tools.CheckingForUpdate;
 
@@ -13,23 +10,18 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
-public class Save extends Commands {
+public class Save implements Commands {
 
     private final String pathToSave = StartConsole.PATH; // Куда сохранять
     private final List<NoteEntity> listWithNotes = StartConsole.NOTES; // Что сохранять
 
     @Override
-    public String perform() throws Exception {
+    public String perform(String postfix) throws Exception {
 
         if(CheckingForUpdate.isUpdated)
             return "Файл сохранён: " + saving(listWithNotes);
 
         return "Изменений не произошло";
-    }
-
-    @Override
-    public String perform(String postfix) throws WrongPostfixMethodException {
-        throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
     }
 
     private boolean saving(List<NoteEntity> listWithNotesForSave) throws IOException {

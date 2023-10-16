@@ -1,12 +1,11 @@
 package Commands.WithoutParameters;
 
 import Commands.Commands;
-import OptionsExceptions.WrongPostfixMethodException;
 
-public class Help extends Commands {
+public class Help implements Commands {
 
     @Override
-    public String perform() {
+    public String perform(String postfix) {
         return """
                         For get access: -get- [название]  [true] - получить похожие
                         For get names of all services: -getall-
@@ -20,8 +19,4 @@ public class Help extends Commands {
                         """;
     }
 
-    @Override
-    public String perform(String postfix) throws Exception {
-        throw new WrongPostfixMethodException("У класса " + getClass().getName() + " вызван неправильный метод perform()");
-    }
 }
