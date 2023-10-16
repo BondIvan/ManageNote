@@ -1,6 +1,7 @@
 package Commands;
 
 import OptionsExceptions.AccessNotFoundException;
+import OptionsExceptions.CommandNotFoundException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -15,12 +16,13 @@ public class CommandFactory {
         registeredCommand.put(name, commandClass);
     }
 
-    public Commands getCommand(String name) throws AccessNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    public Commands getCommand(String name) throws CommandNotFoundException, InstantiationException, IllegalAccessException,
+            NoSuchMethodException, InvocationTargetException {
 
         Class<? extends Commands> commandClass = registeredCommand.get(name);
 
         if(commandClass == null)
-            throw new AccessNotFoundException("Команда не найдена");
+            throw new CommandNotFoundException("Такой команды нет");
 
         return commandClass.getDeclaredConstructor().newInstance();
     }
