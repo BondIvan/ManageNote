@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class CopyFile extends Commands {
 
-    private final String pathToTheCopiedFile = StartConsole.PATH_ACCESS; // Путь копируемого файла
+    private final String pathToTheCopiedFile = StartConsole.PATH; // Путь копируемого файла
 
     @Override
     public String perform() throws Exception {

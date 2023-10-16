@@ -25,7 +25,7 @@ public class StartConsole {
 
      ***/
 
-    public static final String PATH_ACCESS = "C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\" +
+    public static final String PATH = "C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\" +
             "ForTesting.txt"; // Тестовый файл
             //"Access.txt"; // Рабочий файл
 
@@ -33,7 +33,7 @@ public class StartConsole {
 
     public static void main(String[] args) throws Exception {
 
-        NOTES = UsefulMethods.getAllNoteFromFile(PATH_ACCESS);
+        NOTES = UsefulMethods.getAllNoteFromFile(PATH);
 
         Dictionaries dictionaries = new Dictionaries(NOTES);
         dictionaries.fillingDictionaries();

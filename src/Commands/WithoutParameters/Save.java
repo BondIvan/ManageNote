@@ -15,7 +15,7 @@ import java.util.Scanner;
 
 public class Save extends Commands {
 
-    private final String pathToSave = StartConsole.PATH_ACCESS; // Куда сохранять
+    private final String pathToSave = StartConsole.PATH; // Куда сохранять
     private final List<NoteEntity> listWithNotes = StartConsole.NOTES; // Что сохранять
 
     @Override
