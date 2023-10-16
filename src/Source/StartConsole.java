@@ -33,8 +33,8 @@ public class StartConsole {
 
         NOTES = UsefulMethods.getAllNoteFromFile(PATH_ACCESS);
 
-        Dictionaries dictionaries = new Dictionaries(NOTES);
-        dictionaries.fillingDictionaries();
+        Dictionaries dictionaries = new Dictionaries();
+        dictionaries.fillingDictionaries(NOTES);
 
         Map<String, Commands> map = new HashMap<>();
         map.put("get", new Get(NOTES));
