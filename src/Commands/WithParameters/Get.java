@@ -7,7 +7,6 @@ import java.util.List;
 
 import OptionsExceptions.AccessNotFoundException;
 import OptionsExceptions.UnknownArgsException;
-import OptionsExceptions.WrongPostfixMethodException;
 
 import Source.StartConsole;
 import Tools.AutoCorrection.AutoCorrectionServiceName;

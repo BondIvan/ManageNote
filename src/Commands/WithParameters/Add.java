@@ -3,7 +3,6 @@ package Commands.WithParameters;
 import Commands.Commands;
 import Entity.NoteEntity;
 import OptionsExceptions.UnknownArgsException;
-import OptionsExceptions.WrongPostfixMethodException;
 import Source.StartConsole;
 import Tools.CheckingForUpdate;
 import Tools.UsefulMethods;

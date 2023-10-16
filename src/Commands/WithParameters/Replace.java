@@ -4,7 +4,6 @@ import Commands.Commands;
 import Entity.NoteEntity;
 import OptionsExceptions.AccessNotFoundException;
 import OptionsExceptions.UnknownArgsException;
-import OptionsExceptions.WrongPostfixMethodException;
 import Source.StartConsole;
 import Tools.AutoCorrection.AutoCorrectionServiceName;
 import Tools.AutoCorrection.Dictionaries;

@@ -1,10 +1,8 @@
 package Source;
 
-import Commands.*;
-import Commands.WithParameters.Add;
-import Commands.WithParameters.Delete;
-import Commands.WithParameters.Get;
-import Commands.WithParameters.Replace;
+import Commands.CommandFactory;
+import Commands.Commands;
+import Commands.WithParameters.*;
 import Commands.WithoutParameters.*;
 import Entity.NoteEntity;
 import Tools.AutoCorrection.Dictionaries;
@@ -38,51 +36,38 @@ public class StartConsole {
         Dictionaries dictionaries = new Dictionaries();
         dictionaries.fillingDictionaries(NOTES);
 
+        CommandFactory factory = new CommandFactory();
+        factory.registerCommand("add", Add.class);
+        factory.registerCommand("delete", Delete.class);
+        factory.registerCommand("get", Get.class);
+        factory.registerCommand("replace", Replace.class);
 
+        factory.registerCommand("copyfile", CopyFile.class);
+        factory.registerCommand("exit", Exit.class);
+        factory.registerCommand("getall", GetAll.class);
+        factory.registerCommand("help", Help.class);
+        factory.registerCommand("save", Save.class);
 
-    }
+        Scanner inputLine = new Scanner(System.in);
+        while (true) {
+            System.out.print("Введите команду: ");
+            String input = inputLine.nextLine().trim(); // Введённая строка
 
-    public void buf() {
-        //Map<String, Commands> map = new HashMap<>();
-        //        map.put("get", new Get());
-        //        map.put("getall", new GetAll());
-        //        map.put("add", new Add());
-        //        map.put("delete", new Delete());
-        //        map.put("replace", new Replace());
-        //        map.put("save", new Save());
-        //        map.put("copyfile", new CopyFile());
-        //        map.put("help", new Help());
-        //        map.put("exit", new Exit());
-        //
-        //        String[] commandWithPostfix = { "add", "get", "delete", "replace" };
-        //
-        //        Scanner scanner = new Scanner(System.in);
-        //        while (true) {
-        //            System.out.print("Введите команду: ");
-        //            String input = scanner.nextLine().trim(); // Введённая строка
-        //
-        //            if (input.isEmpty())
-        //                continue;
-        //
-        //            String prefix = input.split(" ")[0]; // Введённая команда
-        //            String postfix = input.substring(prefix.length()).trim(); // Аргументы введённой команды
-        //
-        //            if( map.containsKey(prefix) ) {
-        //
-        //                try {
-        //                    if (Arrays.asList(commandWithPostfix).contains(prefix)) {
-        //                        System.out.println(map.get(prefix).perform(postfix)); // С postfix
-        //                    } else {
-        //                        System.out.println(map.get(prefix).perform()); // Без postfix
-        //                    }
-        //                } catch (Exception e) {
-        //                    System.out.println(e.getMessage());
-        //                }
-        //
-        //            } else {
-        //                System.out.println("Такой команды нет");
-        //            }
-        //        }
+            if (input.isEmpty())
+                continue;
+
+            String prefix = input.split(" ")[0]; // Введённая команда
+            String postfix = input.substring(prefix.length()).trim(); // Аргументы введённой команды
+
+            try {
+                Commands command = factory.getCommand(prefix);
+                System.out.println(command.perform(postfix));
+            } catch (Exception e) {
+                System.out.println("Ошибка: " + e.getMessage());
+            }
+
+        }
+
     }
 
 }
