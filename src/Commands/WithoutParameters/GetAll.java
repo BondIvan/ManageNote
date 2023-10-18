@@ -23,9 +23,6 @@ public class GetAll implements Commands {
 
     }
 
-    //TODO Создал ветку для добавления функции разных сортировок.
-    // Сделать сортировку по дате добавления сверху самые старые - снизу новые, то есть ничего не менять.
-
     @Override
     public String perform(String postfix) throws UnknownArgsException {
 
