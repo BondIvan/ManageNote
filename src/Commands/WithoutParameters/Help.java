@@ -4,6 +4,9 @@ import Commands.Commands;
 
 public class Help implements Commands {
 
+    public Help() {
+    }
+
     @Override
     public String perform(String postfix) {
         return """

@@ -12,7 +12,15 @@ import java.util.Scanner;
 
 public class Add implements Commands {
 
-    private final List<NoteEntity> listWithNotes = StartConsole.NOTES;
+    private final List<NoteEntity> listWithNotes;
+
+    public Add() {
+        this.listWithNotes = StartConsole.NOTES;
+    }
+
+    public Add(List<NoteEntity> notes) {
+        this.listWithNotes = notes;
+    }
 
     @Override
     public String perform(String postfix) throws UnknownArgsException {
