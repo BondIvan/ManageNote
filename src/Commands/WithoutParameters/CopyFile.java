@@ -10,7 +10,15 @@ import java.io.File;
 
 public class CopyFile implements Commands {
 
-    private final String pathToTheCopiedFile = StartConsole.PATH; // Путь копируемого файла
+    private final String pathToTheCopiedFile; // Путь копируемого файла
+
+    public CopyFile() {
+        this.pathToTheCopiedFile = StartConsole.PATH;
+    }
+
+    public CopyFile(String pathToTheCopiedFile) {
+        this.pathToTheCopiedFile = pathToTheCopiedFile;
+    }
 
     @Override
     public String perform(String postfix) {

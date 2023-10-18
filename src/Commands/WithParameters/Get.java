@@ -15,10 +15,15 @@ import Tools.UsefulMethods;
 
 public class Get implements Commands {
 
+    private final List<NoteEntity> listWithNotes;
+
     public Get() {
+        this.listWithNotes = StartConsole.NOTES;
     }
 
-    private final List<NoteEntity> listWithNotes = StartConsole.NOTES;
+    public Get(List<NoteEntity> notes) {
+        this.listWithNotes = notes;
+    }
 
     @Override
     public String perform(String postfix) throws UnknownArgsException, AccessNotFoundException {

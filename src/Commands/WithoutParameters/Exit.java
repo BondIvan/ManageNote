@@ -7,6 +7,9 @@ import java.io.IOException;
 
 public class Exit implements Commands {
 
+    public Exit() {
+    }
+
     @Override
     public String perform(String postfix) throws IOException {
 

@@ -12,8 +12,18 @@ import java.util.Scanner;
 
 public class Save implements Commands {
 
-    private final String pathToSave = StartConsole.PATH; // Куда сохранять
-    private final List<NoteEntity> listWithNotes = StartConsole.NOTES; // Что сохранять
+    private final String pathToSave; // Куда сохранять
+    private final List<NoteEntity> listWithNotes; // Что сохранять
+
+    public Save() {
+        this.pathToSave = StartConsole.PATH;
+        this.listWithNotes = StartConsole.NOTES;
+    }
+
+    public Save(String pathToSave, List<NoteEntity> notes) {
+        this.pathToSave = pathToSave;
+        this.listWithNotes = notes;
+    }
 
     @Override
     public String perform(String postfix) throws IOException {

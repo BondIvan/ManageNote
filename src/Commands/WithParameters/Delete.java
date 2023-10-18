@@ -15,7 +15,15 @@ import java.util.Scanner;
 
 public class Delete implements Commands {
 
-    private final List<NoteEntity> listWithNotes = StartConsole.NOTES;
+    private final List<NoteEntity> listWithNotes;
+
+    public Delete() {
+        this.listWithNotes = StartConsole.NOTES;
+    }
+
+    public Delete(List<NoteEntity> notes) {
+        this.listWithNotes = notes;
+    }
 
     @Override
     public String perform(String postfix) throws UnknownArgsException, AccessNotFoundException {

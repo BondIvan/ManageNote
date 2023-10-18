@@ -11,7 +11,15 @@ import java.util.List;
 
 public class GetAll implements Commands {
 
-    private final List<NoteEntity> listWithNotes = StartConsole.NOTES;
+    private final List<NoteEntity> listWithNotes;
+
+    public GetAll() {
+        this.listWithNotes = StartConsole.NOTES;
+    }
+
+    public GetAll(List<NoteEntity> notes) {
+        this.listWithNotes = notes;
+    }
 
     @Override
     public String perform(String postfix) {
