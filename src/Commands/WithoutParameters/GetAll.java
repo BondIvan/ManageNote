@@ -14,7 +14,7 @@ public class GetAll implements Commands {
     private final List<NoteEntity> listWithNotes = StartConsole.NOTES;
 
     @Override
-    public String perform(String postfix) throws Exception {
+    public String perform(String postfix) {
 
         System.out.println("-----------------");
 

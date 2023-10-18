@@ -3,10 +3,12 @@ package Commands.WithoutParameters;
 import Commands.Commands;
 import Tools.CheckingForUpdate;
 
+import java.io.IOException;
+
 public class Exit implements Commands {
 
     @Override
-    public String perform(String postfix) throws Exception {
+    public String perform(String postfix) throws IOException {
 
         if(CheckingForUpdate.isUpdated) {
             Save save = new Save();

@@ -18,7 +18,7 @@ public class Replace implements Commands {
     private final List<NoteEntity> listWithNotes = StartConsole.NOTES;
 
     @Override
-    public String perform(String postfix) throws Exception {
+    public String perform(String postfix) throws UnknownArgsException, AccessNotFoundException {
 
         String[] args = UsefulMethods.makeArgsTrue(postfix);
 
@@ -35,7 +35,7 @@ public class Replace implements Commands {
         }
     }
 
-    private NoteEntity replaceNote(String[] args) throws Exception {
+    private NoteEntity replaceNote(String[] args) throws UnknownArgsException, AccessNotFoundException {
 
         List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[0]); // Содержит необходимы-й/е аккаунт-/ы
         Scanner confirm = new Scanner(System.in);

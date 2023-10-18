@@ -66,7 +66,7 @@ public class UsefulMethods {
     // Если у сервиса несколько аккаунтов, этот метод позволяет получить доступ к конкретному аккаунту по логину
     // Или же у названия сервиса 2 слова или больше, можно ввести первое слово названия и затем ввести логин этого сервиса
 
-    public static NoteEntity getAccountFromServiceByLogin(List<NoteEntity> listWithNotes, String searchedName) throws Exception {
+    public static NoteEntity getAccountFromServiceByLogin(List<NoteEntity> listWithNotes, String searchedName) throws AccessNotFoundException {
 
         List<NoteEntity> otherAccounts = new ArrayList<>(); // Список аккаунтов одного сервиса
 

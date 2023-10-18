@@ -18,7 +18,7 @@ public class Delete implements Commands {
     private final List<NoteEntity> listWithNotes = StartConsole.NOTES;
 
     @Override
-    public String perform(String postfix) throws Exception {
+    public String perform(String postfix) throws UnknownArgsException, AccessNotFoundException {
 
         String[] args = UsefulMethods.makeArgsTrue(postfix); // Разбитие postfix-а на состовляющие (конкретные аргументы команды)
 
@@ -34,7 +34,7 @@ public class Delete implements Commands {
             return "Удаление НЕ произошло";
     }
 
-    private boolean deleteNote(String[] args) throws Exception {
+    private boolean deleteNote(String[] args) throws AccessNotFoundException {
 
         List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[0]); // Содержит необходимы-й/е аккаунт-/ы
 
