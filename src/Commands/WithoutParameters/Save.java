@@ -16,7 +16,7 @@ public class Save implements Commands {
     private final List<NoteEntity> listWithNotes = StartConsole.NOTES; // Что сохранять
 
     @Override
-    public String perform(String postfix) throws Exception {
+    public String perform(String postfix) throws IOException {
 
         if(CheckingForUpdate.isUpdated)
             return "Файл сохранён: " + saving(listWithNotes);

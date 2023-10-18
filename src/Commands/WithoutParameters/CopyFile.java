@@ -7,14 +7,13 @@ import java.awt.*;
 import java.awt.datatransfer.*;
 
 import java.io.File;
-import java.io.IOException;
 
 public class CopyFile implements Commands {
 
     private final String pathToTheCopiedFile = StartConsole.PATH; // Путь копируемого файла
 
     @Override
-    public String perform(String postfix) throws Exception {
+    public String perform(String postfix) {
 
         return copy(pathToTheCopiedFile);
     }
@@ -36,7 +35,7 @@ public class CopyFile implements Commands {
                 }
 
                 @Override
-                public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+                public Object getTransferData(DataFlavor flavor) {
                     return java.util.Collections.singletonList(file);
                 }
             };
