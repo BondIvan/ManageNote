@@ -1,6 +1,5 @@
 package Tests.CommandsTest;
 
-import Commands.WithParameters.Add;
 import Commands.WithParameters.Get;
 import Entity.NoteEntity;
 import OptionsExceptions.AccessNotFoundException;
@@ -10,14 +9,15 @@ import Tools.UsefulMethods;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class GetTest extends Add {
+class GetTest {
 
     @Test
-    void testPerform() throws Exception {
+    void testPerform() throws IOException, AccessNotFoundException, UnknownArgsException {
 
         List<NoteEntity> notes = UsefulMethods.getAllNoteFromFile("C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\ForTesting.txt");
 
@@ -28,7 +28,6 @@ class GetTest extends Add {
 
         String postfix1 = "Telegram.com";
         String postfix2 = "teleGram.com";
-        String postfix3 = "Telegram";
 
         String expected1 = """
                 Telegram.com
@@ -40,12 +39,15 @@ class GetTest extends Add {
                 Login: Anien
                 Password: guardianWith525Shield""";
 
+        // Проверка возвращаемого результа
+        Assertions.assertEquals(expected1, get.perform(postfix1));
+        Assertions.assertEquals(expected2, get.perform(postfix2));
+
+
+        // Проверка аргументов
         Exception accessNotFoundException = assertThrows(AccessNotFoundException.class, () -> get.perform("Telegram"));
         Exception unknownArgsException1 = assertThrows(OptionsExceptions.UnknownArgsException.class, () -> get.perform("Telegram.com arg2"));
         Exception unknownArgsException2 = assertThrows(OptionsExceptions.UnknownArgsException.class, () -> get.perform(""));
-
-        Assertions.assertEquals(expected1, get.perform(postfix1));
-        Assertions.assertEquals(expected2, get.perform(postfix2));
 
         Assertions.assertEquals("Сервис не найден", accessNotFoundException.getMessage());
         Assertions.assertEquals("Параметров больше чем нужно", unknownArgsException1.getMessage());
