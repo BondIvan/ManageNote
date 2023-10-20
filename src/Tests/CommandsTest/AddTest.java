@@ -82,7 +82,9 @@ class AddTest {
     // Проверка аргументов
     @Test
     void testAddForExceptions() {
-        Add add = new Add();
+
+        List<NoteEntity> notes = new ArrayList<>();
+        Add add = new Add(notes);
 
         Exception unknownArgsException1 = assertThrows(UnknownArgsException.class, () -> add.perform("arg1_name arg2_log arg3_pass arg4"));
         Exception unknownArgsException2 = assertThrows(UnknownArgsException.class, () -> add.perform("arg1_name arg2_log"));

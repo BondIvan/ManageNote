@@ -16,8 +16,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GetTest {
 
+    /***
+     *
+     * Проверка всех ситуаций в методе perform в классе Get.class
+     *
+     ***/
+
     @Test
-    void testPerform() throws IOException, AccessNotFoundException, UnknownArgsException {
+    void testIgnoreCase() throws IOException, AccessNotFoundException, UnknownArgsException {
 
         List<NoteEntity> notes = UsefulMethods.getAllNoteFromFile("C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\ForTesting.txt");
 
@@ -43,8 +49,16 @@ class GetTest {
         Assertions.assertEquals(expected1, get.perform(postfix1));
         Assertions.assertEquals(expected2, get.perform(postfix2));
 
+    }
 
-        // Проверка аргументов
+    // Проверка аргументов
+    @Test
+    void testGetForExceptions() throws IOException {
+
+        List<NoteEntity> notes = UsefulMethods.getAllNoteFromFile("C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\ForTesting.txt");
+
+        Get get = new Get(notes);
+
         Exception accessNotFoundException = assertThrows(AccessNotFoundException.class, () -> get.perform("Telegram"));
         Exception unknownArgsException1 = assertThrows(OptionsExceptions.UnknownArgsException.class, () -> get.perform("Telegram.com arg2"));
         Exception unknownArgsException2 = assertThrows(OptionsExceptions.UnknownArgsException.class, () -> get.perform(""));
@@ -52,7 +66,6 @@ class GetTest {
         Assertions.assertEquals("Сервис не найден", accessNotFoundException.getMessage());
         Assertions.assertEquals("Параметров больше чем нужно", unknownArgsException1.getMessage());
         Assertions.assertEquals("Нет параметров", unknownArgsException2.getMessage());
-
     }
 
 }
