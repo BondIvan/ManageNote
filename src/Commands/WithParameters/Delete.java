@@ -30,9 +30,9 @@ public class Delete implements Commands {
 
         String[] args = UsefulMethods.makeArgsTrue(postfix); // Разбитие postfix-а на состовляющие (конкретные аргументы команды)
 
-        if(postfix.length() == 0)
+        if(args.length == 0)
             throw  new UnknownArgsException("Нет параметров");
-        if(args.length > 2)
+        if(args.length > 1)
             throw new UnknownArgsException("Параметров больше чем нужно");
 
         if( deleteNote(args) ) {
