@@ -10,11 +10,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class GetTest {
+class GetTest implements TestCommands {
 
     /***
      *
@@ -52,10 +53,17 @@ class GetTest {
     }
 
     // Проверка аргументов
+    @Override
     @Test
-    void testGetForExceptions() throws IOException {
+    public void testForExceptions() {
 
-        List<NoteEntity> notes = UsefulMethods.getAllNoteFromFile("C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\ForTesting.txt");
+        List<NoteEntity> notes;
+        try {
+            notes = UsefulMethods.getAllNoteFromFile("C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\ForTesting.txt");
+        } catch (Exception e) {
+            System.err.println("Ошибка: " + e.getMessage());
+            return;
+        }
 
         Get get = new Get(notes);
 

@@ -11,7 +11,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class AddTest {
+class AddTest implements TestCommands {
 
     /***
      * Закоментировать подтверждение в Add.class перед выполнением
@@ -80,8 +80,9 @@ class AddTest {
     }
 
     // Проверка аргументов
+    @Override
     @Test
-    void testAddForExceptions() {
+    public void testForExceptions() {
 
         List<NoteEntity> notes = new ArrayList<>();
         Add add = new Add(notes);
