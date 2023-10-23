@@ -33,6 +33,9 @@ public class StartConsole {
 
         NOTES = UsefulMethods.getAllNoteFromFile(PATH);
 
+        String[] selectedFile = PATH.split("\\\\");
+        System.out.println("Запущено с файлом: " + selectedFile[selectedFile.length-1]);
+
         Dictionaries dictionaries = new Dictionaries();
         dictionaries.fillingDictionaries(NOTES);
 
