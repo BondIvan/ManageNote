@@ -64,41 +64,17 @@ public class UsefulMethods {
     }
 
     // Если у сервиса несколько аккаунтов, этот метод позволяет получить доступ к конкретному аккаунту по логину
-    // Или же у названия сервиса 2 слова или больше, можно ввести первое слово названия и затем ввести логин этого сервиса
+    public static NoteEntity getAccountFromServiceByLogin(List<NoteEntity> listWithNotes, String searchedName, String searchedLogin)
+            throws AccessNotFoundException {
 
-    public static NoteEntity getAccountFromServiceByLogin(List<NoteEntity> listWithNotes, String searchedName) throws AccessNotFoundException {
+        // Фильтр по названию, потом фильтр по логину, чтобы найти необходимый аккаунт
+        NoteEntity noteEntity = listWithNotes.stream()
+                .filter(note -> note.getIdService().split(" ")[0].equalsIgnoreCase(searchedName))
+                .filter(note -> note.getLogin().equalsIgnoreCase(searchedLogin))
+                .findFirst()
+                .orElseThrow(() -> new AccessNotFoundException("Такой записи нет"));
 
-        List<NoteEntity> otherAccounts = new ArrayList<>(); // Список аккаунтов одного сервиса
-
-        for(NoteEntity note: listWithNotes) {
-            String currName = note.getIdService();
-            if( currName.split(" ")[0].equalsIgnoreCase(searchedName) ) { // Сравнивается первое слово текущего сервиса с требуемым
-                otherAccounts.add(note);
-            }
-        }
-
-        if(!otherAccounts.isEmpty()) { // Если несколько аккаунтов у сервиса, то необходимый аккаунт можно получить по логину
-
-            for (NoteEntity str : otherAccounts)
-                System.out.println(str.getIdService() + " -> " + str.getLogin());
-
-            System.out.println("Выбирете учётную запись из логинов: ");
-            Scanner scanner = new Scanner(System.in); // Для ввода необходимого логина
-
-            String inputLogin = scanner.nextLine().trim();
-            for (NoteEntity note : otherAccounts) {
-
-                // Если введённый логин совпадёт с логином одного из аккаунта
-                if (note.getLogin().equalsIgnoreCase(inputLogin)) { //TODO Посмотреть для чего это вообще
-                    // Удаление аккаунта из otherAccounts для изменения его размера, чтобы можно было определить сколько ещё аккаунтов у этого сервиса
-                    otherAccounts.remove(note);
-
-                    return note;
-                }
-            }
-        }
-
-        throw new AccessNotFoundException("Такой записи нет");
+        return noteEntity;
     }
 
     // Убирает лишние пробелы между аргументами команды
