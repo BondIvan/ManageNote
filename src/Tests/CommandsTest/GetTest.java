@@ -68,9 +68,11 @@ class GetTest implements TestCommands {
                         .findFirst()
                         .orElseThrow(() -> new AccessNotFoundException("Сервис не найден")));
 
+        // Положительные варианты
         Assertions.assertEquals(note1, noteEntity1);
         Assertions.assertEquals(note3, noteEntity3);
 
+        // Отрицательные варианты
         Assertions.assertEquals("Сервис не найден", noteEntity_noByLogin.getMessage());
         Assertions.assertEquals("Сервис не найден", noteEntity_noByServiceName.getMessage());
     }
