@@ -61,7 +61,15 @@ public class Replace implements Commands {
         if(searchedServices.size() == 1) {
             replacedNote = searchedServices.get(0);
         } else {
-            replacedNote = UsefulMethods.getAccountFromServiceByLogin(searchedServices, args[0]);
+            // Вывести все аккаунты сервиса + их логины
+            listWithNotes.stream()
+                    .filter(note -> note.getIdService().split(" ")[0].equalsIgnoreCase(args[0]))
+                    .forEach(note -> System.out.println(note.getIdService() + " -> " + note.getLogin()));
+
+            System.out.print("Введите логин: ");
+            String inputLogin = new Scanner(System.in).nextLine();
+
+            replacedNote = UsefulMethods.getAccountFromServiceByLogin(searchedServices, args[0], inputLogin);
         }
 
         int positionOfFindNoteInMainList = listWithNotes.indexOf(replacedNote); // Позиция требуемого сервиса в списке (главного), который был считан с файла
