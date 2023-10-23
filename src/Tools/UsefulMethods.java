@@ -7,6 +7,7 @@ import OptionsExceptions.AccessNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class UsefulMethods {
 
@@ -51,14 +52,10 @@ public class UsefulMethods {
 
     // Получение всех аккаунтов одного сервиса
     public static List<NoteEntity> getAllAccountsForOneService(List<NoteEntity> listWithNotes, String serviceName) {
-        ArrayList<NoteEntity> otherAccounts = new ArrayList<>(); // Список аккаунтов одного сервиса
 
-        for(NoteEntity note: listWithNotes) {
-            String currentServiceName = note.getIdService();
-            if(currentServiceName.split(" ")[0].equalsIgnoreCase(serviceName)) { // Сравнивается первое слово текущего сервиса с требуемым
-                otherAccounts.add(note);
-            }
-        }
+        List<NoteEntity> otherAccounts = listWithNotes.stream()
+                .filter(note -> note.getIdService().equalsIgnoreCase(serviceName))
+                .collect(Collectors.toList());
 
         return otherAccounts;
     }
@@ -87,7 +84,7 @@ public class UsefulMethods {
         list.removeIf(String::isEmpty); // aka цикл, удалить объект если он пустой
 
         return list.toArray(new String[0]); // В душе не знаю, почему 0
-    } // Ok
+    }
 
     // Чтение всех сервисов из файла и схранение их в виде NoteEntity в список
     public static List<NoteEntity> getAllNoteFromFile(String path) throws IOException {
