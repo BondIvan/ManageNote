@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class DeleteTest implements TestCommands {
 
     //TODO
-    // Сервис с одним аккаунтом, у сервиса несколько аккаунтов
+    // У сервиса несколько аккаунтов
 
     @Test
     void testServiceWithoutAccount() throws UnknownArgsException, AccessNotFoundException {
@@ -43,24 +43,28 @@ class DeleteTest implements TestCommands {
         notes.add(note1);
         notes.add(note2);
 
-        int notes_size = notes.size();
-
         // В автоматических тестах не принято использовать какое-то взаимодействие с пользователем.
         // Поэтому в этом тесте используется такой же порядок действий как и в классе Delete.
         // Грубо говоря, здесь тестируются методы из класса UsefulMethods
 
-
         // Получение нужного аккаунта сервиса по логину
         String postfix = "vk.com";
-        NoteEntity deletedNote = UsefulMethods.getAccountFromServiceByLogin(notes, postfix);
+        String deletedLogin = "second.account@gmail.com";
+        NoteEntity deletedNote = UsefulMethods.getAccountFromServiceByLogin(notes, postfix, deletedLogin);
         notes.remove(deletedNote);
 
         // Изменение названия сервиса в соответствии с оставшимися у него аккаунтами
         UsefulMethods.changingNameOfAccount(notes, postfix);
 
+        // Удалён второй аккаунт
+        boolean deletedSecondAcc = notes.stream()
+                        .anyMatch(note -> note.getIdService().equalsIgnoreCase("Vk.com (2-nd account)"));
 
+        boolean remainingAcc = notes.stream()
+                        .anyMatch(note -> note.getIdService().equalsIgnoreCase("vk.com"));
 
-        Assertions.assertEquals(notes_size-1, notes.size());
+        Assertions.assertFalse(deletedSecondAcc);
+        Assertions.assertTrue(remainingAcc);
     }
 
     @Test
