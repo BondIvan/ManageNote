@@ -35,10 +35,8 @@ public class GetAll implements Commands {
             if (!args[0].equals("date"))
                 throw new UnknownArgsException("Неверный параметр");
 
-            System.out.println("-----------------");
             getAllByDate();
         } else {
-            System.out.println("-----------------");
             getAllByAlphabet();
         }
 
@@ -51,13 +49,14 @@ public class GetAll implements Commands {
     }
 
     private void getAllByAlphabet() {
-
-        UsefulMethods.sortNoteEntityByServiceName(new ArrayList<>(listWithNotes)) // Этот список будет отображаться, чтобы не сортировать основной список
+        List<NoteEntity> listForShow = new ArrayList<>(listWithNotes);
+        System.out.println("-----------------");
+        UsefulMethods.sortNoteEntityByServiceName(listForShow) // Этот список будет отображаться, чтобы не сортировать основной список
                 .forEach(note -> System.out.println(note.getIdService()));
     }
 
     private void getAllByDate() {
-
+        System.out.println("-----------------");
         listWithNotes.forEach(note -> System.out.println(note.getIdService()));
     }
 
