@@ -1,4 +1,4 @@
-package Commands.WithoutParameters;
+package Commands.WithOrWithoutParameters;
 
 
 import Commands.Commands;

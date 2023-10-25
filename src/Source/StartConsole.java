@@ -2,6 +2,7 @@ package Source;
 
 import Commands.CommandFactory;
 import Commands.Commands;
+import Commands.WithOrWithoutParameters.GetAll;
 import Commands.WithParameters.*;
 import Commands.WithoutParameters.*;
 import Entity.NoteEntity;
