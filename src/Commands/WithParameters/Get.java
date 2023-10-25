@@ -4,6 +4,7 @@ import Commands.Commands;
 import Entity.NoteEntity;
 
 import java.util.List;
+import java.util.Scanner;
 
 import OptionsExceptions.AccessNotFoundException;
 import OptionsExceptions.UnknownArgsException;
@@ -54,7 +55,15 @@ public class Get implements Commands {
         if(searchedServices.size() == 1) {
             findNote = searchedServices.get(0);
         } else {
-            findNote = UsefulMethods.getAccountFromServiceByLogin(searchedServices, args[0]);
+            // Вывести все аккаунты сервиса + их логины
+            listWithNotes.stream()
+                    .filter(note -> note.getIdService().split(" ")[0].equalsIgnoreCase(args[0]))
+                    .forEach(note -> System.out.println(note.getIdService() + " -> " + note.getLogin()));
+
+            System.out.print("Введите логин: ");
+            String inputLogin = new Scanner(System.in).nextLine();
+
+            findNote = UsefulMethods.getAccountFromServiceByLogin(searchedServices, args[0], inputLogin);
         }
 
         return findNote;

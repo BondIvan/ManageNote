@@ -60,7 +60,15 @@ public class Delete implements Commands {
         if(searchedServices.size() == 1) {
             deletedNote = searchedServices.get(0);
         } else {
-            deletedNote = UsefulMethods.getAccountFromServiceByLogin(searchedServices, args[0]);
+            // Вывести все аккаунты сервиса + их логины
+            listWithNotes.stream()
+                    .filter(note -> note.getIdService().split(" ")[0].equalsIgnoreCase(args[0]))
+                    .forEach(note -> System.out.println(note.getIdService() + " -> " + note.getLogin()));
+
+            System.out.print("Введите логин: ");
+            String inputLogin = new Scanner(System.in).nextLine();
+
+            deletedNote = UsefulMethods.getAccountFromServiceByLogin(searchedServices, args[0], inputLogin);
         }
 
         System.out.println("Будет удалён сервис: " + deletedNote.getIdService());
