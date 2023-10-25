@@ -15,8 +15,35 @@ import static org.junit.jupiter.api.Assertions.*;
 class ReplaceTest implements TestCommands {
 
     @Test
-    void test() {
+    void testReplaceServiceLogin_withoutAccounts() throws UnknownArgsException, AccessNotFoundException {
 
+        List<NoteEntity> notes = new ArrayList<>();
+        NoteEntity note1 = new NoteEntity("Vk.com", "vk.account@gmail.com"); note1.setPassword("password_vk");
+        notes.add(note1);
+
+        String oldLogin = note1.getLogin();
+
+        Replace replace = new Replace(notes);
+        String postfix = "vk.com login newString";
+        System.out.println( replace.perform(postfix) );
+
+        Assertions.assertNotEquals(oldLogin, note1.getLogin());
+    }
+
+    @Test
+    void testReplaceServicePassword_withoutAccounts() throws UnknownArgsException, AccessNotFoundException {
+
+        List<NoteEntity> notes = new ArrayList<>();
+        NoteEntity note1 = new NoteEntity("Vk.com", "vk.account@gmail.com"); note1.setPassword("password_vk");
+        notes.add(note1);
+
+        String oldPassword = note1.getPassword(true);
+
+        Replace replace = new Replace(notes);
+        String postfix = "vk.com password newString";
+        System.out.println( replace.perform(postfix) );
+
+        Assertions.assertNotEquals(oldPassword, note1.getPassword(true));
     }
 
     @Test
