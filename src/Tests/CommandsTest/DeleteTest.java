@@ -5,7 +5,6 @@ import Entity.NoteEntity;
 import OptionsExceptions.AccessNotFoundException;
 import OptionsExceptions.UnknownArgsException;
 import Tools.UsefulMethods;
-import org.glassfish.grizzly.http.Note;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -15,9 +14,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DeleteTest implements TestCommands {
-
-    //TODO
-    // У сервиса несколько аккаунтов
 
     @Test
     void testServiceWithoutAccount() throws UnknownArgsException, AccessNotFoundException {
