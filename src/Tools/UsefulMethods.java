@@ -54,7 +54,7 @@ public class UsefulMethods {
     public static List<NoteEntity> getAllAccountsForOneService(List<NoteEntity> listWithNotes, String serviceName) {
 
         List<NoteEntity> otherAccounts = listWithNotes.stream()
-                .filter(note -> note.getIdService().equalsIgnoreCase(serviceName))
+                .filter(note -> note.getIdService().split(" ")[0].equalsIgnoreCase(serviceName))
                 .collect(Collectors.toList());
 
         return otherAccounts;
