@@ -3,6 +3,7 @@ package Commands.WithParameters;
 import Commands.Commands;
 import Entity.NoteEntity;
 import OptionsExceptions.AccessNotFoundException;
+import OptionsExceptions.IncorrectValueException;
 import OptionsExceptions.UnknownArgsException;
 import Source.StartConsole;
 import Tools.AutoCorrection.AutoCorrectionServiceName;
@@ -26,7 +27,7 @@ public class Replace implements Commands {
     }
 
     @Override
-    public String perform(String postfix) throws UnknownArgsException, AccessNotFoundException {
+    public String perform(String postfix) throws UnknownArgsException, AccessNotFoundException, IncorrectValueException {
 
         String[] args = UsefulMethods.makeArgsTrue(postfix);
 
@@ -34,71 +35,118 @@ public class Replace implements Commands {
             throw new UnknownArgsException("Параметров меньше чем нужно");
         if(args.length > 3)
             throw new UnknownArgsException("Параметров больше чем нужно");
+        if(!args[1].equals("service") && !args[1].equals("login") && !args[1].equals("password")) {
+            throw new UnknownArgsException("Неизвестный параметр");
+        }
 
-        if(replaceNote(args) == null) {
-            return "Изменения не произошли";
-        } else {
+        if(replaceNote(args)) {
             CheckingForUpdate.isUpdated = true;
             return "Изменения приняты";
+        } else {
+            return "Изменения не произошли";
         }
+
     }
 
-    private NoteEntity replaceNote(String[] args) throws UnknownArgsException, AccessNotFoundException {
+    private boolean replaceNote(String[] args) throws AccessNotFoundException, IncorrectValueException {
 
         List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[0]); // Содержит необходимы-й/е аккаунт-/ы
-        Scanner confirm = new Scanner(System.in);
 
         if(searchedServices.isEmpty()) {
-
             String possibleVariant = AutoCorrectionServiceName.autoCorrect(args[0], Dictionaries.uniqueServiceNames);
             System.out.println("Возможно вы имели в виду: " + possibleVariant);
 
             throw new AccessNotFoundException("Сервис не найден");
         }
 
-        NoteEntity replacedNote; // Этот сервис взят из списка notes
-        // поэтому, если изменять его просто так, то он будет изменён только в списке notes, не в главном списке
-        if(searchedServices.size() == 1) {
-            replacedNote = searchedServices.get(0);
-        } else {
-            // Вывести все аккаунты сервиса + их логины
-            listWithNotes.stream()
+        NoteEntity replacedNote;
+        if(searchedServices.size() > 1) { // Если у сервиса больше одного аккаунта, выбираем с каким работать
+
+            listWithNotes.stream() // Вывести все аккаунты сервиса + их логины
                     .filter(note -> note.getIdService().split(" ")[0].equalsIgnoreCase(args[0]))
                     .forEach(note -> System.out.println(note.getIdService() + " -> " + note.getLogin()));
 
             System.out.print("Введите логин: ");
             String inputLogin = new Scanner(System.in).nextLine();
-
-            replacedNote = UsefulMethods.getAccountFromServiceByLogin(searchedServices, args[0], inputLogin);
+            replacedNote  = UsefulMethods.getAccountFromServiceByLogin(searchedServices, args[0], inputLogin);
+        } else {
+            replacedNote = searchedServices.get(0); // Если у сервиса нет аккаунтов, то работаем с сервисом
         }
 
-        int positionOfFindNoteInMainList = listWithNotes.indexOf(replacedNote); // Позиция требуемого сервиса в списке (главного), который был считан с файла
-        NoteEntity currentNoteInMainList = listWithNotes.get(positionOfFindNoteInMainList); // Сервис непосредственно взят из (главного) списка
-
-        // Тернарный оператор с 3 условиями (вложенные)
-        System.out.println( "Будут произведены следующие изменения в сервисе " + currentNoteInMainList.getIdService() + " с параметром " + args[1] + ": "
-                + ( args[1].equals("service") ? currentNoteInMainList.getIdService()
-                :args[1].equals("login") ? currentNoteInMainList.getLogin()
-                :currentNoteInMainList.getPassword(true) )
+        //Тернарный оператор с 3 условиями (вложенные)
+        System.out.println( "Будут произведены следующие изменения в сервисе " + replacedNote.getIdService() + " с параметром " + args[1] + ": "
+                + ( args[1].equals("service") ? replacedNote.getIdService()
+                :args[1].equals("login") ? replacedNote.getLogin()
+                :replacedNote.getPassword(true) )
                 + " -> " + args[2] );
 
-        System.out.println("Подтвердить ? (y/n)");
-        if( !confirm.nextLine().equals("y") ) {
-            return null;
-        }
+        //TODO Подтверждение
 
         switch (args[1]) {
+
             case "service" -> {
-                //TODO Здесь будут изменения связанные с ограничение на изменение названия сервиса
-                currentNoteInMainList.setIdService(args[2]);
-                UsefulMethods.changingNameOfAccount(listWithNotes, args[0]);
+
+                // Если изменить название Vk.com на название vk.com
+                if(searchedServices.get(0).getIdService().split(" ")[0].equals(args[2]))
+                    throw new IncorrectValueException("Нельзя менять название сервиса на такое же");
+
+                return replaceServiceName(replacedNote, args[2]); // Название нового сервиса
             }
-            case "login" -> currentNoteInMainList.setLogin(args[2]);
-            case "password" -> currentNoteInMainList.setPassword(args[2]);
-            default -> throw new UnknownArgsException("Неизвестный параметр в изменении");
+            case "login" -> {
+
+                // Если какого-либо аккаунта, одного сервиса, уже есть такой логин
+                if( searchedServices.stream().anyMatch(note -> note.getLogin().equals(args[2])) )
+                    throw new IncorrectValueException("У этого сервиса такой логин уже существует");
+
+                replacedNote.setLogin(args[2]);
+
+                replaceServiceLogin(); // Nothing right now
+            }
+            case "password" -> {
+                replaceServicePassword(); // Nothing right now
+            }
+
         }
 
-        return currentNoteInMainList;
+        return true;
+    }
+
+    // Обработка всех возможных проблем при изменении названия сервиса (аккаунта)
+    private boolean replaceServiceName(NoteEntity replacedNote, String newNameReplacedNote) throws IncorrectValueException {
+
+        // Сервис (аккаунты) у которых название совпало с названием переименуемого сервиса
+        List<NoteEntity> searchedAccountsWithNewName = UsefulMethods.getAllAccountsForOneService(listWithNotes, newNameReplacedNote);
+
+        // Если аккаунтов нет, значит просто переименовываем сервис
+        if(searchedAccountsWithNewName.isEmpty()) {
+            replacedNote.setIdService(newNameReplacedNote);
+
+            return true;
+        }
+
+        // Есть ли хоть один сервис с таким же логином как и у переименовываемого
+        boolean identicalLogin = searchedAccountsWithNewName.stream()
+                .anyMatch(note -> note.getLogin().equalsIgnoreCase(replacedNote.getLogin()));
+
+        // Проверка, совпадает ли логин переименновываемого сервиса с существующим
+        if (identicalLogin)
+            throw new IncorrectValueException("Такой логин уже есть");
+
+        String oldNameReplacedNote = replacedNote.getIdService(); // Старое название сервиса
+        replacedNote.setIdService(newNameReplacedNote); // Переименовывание
+
+        UsefulMethods.changingNameWhenRemove(listWithNotes, oldNameReplacedNote); // Переименовывание сервиса со старым названием
+        UsefulMethods.changingNameWhenAdd(listWithNotes, newNameReplacedNote); // Переименовывание сервиса с новым названием
+
+        return true;
+    }
+
+    private void replaceServiceLogin() {
+        // Nothing right now
+    }
+
+    private void replaceServicePassword() {
+        // Nothing right now
     }
 
 }
