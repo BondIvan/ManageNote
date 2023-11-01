@@ -11,6 +11,72 @@ import java.util.stream.Collectors;
 
 public class UsefulMethods {
 
+    public static void changingNameWhenAdd(List<NoteEntity> listWithNotes, String serviceName) {
+
+        String[] numberOfAccount = { "1-st", "2-nd", "3-rd", "4-th", "5-th", "6-th", "7-th", "8-th", "9-th", "10-th" }; // 10 аккаунтов максимум
+
+        int count = (int) listWithNotes.stream() // Определить, сколько аккаунтов существует у сервиса
+                .filter(note -> note.getIdService().toLowerCase().contains(serviceName.toLowerCase()))
+                .count();
+
+        List<NoteEntity> accounts = listWithNotes.stream() // Список аккаунтов без нумерации
+                .filter(note -> note.getIdService().split(" ")[0].equalsIgnoreCase(serviceName))
+                .filter(note -> !note.getIdService().contains("account"))
+                .toList(); // toList возвращает неизменяемый список (immutable)
+
+        // Если до переименовывания сервиса не было аккаунтов
+        if(count == 2) {
+            accounts.get(0).setIdService(serviceName + " (1-st account)");
+        }
+
+        // Если такого сервиса вообще не было, то нумерацию добалять не нужно
+        String serviceWithNewSerialNumber = count >= 1 ?
+                serviceName + " (" + numberOfAccount[count-1] + " account)" : serviceName;
+
+        Optional<NoteEntity> account = accounts.stream() // Взять аккаунт без нумерации
+                .filter(note -> note.getIdService().split(" ")[0].equalsIgnoreCase(serviceName))
+                .filter(note -> !note.getIdService().contains("account"))
+                .findFirst();
+
+        account.ifPresent(noteEntity -> noteEntity.setIdService(serviceWithNewSerialNumber));
+    }
+
+    public static void changingNameWhenRemove(List<NoteEntity> listWithNotes, String serviceName) {
+
+        String[] numberOfAccount = { "1-st", "2-nd", "3-rd", "4-th", "5-th", "6-th", "7-th", "8-th", "9-th", "10-th" }; // 10 аккаунтов максимум
+
+        List<NoteEntity> accounts = listWithNotes.stream() // Все аккаунты сервиса
+                .filter(note -> note.getIdService().toLowerCase().contains(serviceName.toLowerCase()))
+                .collect(Collectors.toList()); // Так, потому что .toList() возвращает неизменяемый список (immutable)
+
+        // Если удалён сервис без аккаунтов
+        if(accounts.isEmpty())
+            return;
+
+        // Если это последний аккаунт, то удалить №-th account
+        if(accounts.size() == 1) {
+            String nameWithoutNumber = accounts.get(0).getIdService().split(" ")[0];
+            accounts.get(0).setIdService( nameWithoutNumber );
+
+            return;
+        }
+
+        // Отсортировать аккаунты по названию (по номеру)
+        sortNoteEntityByServiceName(accounts);
+
+        // Если текущее название не содержит номер по порядку (проверяется с помощью массива numberOfAccount с счётчиком k),
+        // то заменяем следующий номер по счёту (Exp 1: если у текущего 3-rd, а должно быть 2-nd).
+        for(int i = 0, k = 0; i < accounts.size(); i++) {
+
+            String currName = accounts.get(i).getIdService();
+            if( !currName.contains(numberOfAccount[k]) ) {
+                accounts.get(i).setIdService( currName.replace(numberOfAccount[k+1], numberOfAccount[k]) ); // Для Exp 1: заменяем 3-rd на 2-nd
+            }
+            k++;
+        }
+
+    }
+
     // Изменяет номера аккаунтов при удалении одного из аккаунта у сервиса + удаляет из названия сервиса (№-th account), если он последний. (Максимум 10 аккаунтов у 1 сервиса)
     public static void changingNameOfAccount(List<NoteEntity> listWithNotes, String serviceName) {
         String[] numberOfAccount = { "1-st", "2-nd", "3-rd", "4-th", "5-th", "6-th", "7-th", "8-th", "9-th", "10-th" }; // 10 "аккаунтов" максимум
@@ -54,7 +120,7 @@ public class UsefulMethods {
     public static List<NoteEntity> getAllAccountsForOneService(List<NoteEntity> listWithNotes, String serviceName) {
 
         List<NoteEntity> otherAccounts = listWithNotes.stream()
-                .filter(note -> note.getIdService().equalsIgnoreCase(serviceName))
+                .filter(note -> note.getIdService().split(" ")[0].equalsIgnoreCase(serviceName))
                 .collect(Collectors.toList());
 
         return otherAccounts;
