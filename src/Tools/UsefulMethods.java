@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 public class UsefulMethods {
 
+    // Изменяет номера аккаунтов при добавлении аккаунта/сервиса (Максимум 10 аккаунтов у 1 сервиса)
     public static void changingNameWhenAdd(List<NoteEntity> listWithNotes, String serviceName) {
 
         String[] numberOfAccount = { "1-st", "2-nd", "3-rd", "4-th", "5-th", "6-th", "7-th", "8-th", "9-th", "10-th" }; // 10 аккаунтов максимум
@@ -41,6 +42,7 @@ public class UsefulMethods {
         account.ifPresent(noteEntity -> noteEntity.setIdService(serviceWithNewSerialNumber));
     }
 
+    // Изменяет номера аккаунтов при удалении одного из аккаунта у сервиса (Максимум 10 аккаунтов у 1 сервиса)
     public static void changingNameWhenRemove(List<NoteEntity> listWithNotes, String serviceName) {
 
         String[] numberOfAccount = { "1-st", "2-nd", "3-rd", "4-th", "5-th", "6-th", "7-th", "8-th", "9-th", "10-th" }; // 10 аккаунтов максимум
@@ -73,45 +75,6 @@ public class UsefulMethods {
                 accounts.get(i).setIdService( currName.replace(numberOfAccount[k+1], numberOfAccount[k]) ); // Для Exp 1: заменяем 3-rd на 2-nd
             }
             k++;
-        }
-
-    }
-
-    // Изменяет номера аккаунтов при удалении одного из аккаунта у сервиса + удаляет из названия сервиса (№-th account), если он последний. (Максимум 10 аккаунтов у 1 сервиса)
-    public static void changingNameOfAccount(List<NoteEntity> listWithNotes, String serviceName) {
-        String[] numberOfAccount = { "1-st", "2-nd", "3-rd", "4-th", "5-th", "6-th", "7-th", "8-th", "9-th", "10-th" }; // 10 "аккаунтов" максимум
-
-        int firstAccountService = 0;
-        for(int i = 0, k = 0, accountLeft_count = 0; i < listWithNotes.size(); i++) {
-
-            String currentName = listWithNotes.get(i).getIdService(); // Текущее рассмативаемое название аккаунта
-
-            if(currentName.toLowerCase().contains(serviceName.toLowerCase())) {
-                if (currentName.contains("account")) { // Если сервис содержит искомый сервис + у него в названии есть слово "аккаунт" (то есть не один аккаунт)
-
-                    accountLeft_count++; // Считает сколько аккаунтов осталось у сервиса
-
-                    if(accountLeft_count <= 1) { // Нет смысла запоминать позицию первого аккаунта, если их больше 1, удалять из названия (№-th account) не нужно
-                        firstAccountService = i; // Запоминает первый встречанный аккаунт, для того, в случае, если это последний аккаунт,
-                        // нужно будет удалить из названия аккаунта (№-th account)
-                    }
-
-                    // Если текущее название не содержит номер по порядку (проверяется с помощью массива numberOfAccount с счётчиком k),
-                    // то заменяем следующий номер по счёту (Exp 1: если у текущего 3-rd, а должно быть 2-nd).
-                    if(!currentName.contains(numberOfAccount[k])) {
-                        listWithNotes.get(i).setIdService(currentName.replace(numberOfAccount[k+1], numberOfAccount[k])); // Для Exp 1: заменяем 3-rd на 2-nd
-                    }
-
-                    k++; // Счётчик для массива numberOfAccount
-                }
-
-            }
-
-            // Если достигнут последний аккаунт из ВСЕХ И количество аккаунтов сервиса после удаления остался 1, то удалить у названия сервиса (№-th account)
-            if(i + 1 == listWithNotes.size() && accountLeft_count == 1) {
-                listWithNotes.get(firstAccountService).setIdService( listWithNotes.get(firstAccountService).getIdService().split(" ")[0] );
-            }
-
         }
 
     }

@@ -79,7 +79,7 @@ public class Delete implements Commands {
         }
 
         listWithNotes.remove(deletedNote);
-        UsefulMethods.changingNameOfAccount(listWithNotes, args[0]);
+        UsefulMethods.changingNameWhenRemove(listWithNotes, args[0]);
 
         return true;
     }
