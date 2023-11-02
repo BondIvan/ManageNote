@@ -86,10 +86,6 @@ public class Replace implements Commands {
 
             case "service" -> {
 
-                // Если изменить название Vk.com на название vk.com
-                if(searchedServices.get(0).getIdService().split(" ")[0].equals(args[2]))
-                    throw new IncorrectValueException("Нельзя менять название сервиса на такое же");
-
                 return replaceServiceName(replacedNote, args[2]); // Название нового сервиса
             }
             case "login" -> {
@@ -124,12 +120,21 @@ public class Replace implements Commands {
             return true;
         }
 
-        // Есть ли хоть один сервис с таким же логином как и у переименовываемого
-        boolean identicalLogin = searchedAccountsWithNewName.stream()
-                .anyMatch(note -> note.getLogin().equalsIgnoreCase(replacedNote.getLogin()));
+        // Есть ли хоть один сервис с таким же логином как и у переименовываемого (отрицательное условие позволяет переименовывать сервис на такое же название)
+        boolean identicalLogin = false;
+        for(NoteEntity nt: searchedAccountsWithNewName) {
+
+            if (nt.getLogin().equalsIgnoreCase(replacedNote.getLogin())
+                    && !nt.getIdService().split(" ")[0].equalsIgnoreCase(replacedNote.getIdService().split(" ")[0])) {
+
+                identicalLogin = true;
+                break;
+            }
+
+        }
 
         // Проверка, совпадает ли логин переименновываемого сервиса с существующим
-        if (identicalLogin)
+        if ( identicalLogin )
             throw new IncorrectValueException("Такой логин уже есть");
 
         String oldNameReplacedNote = replacedNote.getIdService(); // Старое название сервиса
