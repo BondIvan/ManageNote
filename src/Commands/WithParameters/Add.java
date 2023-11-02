@@ -2,6 +2,7 @@ package Commands.WithParameters;
 
 import Commands.Commands;
 import Entity.NoteEntity;
+import OptionsExceptions.IncorrectValueException;
 import OptionsExceptions.UnknownArgsException;
 import Source.StartConsole;
 import Tools.CheckingForUpdate;
@@ -23,7 +24,7 @@ public class Add implements Commands {
     }
 
     @Override
-    public String perform(String postfix) throws UnknownArgsException {
+    public String perform(String postfix) throws UnknownArgsException, IncorrectValueException {
 
         String[] args = UsefulMethods.makeArgsTrue(postfix); // Разбитие postfix-а на состовляющие (конкретные аргументы команды)
 
@@ -41,7 +42,7 @@ public class Add implements Commands {
             return "Сервис НЕ добавлен";
     }
 
-    private boolean addNewNote(String[] args) throws UnknownArgsException {
+    private boolean addNewNote(String[] args) throws UnknownArgsException, IncorrectValueException {
 
         List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[0]); // Содержит необходимы-й/е аккаунт-/ы
 
@@ -56,23 +57,16 @@ public class Add implements Commands {
         if( !confirm.nextLine().equals("y") )
             return false;
 
-        if(searchedServices.size() == 1) {
-            int positionOfFindNoteInMainList = listWithNotes.indexOf(searchedServices.get(0)); // Позиция требуемого сервиса в списке (главного), который был считан с файла
-            NoteEntity currentNoteInMainList = listWithNotes.get(positionOfFindNoteInMainList); // Сервис непосредственно взят из (главного) списка
-
-            currentNoteInMainList.setIdService(currentNoteInMainList.getIdService() + " (1-st account)"); // Добавление порядкового номера к существующему сервису
-        }
-
-        String serviceId = searchedServices.size() >= 1 ?
-                args[0] + " (" + numberOfAccount[searchedServices.size()] + " account)"
-                :args[0];
-
         NoteEntity newNote = new NoteEntity( // Добавляемый сервис/аккаунт
-                serviceId,
-                args[1] );
-        newNote.setPassword(args[2]);
+                args[0], // Название
+                args[1] ); // Логин
+        newNote.setPassword(args[2]); // Пароль
+
+        if( searchedServices.stream().anyMatch(note -> note.getLogin().equals(args[1])) )
+            throw new IncorrectValueException("У этого сервиса такой логин уже существует");
 
         listWithNotes.add(newNote);
+        UsefulMethods.changingNameWhenAdd(listWithNotes, args[0]);
 
         return true;
     }
