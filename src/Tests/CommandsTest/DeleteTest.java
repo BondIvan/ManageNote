@@ -57,7 +57,7 @@ class DeleteTest implements TestCommands {
         String deletedLogin = "second.account@gmail.com";
         NoteEntity deletedNote = UsefulMethods.getAccountFromServiceByLogin(notes, postfixWithName, deletedLogin); // Выбор сервиса по логину
         notes.remove(deletedNote); // Удаление сервиса аналогично как в классе Delete
-        UsefulMethods.changingNameOfAccount(notes, postfixWithName); // Изменение названия сервиса в соответствии с оставшимися у него аккаунтами
+        UsefulMethods.changingNameWhenRemove(notes, postfixWithName); // Изменение названия сервиса в соответствии с оставшимися у него аккаунтами
 
         // Удалён второй аккаунт
         boolean deletedSecondAcc = notes.contains(note2);
@@ -102,7 +102,7 @@ class DeleteTest implements TestCommands {
 
         NoteEntity noteEntity = UsefulMethods.getAccountFromServiceByLogin(notes, postfixWithName, deletedLogin); // Выбор сервиса по логину
         notes.remove(noteEntity); // Удаление сервиса аналогично как в классе Delete
-        UsefulMethods.changingNameOfAccount(notes, postfixWithName); // Изменение названия сервиса в соответствии с оставшимися у него аккаунтами
+        UsefulMethods.changingNameWhenRemove(notes, postfixWithName); // Изменение названия сервиса в соответствии с оставшимися у него аккаунтами
 
         // Удалён второй аккаунт
         boolean deletedSecondAcc = notes.contains(note2);
