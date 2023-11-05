@@ -31,7 +31,7 @@ public class UsefulMethods {
         }
 
         // Если такого сервиса вообще не было, то нумерацию добалять не нужно
-        String serviceWithNewSerialNumber = count >= 1 ?
+        String serviceWithNewSerialNumber = count > 1 ?
                 serviceName + " (" + numberOfAccount[count-1] + " account)" : serviceName;
 
         Optional<NoteEntity> account = accounts.stream() // Взять аккаунт без нумерации
