@@ -2,6 +2,7 @@ package Tests.CommandsTest;
 
 import Commands.WithParameters.Add;
 import Entity.NoteEntity;
+import OptionsExceptions.IncorrectValueException;
 import OptionsExceptions.UnknownArgsException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,7 @@ class AddTest implements TestCommands {
 
     // Проверка создания каждого номера аккаунта
     @Test
-    void testNextAccountForAlreadyExistService() throws UnknownArgsException {
+    void testNextAccountForAlreadyExistService() throws UnknownArgsException, IncorrectValueException {
 
         List<NoteEntity> notes = new ArrayList<>();
         NoteEntity note1 = new NoteEntity("Vk.com (1-st account)", "first.account@gmail.com"); note1.setPassword("password_vk_1");
@@ -43,7 +44,7 @@ class AddTest implements TestCommands {
 
     // Добавление нового сервиса
     @Test
-    void testNewService() throws UnknownArgsException {
+    void testNewService() throws UnknownArgsException, IncorrectValueException {
 
         List<NoteEntity> notes = new ArrayList<>();
         NoteEntity note = new NoteEntity("Vk.com", "first.account@gmail.com"); note.setPassword("password_vk_1");
@@ -58,25 +59,24 @@ class AddTest implements TestCommands {
         Assertions.assertTrue(existNewService);
     }
 
-    // Проверка добавления второго аккаунта к уже существующему сервису
+    // Проверка добавления второго аккаунта к уже существующему сервису, также проверка на работоспособность с LowerCase
     @Test
-    void testForNewAccountForAlreadyExistService() throws UnknownArgsException {
+    void testForNewAccountForAlreadyExistService() throws UnknownArgsException, IncorrectValueException {
 
         List<NoteEntity> notes = new ArrayList<>();
         NoteEntity note = new NoteEntity("Vk.com", "first.account@gmail.com"); note.setPassword("password_vk_1");
         notes.add(note);
 
-        String postfix = "Vk.com 375257291200 password_vk_2";
+        String postfix = "vk.com 375257291200 password_vk_2";
+
         Add add = new Add(notes);
         System.out.println( add.perform(postfix) ); // Добавление нового аккаунта к сервису Vk.com
 
-        boolean existForFirstAccount = notes.stream()
-                .anyMatch(note1 -> note1.getIdService().equalsIgnoreCase("Vk.com (1-st account)"));
         boolean existForSecondAccount = notes.stream()
                 .anyMatch(note1 -> note1.getIdService().equalsIgnoreCase("Vk.com (2-nd account)"));
 
-        Assertions.assertTrue(existForFirstAccount);
-        Assertions.assertTrue(existForSecondAccount);
+        Assertions.assertEquals("Vk.com (1-st account)".toLowerCase(), notes.get(0).getIdService().toLowerCase());
+        Assertions.assertTrue(existForSecondAccount, "Сервис не был добавлен");
     }
 
     // Проверка аргументов
@@ -97,19 +97,18 @@ class AddTest implements TestCommands {
     }
 
     @Test
-    void testLowerCaseServiceNameForAccount() throws UnknownArgsException {
+    void testIncorrectValueException() throws UnknownArgsException {
 
         List<NoteEntity> notes = new ArrayList<>();
-        NoteEntity note1 = new NoteEntity("Vk.com", "first.account@gmail.com"); note1.setPassword("password_vk_1");
-        notes.add(note1);
+        NoteEntity note = new NoteEntity("Vk.com", "first.account@gmail.com"); note.setPassword("password_vk_1");
+        notes.add(note);
+
+        String postfix = "vk.com first.account@gmail.com password_vk_2";
 
         Add add = new Add(notes);
-        System.out.println( add.perform("vk.com 2.account@gmail.com password_vk_2") );
+        Exception incorrectValueException = assertThrows(IncorrectValueException.class, () -> add.perform(postfix));
 
-        boolean existIfLowerCase = notes.stream()
-                .anyMatch(note -> note.getIdService().equalsIgnoreCase("Vk.com (2-nd account)"));
-
-        Assertions.assertTrue(existIfLowerCase);
+        Assertions.assertEquals("У этого сервиса такой логин уже существует", incorrectValueException.getMessage());
     }
 
 }
