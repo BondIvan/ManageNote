@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ReplaceTest implements TestCommands {
 
@@ -55,11 +55,12 @@ class ReplaceTest implements TestCommands {
         List<NoteEntity> notes = new ArrayList<>();
         NoteEntity note1 = new NoteEntity("Vk.com (1-st account)", "first.account@gmail.com"); note1.setPassword("password_vk_1");
         NoteEntity note2 = new NoteEntity("Vk.com (2-nd account)", "second.account@gmail.com"); note2.setPassword("password_vk_2");
-        NoteEntity note3 = new NoteEntity("Telegram.com", "teleg.account@gmail.com"); note3.setPassword("password_teleg_1");
+        NoteEntity note3 = new NoteEntity("Telegram.com (1-st account)", "teleg_first.account@gmail.com"); note3.setPassword("password_teleg_1");
         NoteEntity note4 = new NoteEntity("logo.com (1-st account)", "logo_first.account@gmail.com"); note4.setPassword("password_logo_1");
         NoteEntity note5 = new NoteEntity("logo.com (2-nd account)", "logo_second.account@gmail.com"); note5.setPassword("password_logo_2");
         NoteEntity note6 = new NoteEntity("logo.com (3-rd account)", "logo_third.account@gmail.com"); note6.setPassword("password_logo_3");
-        notes.add(note1); notes.add(note2); notes.add(note3); notes.add(note4); notes.add(note5); notes.add(note6);
+        NoteEntity note7 = new NoteEntity("Telegram.com (2-nd account)", "teleg_second.account@gmail.com"); note7.setPassword("password_telg_2");
+        notes.add(note1); notes.add(note2); notes.add(note3); notes.add(note4); notes.add(note5); notes.add(note6); notes.add(note7);
 
         Replace replace = new Replace(notes);
 
@@ -78,6 +79,15 @@ class ReplaceTest implements TestCommands {
 
         Assertions.assertEquals("logo.com", note6.getIdService());
         Assertions.assertEquals("Micro.com", note4.getIdService());
+
+        // Передать 1 аккаунт от сервиса с 2 аккаунтами к сервису без аккаунтов
+        String[] args3 = "Telegram.com service Micro.com".split(" ");
+        NoteEntity workNote3 = UsefulMethods.getAccountFromServiceByLogin(notes, args3[0], "teleg_first.account@gmail.com");
+        replace.replaceServiceName(workNote3, args3[2]);
+
+        Assertions.assertEquals("Telegram.com", note7.getIdService());
+        Assertions.assertEquals("Micro.com (1-st account)", note3.getIdService());
+        Assertions.assertEquals("Micro.com (2-nd account)", note4.getIdService());
     }
 
     @Test
@@ -94,6 +104,23 @@ class ReplaceTest implements TestCommands {
         System.out.println( replace.perform(postfix) );
 
         Assertions.assertEquals("newString", note1.getLogin());
+    }
+
+    @Test
+    void testReplaceServiceLogin_withAccounts() throws UnknownArgsException, AccessNotFoundException, IncorrectValueException {
+
+        List<NoteEntity> notes = new ArrayList<>();
+        NoteEntity note1 = new NoteEntity("Vk.com (1-st account)", "first.account@gmail.com"); note1.setPassword("password_vk_1");
+        NoteEntity note2 = new NoteEntity("Vk.com (2-nd account)", "second.account@gmail.com"); note2.setPassword("password_vk_2");
+        notes.add(note1); notes.add(note2);
+
+        Replace replace = new Replace(notes);
+
+        String[] args1 = "vk.com login newString".split(" ");
+        NoteEntity workNote1 = UsefulMethods.getAccountFromServiceByLogin(notes, args1[0], "second.account@gmail.com");
+        replace.replaceServiceLogin(workNote1, args1[2]);
+
+        Assertions.assertEquals("newString", note2.getLogin());
     }
 
     @Test
