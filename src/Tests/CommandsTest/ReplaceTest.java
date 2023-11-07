@@ -16,6 +16,39 @@ import static org.junit.jupiter.api.Assertions.*;
 class ReplaceTest implements TestCommands {
 
     @Test
+    void testReplaceServiceName_withoutAccounts() throws UnknownArgsException, IncorrectValueException, AccessNotFoundException {
+
+        List<NoteEntity> notes = new ArrayList<>();
+        NoteEntity note1 = new NoteEntity("Vk.com (1-st account)", "first.account@gmail.com"); note1.setPassword("password_vk_1");
+        NoteEntity note2 = new NoteEntity("Vk.com (2-nd account)", "second.account@gmail.com"); note1.setPassword("password_vk_2");
+        NoteEntity note3 = new NoteEntity("Telegram.com", "teleg.account@gmail.com"); note1.setPassword("password_teleg_1");
+        NoteEntity note4 = new NoteEntity("logo.com", "logo.account@gmail.com"); note1.setPassword("password_logo_1");
+        NoteEntity note5 = new NoteEntity("Yandex.ru", "yandex.account@gmail.com"); note1.setPassword("password_yandex_1");
+        notes.add(note1); notes.add(note2); notes.add(note3); notes.add(note4); notes.add(note5);
+
+        Replace replace = new Replace(notes);
+
+        // Изменить название сервиса без аккаунта на сервис с аккаунтами
+        String postfix1 = "Telegram.com service Vk.com";
+        System.out.println( replace.perform(postfix1) );
+
+        Assertions.assertEquals("Vk.com (3-rd account)", note3.getIdService());
+
+        // Изменить название сервиса без аккаунта этого же сервиса на "такое" же название
+        String postfix2 = "logo.com service Logo.com";
+        System.out.println( replace.perform(postfix2) );
+
+        Assertions.assertEquals("Logo.com", note4.getIdService());
+
+        // Изменить название сервиса без аккаунтов на сервис также без аккаунтов
+        String postfix3 = "Yandex.ru service Logo.com";
+        System.out.println( replace.perform(postfix3) );
+
+        Assertions.assertEquals("Logo.com (1-st account)", note4.getIdService());
+        Assertions.assertEquals("Logo.com (2-nd account)", note5.getIdService());
+    }
+
+    @Test
     void testReplaceServiceLogin_withoutAccounts() throws UnknownArgsException, AccessNotFoundException, IncorrectValueException {
 
         List<NoteEntity> notes = new ArrayList<>();
