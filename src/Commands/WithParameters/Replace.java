@@ -145,7 +145,7 @@ public class Replace implements Commands {
         replacedNote.setLogin(newLoginReplacedNote); // Replacement without checks
     }
 
-    private void replaceServicePassword(NoteEntity replacedNote, String newPasswordReplacedNote) throws UnknownArgsException {
+    public void replaceServicePassword(NoteEntity replacedNote, String newPasswordReplacedNote) throws UnknownArgsException {
 
         replacedNote.setPassword(newPasswordReplacedNote); // Replacement without checks
     }
