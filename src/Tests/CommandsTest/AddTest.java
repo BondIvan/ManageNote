@@ -67,7 +67,7 @@ class AddTest implements TestCommands {
         NoteEntity note = new NoteEntity("Vk.com", "first.account@gmail.com"); note.setPassword("password_vk_1");
         notes.add(note);
 
-        String postfix = "vk.com 375257291200 password_vk_2";
+        String postfix = "Vk.com 375257291200 password_vk_2";
 
         Add add = new Add(notes);
         System.out.println( add.perform(postfix) ); // Добавление нового аккаунта к сервису Vk.com
@@ -75,7 +75,7 @@ class AddTest implements TestCommands {
         boolean existForSecondAccount = notes.stream()
                 .anyMatch(note1 -> note1.getIdService().equalsIgnoreCase("Vk.com (2-nd account)"));
 
-        Assertions.assertEquals("Vk.com (1-st account)".toLowerCase(), notes.get(0).getIdService().toLowerCase());
+        Assertions.assertEquals("Vk.com (1-st account)", note.getIdService());
         Assertions.assertTrue(existForSecondAccount, "Сервис не был добавлен");
     }
 
