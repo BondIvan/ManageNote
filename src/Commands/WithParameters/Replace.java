@@ -111,36 +111,31 @@ public class Replace implements Commands {
     }
 
     // Обработка всех возможных проблем при изменении названия сервиса (аккаунта)
-    private boolean replaceServiceName(NoteEntity replacedNote, String newNameReplacedNote) throws IncorrectValueException {
+    public boolean replaceServiceName(NoteEntity replacedNote, String newNameReplacedNote) throws IncorrectValueException {
 
         // Сервис (аккаунты) у которых название совпало с названием переименуемого сервиса
         List<NoteEntity> searchedAccountsWithNewName = UsefulMethods.getAllAccountsForOneService(listWithNotes, newNameReplacedNote);
+
+        String oldNameReplacedNote = replacedNote.getIdService(); // Старое название сервиса
 
         // Если аккаунтов нет, значит просто переименовываем сервис
         if(searchedAccountsWithNewName.isEmpty()) {
             replacedNote.setIdService(newNameReplacedNote);
 
+            UsefulMethods.changingNameWhenRemove(listWithNotes, oldNameReplacedNote);
+
             return true;
         }
 
         // Есть ли хоть один сервис с таким же логином как и у переименовываемого (отрицательное условие позволяет переименовывать сервис на такое же название)
-        boolean identicalLogin = false;
         for(NoteEntity nt: searchedAccountsWithNewName) {
-
             if (nt.getLogin().equalsIgnoreCase(replacedNote.getLogin())
                     && !nt.getIdService().split(" ")[0].equalsIgnoreCase(replacedNote.getIdService().split(" ")[0])) {
 
-                identicalLogin = true;
-                break;
+                throw new IncorrectValueException("Такой логин уже есть");
             }
-
         }
 
-        // Проверка, совпадает ли логин переименновываемого сервиса с существующим
-        if ( identicalLogin )
-            throw new IncorrectValueException("Такой логин уже есть");
-
-        String oldNameReplacedNote = replacedNote.getIdService(); // Старое название сервиса
         replacedNote.setIdService(newNameReplacedNote); // Переименовывание
 
         UsefulMethods.changingNameWhenRemove(listWithNotes, oldNameReplacedNote); // Переименовывание сервиса со старым названием
