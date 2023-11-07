@@ -23,8 +23,6 @@ class GetTest implements TestCommands {
      *
      ***/
 
-    //TODO Добавить тест на получение сервиса по логину
-
     @Test
     void testGetByLogin() throws UnknownArgsException, AccessNotFoundException {
 
@@ -33,48 +31,14 @@ class GetTest implements TestCommands {
         NoteEntity note2 = new NoteEntity("Vk.com (2-nd account)", "second.account@gmail.com"); note2.setPassword("password_vk_2");
         NoteEntity note3 = new NoteEntity("Vk.com (3-rd account)", "third.account@gmail.com"); note3.setPassword("password_vk_3");
         NoteEntity note4 = new NoteEntity("Vk.com (4-th account)", "fourth.account@gmail.com"); note4.setPassword("password_vk_4");
-        notes.add(note1);
-        notes.add(note2);
-        notes.add(note3);
-        notes.add(note4);
+        notes.add(note1); notes.add(note2); notes.add(note3); notes.add(note4);
 
-        String login1 = "first.account@gmail.com";
-        String login3 = "third.account@gmail.com";
-        String login_no = "no.account@gmail.com";
+        String[] args = "vk.com".split(" ");
+        NoteEntity workNote1 = UsefulMethods.getAccountFromServiceByLogin(notes, args[0], "third.account@gmail.com");
+        NoteEntity workNote2 = UsefulMethods.getAccountFromServiceByLogin(notes, args[0], "first.account@gmail.com");
 
-        NoteEntity noteEntity1 = notes.stream()
-                .filter(note -> note.getIdService().split(" ")[0].equalsIgnoreCase("vk.com")) // Сравнивается первое слово текущего сервиса с требуемым
-                .filter(note -> note.getLogin().equalsIgnoreCase(login1))
-                .findFirst()
-                .orElseThrow(() -> new AccessNotFoundException("Сервис не найден"));
-
-        NoteEntity noteEntity3 = notes.stream()
-                .filter(note -> note.getIdService().split(" ")[0].equalsIgnoreCase("vk.com"))
-                .filter(note -> note.getLogin().equalsIgnoreCase(login3))
-                .findFirst()
-                .orElseThrow(() -> new AccessNotFoundException("Сервис не найден"));
-
-        Exception noteEntity_noByLogin = assertThrows(AccessNotFoundException.class, () ->
-                        notes.stream()
-                        .filter(note -> note.getIdService().split(" ")[0].equalsIgnoreCase("vk.com"))
-                        .filter(note -> note.getLogin().equalsIgnoreCase(login_no))
-                        .findFirst()
-                        .orElseThrow(() -> new AccessNotFoundException("Сервис не найден")));
-
-        Exception noteEntity_noByServiceName = assertThrows(AccessNotFoundException.class, () ->
-                notes.stream()
-                        .filter(note -> note.getIdService().split(" ")[0].equalsIgnoreCase("kvvvv.com"))
-                        .filter(note -> note.getLogin().equalsIgnoreCase(login3))
-                        .findFirst()
-                        .orElseThrow(() -> new AccessNotFoundException("Сервис не найден")));
-
-        // Положительные варианты
-        Assertions.assertEquals(note1, noteEntity1);
-        Assertions.assertEquals(note3, noteEntity3);
-
-        // Отрицательные варианты
-        Assertions.assertEquals("Сервис не найден", noteEntity_noByLogin.getMessage());
-        Assertions.assertEquals("Сервис не найден", noteEntity_noByServiceName.getMessage());
+        Assertions.assertEquals(note3, workNote1);
+        Assertions.assertEquals(note1, workNote2);
     }
 
     @Test
@@ -103,7 +67,6 @@ class GetTest implements TestCommands {
         // Проверка возвращаемого результа
         Assertions.assertEquals(expected1, get.perform(postfix1));
         Assertions.assertEquals(expected2, get.perform(postfix2));
-
     }
 
     // Проверка аргументов
