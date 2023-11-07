@@ -5,6 +5,7 @@ import Entity.NoteEntity;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import OptionsExceptions.AccessNotFoundException;
 import OptionsExceptions.UnknownArgsException;
@@ -55,10 +56,11 @@ public class Get implements Commands {
         if(searchedServices.size() == 1) {
             findNote = searchedServices.get(0);
         } else {
-            // Вывести все аккаунты сервиса + их логины
-            listWithNotes.stream()
+
+            // Отсортировать все аккаунты сервиса по названию + вывести их названия и логины
+            UsefulMethods.sortNoteEntityByServiceName( listWithNotes.stream()
                     .filter(note -> note.getIdService().split(" ")[0].equalsIgnoreCase(args[0]))
-                    .forEach(note -> System.out.println(note.getIdService() + " -> " + note.getLogin()));
+                    .collect(Collectors.toList()) ).forEach((note) -> System.out.println(note.getIdService() + " -> " + note.getLogin()));
 
             System.out.print("Введите логин: ");
             String inputLogin = new Scanner(System.in).nextLine();
