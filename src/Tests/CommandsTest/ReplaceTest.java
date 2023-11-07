@@ -21,10 +21,10 @@ class ReplaceTest implements TestCommands {
 
         List<NoteEntity> notes = new ArrayList<>();
         NoteEntity note1 = new NoteEntity("Vk.com (1-st account)", "first.account@gmail.com"); note1.setPassword("password_vk_1");
-        NoteEntity note2 = new NoteEntity("Vk.com (2-nd account)", "second.account@gmail.com"); note1.setPassword("password_vk_2");
-        NoteEntity note3 = new NoteEntity("Telegram.com", "teleg.account@gmail.com"); note1.setPassword("password_teleg_1");
-        NoteEntity note4 = new NoteEntity("logo.com", "logo.account@gmail.com"); note1.setPassword("password_logo_1");
-        NoteEntity note5 = new NoteEntity("Yandex.ru", "yandex.account@gmail.com"); note1.setPassword("password_yandex_1");
+        NoteEntity note2 = new NoteEntity("Vk.com (2-nd account)", "second.account@gmail.com"); note2.setPassword("password_vk_2");
+        NoteEntity note3 = new NoteEntity("Telegram.com", "teleg.account@gmail.com"); note3.setPassword("password_teleg_1");
+        NoteEntity note4 = new NoteEntity("logo.com", "logo.account@gmail.com"); note4.setPassword("password_logo_1");
+        NoteEntity note5 = new NoteEntity("Yandex.ru", "yandex.account@gmail.com"); note5.setPassword("password_yandex_1");
         notes.add(note1); notes.add(note2); notes.add(note3); notes.add(note4); notes.add(note5);
 
         Replace replace = new Replace(notes);
@@ -47,6 +47,37 @@ class ReplaceTest implements TestCommands {
 
         Assertions.assertEquals("Logo.com (1-st account)", note4.getIdService());
         Assertions.assertEquals("Logo.com (2-nd account)", note5.getIdService());
+    }
+
+    @Test
+    void testReplaceServiceName_withAccounts() throws UnknownArgsException, IncorrectValueException, AccessNotFoundException {
+
+        List<NoteEntity> notes = new ArrayList<>();
+        NoteEntity note1 = new NoteEntity("Vk.com (1-st account)", "first.account@gmail.com"); note1.setPassword("password_vk_1");
+        NoteEntity note2 = new NoteEntity("Vk.com (2-nd account)", "second.account@gmail.com"); note2.setPassword("password_vk_2");
+        NoteEntity note3 = new NoteEntity("Telegram.com", "teleg.account@gmail.com"); note3.setPassword("password_teleg_1");
+        NoteEntity note4 = new NoteEntity("logo.com (1-st account)", "logo_first.account@gmail.com"); note4.setPassword("password_logo_1");
+        NoteEntity note5 = new NoteEntity("logo.com (2-nd account)", "logo_second.account@gmail.com"); note5.setPassword("password_logo_2");
+        NoteEntity note6 = new NoteEntity("logo.com (3-rd account)", "logo_third.account@gmail.com"); note6.setPassword("password_logo_3");
+        notes.add(note1); notes.add(note2); notes.add(note3); notes.add(note4); notes.add(note5); notes.add(note6);
+
+        Replace replace = new Replace(notes);
+
+        // Изменить название аккаунта сервиса на название аккаунта другого сервиса
+        String[] args1 = "logo.com service Vk.com".split(" "); // Имитация args[]
+        NoteEntity workNote1 = UsefulMethods.getAccountFromServiceByLogin(notes, args1[0], "logo_second.account@gmail.com");
+        replace.replaceServiceName(workNote1, args1[2]);
+
+        Assertions.assertEquals("Vk.com (3-rd account)", note5.getIdService());
+        Assertions.assertEquals("logo.com (2-nd account)", note6.getIdService());
+
+        // Изменить название сервиса с аккаунтами так, чтобы у этого сервиса остался 1 аккаунт
+        String[] args2 = "logo.com service Micro.com".split(" ");
+        NoteEntity workNote2 = UsefulMethods.getAccountFromServiceByLogin(notes, args2[0], "logo_first.account@gmail.com");
+        replace.replaceServiceName(workNote2, args2[2]);
+
+        Assertions.assertEquals("logo.com", note6.getIdService());
+        Assertions.assertEquals("Micro.com", note4.getIdService());
     }
 
     @Test
