@@ -5,6 +5,7 @@ import Entity.NoteEntity;
 import OptionsExceptions.AccessNotFoundException;
 import OptionsExceptions.IncorrectValueException;
 import OptionsExceptions.UnknownArgsException;
+import Tools.UsefulMethods;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -55,13 +56,13 @@ class ReplaceTest implements TestCommands {
         NoteEntity note1 = new NoteEntity("Vk.com", "vk.account@gmail.com"); note1.setPassword("password_vk");
         notes.add(note1);
 
-        String oldLogin = note1.getLogin();
-
         Replace replace = new Replace(notes);
+
+        // Изменить логин у сервиса без аккаунтов
         String postfix = "vk.com login newString";
         System.out.println( replace.perform(postfix) );
 
-        Assertions.assertNotEquals(oldLogin, note1.getLogin());
+        Assertions.assertEquals("newString", note1.getLogin());
     }
 
     @Test
@@ -71,13 +72,13 @@ class ReplaceTest implements TestCommands {
         NoteEntity note1 = new NoteEntity("Vk.com", "vk.account@gmail.com"); note1.setPassword("password_vk");
         notes.add(note1);
 
-        String oldPassword = note1.getPassword(true);
-
         Replace replace = new Replace(notes);
+
+        // Изменить пароль для сервиса без аккаунтов
         String postfix = "vk.com password newString";
         System.out.println( replace.perform(postfix) );
 
-        Assertions.assertNotEquals(oldPassword, note1.getPassword(true));
+        Assertions.assertEquals("newString", note1.getPassword(true));
     }
 
     @Test
