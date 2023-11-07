@@ -50,10 +50,8 @@ public class NoteEntity {
     public String getPassword(boolean needDecrypt) { // needDecrypt - будет говорить, нужно ли расшифровать пароль
 
         ViewDecrypt viewDecrypt = new ViewDecrypt(Alphabet.getAlpha());
-        if(needDecrypt)
-            return viewDecrypt.decrypt(this.password);
-        else
-            return this.password;
+
+        return needDecrypt ? viewDecrypt.decrypt(this.password) : this.password;
     }
 
     @Override
