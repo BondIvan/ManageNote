@@ -140,6 +140,23 @@ class ReplaceTest implements TestCommands {
     }
 
     @Test
+    void testReplaceServicePassword_withAccounts() throws UnknownArgsException, AccessNotFoundException, IncorrectValueException {
+
+        List<NoteEntity> notes = new ArrayList<>();
+        NoteEntity note1 = new NoteEntity("Vk.com (1-st account)", "first.account@gmail.com"); note1.setPassword("password_vk_1");
+        NoteEntity note2 = new NoteEntity("Vk.com (2-nd account)", "second.account@gmail.com"); note2.setPassword("password_vk_2");
+        notes.add(note1); notes.add(note2);
+
+        Replace replace = new Replace(notes);
+
+        String[] args1 = "vk.com password newString".split(" ");
+        NoteEntity workNote1 = UsefulMethods.getAccountFromServiceByLogin(notes, args1[0], "first.account@gmail.com");
+        replace.replaceServicePassword(workNote1, args1[2]);
+
+        Assertions.assertEquals("newString", note1.getPassword(true));
+    }
+
+    @Test
     @Override
     public void testForExceptions() {
 
