@@ -94,15 +94,11 @@ public class Replace implements Commands {
                 if( searchedServices.stream().anyMatch(note -> note.getLogin().equals(args[2])) )
                     throw new IncorrectValueException("У этого сервиса такой логин уже существует");
 
-                replacedNote.setLogin(args[2]);
-
-                replaceServiceLogin(); // Nothing right now
+                replaceServiceLogin(replacedNote, args[2]); // Replacement without checks
             }
             case "password" -> {
 
-                replacedNote.setPassword(args[2]);
-
-                replaceServicePassword(); // Nothing right now
+                replaceServicePassword(replacedNote, args[2]); // Replacement without checks
             }
 
         }
@@ -111,36 +107,31 @@ public class Replace implements Commands {
     }
 
     // Обработка всех возможных проблем при изменении названия сервиса (аккаунта)
-    private boolean replaceServiceName(NoteEntity replacedNote, String newNameReplacedNote) throws IncorrectValueException {
+    public boolean replaceServiceName(NoteEntity replacedNote, String newNameReplacedNote) throws IncorrectValueException {
 
         // Сервис (аккаунты) у которых название совпало с названием переименуемого сервиса
         List<NoteEntity> searchedAccountsWithNewName = UsefulMethods.getAllAccountsForOneService(listWithNotes, newNameReplacedNote);
+
+        String oldNameReplacedNote = replacedNote.getIdService(); // Старое название сервиса
 
         // Если аккаунтов нет, значит просто переименовываем сервис
         if(searchedAccountsWithNewName.isEmpty()) {
             replacedNote.setIdService(newNameReplacedNote);
 
+            UsefulMethods.changingNameWhenRemove(listWithNotes, oldNameReplacedNote);
+
             return true;
         }
 
         // Есть ли хоть один сервис с таким же логином как и у переименовываемого (отрицательное условие позволяет переименовывать сервис на такое же название)
-        boolean identicalLogin = false;
         for(NoteEntity nt: searchedAccountsWithNewName) {
-
             if (nt.getLogin().equalsIgnoreCase(replacedNote.getLogin())
                     && !nt.getIdService().split(" ")[0].equalsIgnoreCase(replacedNote.getIdService().split(" ")[0])) {
 
-                identicalLogin = true;
-                break;
+                throw new IncorrectValueException("Такой логин уже есть");
             }
-
         }
 
-        // Проверка, совпадает ли логин переименновываемого сервиса с существующим
-        if ( identicalLogin )
-            throw new IncorrectValueException("Такой логин уже есть");
-
-        String oldNameReplacedNote = replacedNote.getIdService(); // Старое название сервиса
         replacedNote.setIdService(newNameReplacedNote); // Переименовывание
 
         UsefulMethods.changingNameWhenRemove(listWithNotes, oldNameReplacedNote); // Переименовывание сервиса со старым названием
@@ -149,12 +140,14 @@ public class Replace implements Commands {
         return true;
     }
 
-    private void replaceServiceLogin() {
-        // Nothing right now
+    public void replaceServiceLogin(NoteEntity replacedNote, String newLoginReplacedNote) {
+
+        replacedNote.setLogin(newLoginReplacedNote); // Replacement without checks
     }
 
-    private void replaceServicePassword() {
-        // Nothing right now
+    private void replaceServicePassword(NoteEntity replacedNote, String newPasswordReplacedNote) throws UnknownArgsException {
+
+        replacedNote.setPassword(newPasswordReplacedNote); // Replacement without checks
     }
 
 }
