@@ -48,7 +48,7 @@ public class Replace implements Commands {
 
     }
 
-    private boolean replaceNote(String[] args) throws AccessNotFoundException, IncorrectValueException {
+    private boolean replaceNote(String[] args) throws AccessNotFoundException, IncorrectValueException, UnknownArgsException {
 
         List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[0]); // Содержит необходимы-й/е аккаунт-/ы
 
@@ -99,6 +99,9 @@ public class Replace implements Commands {
                 replaceServiceLogin(); // Nothing right now
             }
             case "password" -> {
+
+                replacedNote.setPassword(args[2]);
+
                 replaceServicePassword(); // Nothing right now
             }
 
