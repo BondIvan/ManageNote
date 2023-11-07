@@ -94,15 +94,11 @@ public class Replace implements Commands {
                 if( searchedServices.stream().anyMatch(note -> note.getLogin().equals(args[2])) )
                     throw new IncorrectValueException("У этого сервиса такой логин уже существует");
 
-                replacedNote.setLogin(args[2]);
-
-                replaceServiceLogin(); // Nothing right now
+                replaceServiceLogin(replacedNote, args[2]); // Replacement without checks
             }
             case "password" -> {
 
-                replacedNote.setPassword(args[2]);
-
-                replaceServicePassword(); // Nothing right now
+                replaceServicePassword(replacedNote, args[2]); // Replacement without checks
             }
 
         }
@@ -144,12 +140,14 @@ public class Replace implements Commands {
         return true;
     }
 
-    private void replaceServiceLogin() {
-        // Nothing right now
+    public void replaceServiceLogin(NoteEntity replacedNote, String newLoginReplacedNote) {
+
+        replacedNote.setLogin(newLoginReplacedNote); // Replacement without checks
     }
 
-    private void replaceServicePassword() {
-        // Nothing right now
+    private void replaceServicePassword(NoteEntity replacedNote, String newPasswordReplacedNote) throws UnknownArgsException {
+
+        replacedNote.setPassword(newPasswordReplacedNote); // Replacement without checks
     }
 
 }
