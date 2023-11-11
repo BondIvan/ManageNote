@@ -1,15 +1,14 @@
 package Tests.UsefulMethodsTest;
 
 import Entity.NoteEntity;
+import OptionsExceptions.AccessNotFoundException;
 import OptionsExceptions.UnknownArgsException;
 import Tools.UsefulMethods;
-import org.glassfish.grizzly.http.Note;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 class UsefulMethodsTest extends UsefulMethods {
 
@@ -128,7 +127,20 @@ class UsefulMethodsTest extends UsefulMethods {
     }
 
     @Test
-    void testGetAccountFromServiceByLogin() {
+    void testGetAccountFromServiceByLogin() throws UnknownArgsException, AccessNotFoundException {
+
+        List<NoteEntity> notes = new ArrayList<>();
+        NoteEntity note1 = new NoteEntity("Vk.com (1-st account)", "vk_first.account@gmail.com"); note1.setPassword("password_vk_1");
+        NoteEntity note2 = new NoteEntity("Vk.com (2-nd account)", "vk_second.account@gmail.com"); note2.setPassword("password_vk_2");
+        NoteEntity note3 = new NoteEntity("Vk.com (3-rd account)", "vk_third.account@gmail.com"); note3.setPassword("password_vk_3");
+        notes.add(note1); notes.add(note2);
+
+        for(NoteEntity nt: notes) {
+            // Получение аккаунта сервиса по логину
+            NoteEntity noteByLogin = UsefulMethods.getAccountFromServiceByLogin(notes, nt.getIdService().split(" ")[0], nt.getLogin());
+            Assertions.assertEquals(nt, noteByLogin);
+        }
+
     }
 
     @Test
