@@ -12,7 +12,40 @@ import java.util.List;
 class UsefulMethodsTest extends UsefulMethods {
 
     @Test
-    void testChangingNameWhenAdd() {
+    void testChangingNameWhenAdd() throws UnknownArgsException {
+
+        List<NoteEntity> notes = new ArrayList<>();
+        NoteEntity note1 = new NoteEntity("Vk.com (1-st account)", "vk_first.account@gmail.com"); note1.setPassword("password_vk_1");
+        NoteEntity note2 = new NoteEntity("Vk.com (2-nd account)", "vk_second.account@gmail.com"); note2.setPassword("password_vk_2");
+        NoteEntity note3 = new NoteEntity("Telegram.com", "teleg_first.account@gmail.com"); note2.setPassword("password_teleg_1");
+        notes.add(note1); notes.add(note2); notes.add(note3);
+
+        String[] numberOfAccount = { "1-st", "2-nd", "3-rd", "4-th", "5-th", "6-th", "7-th", "8-th", "9-th", "10-th" }; // 10 аккаунтов максимум
+
+        // Добавить аккаунт к сервису без аккаунтов
+        NoteEntity newNote1 = new NoteEntity("Telegram.com", "teleg_second.account@gmral.com"); newNote1.setPassword("password_teleg_2");
+        notes.add(newNote1);
+        UsefulMethods.changingNameWhenAdd(notes, "Telegram.com");
+
+        Assertions.assertEquals("Telegram.com (1-st account)", note3.getIdService());
+        Assertions.assertEquals("Telegram.com (2-nd account)", newNote1.getIdService());
+
+        // Добавление нового аккаунта у сервиса, до 10 аккаунтов
+        for(int i = 3; i < 11; i++) {
+            NoteEntity newNote = new NoteEntity("Vk.com", "vk_" + i + ".account@gmail.com"); newNote.setPassword("password_vk_" + i);
+            notes.add(newNote);
+            UsefulMethods.changingNameWhenAdd(notes, "Vk.com");
+        }
+
+        // Добавление нового аккаунта у сервиса, до 10 аккаунтов
+        for(int i = 0, k = 0; i < notes.size(); i++) {
+            if(!notes.get(i).getIdService().contains("Vk.com"))
+                continue;
+
+            Assertions.assertEquals("Vk.com (" + numberOfAccount[k] + " account)", notes.get(i).getIdService());
+            k++;
+        }
+
     }
 
     @Test
