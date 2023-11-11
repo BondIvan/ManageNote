@@ -118,10 +118,11 @@ class UsefulMethodsTest extends UsefulMethods {
         notes.add(note1); notes.add(note2); notes.add(note3); notes.add(note4); notes.add(note5); notes.add(note6);
 
         // Аккаунты из общего списка (notes) используя метод
-        Object[] accountsFromOneService = UsefulMethods.getAllAccountsForOneService(notes, "Vk.com").toArray();
+        NoteEntity[] accountsFromOneService = UsefulMethods.getAllAccountsForOneService(notes, "Vk.com").toArray(new NoteEntity[0]);
+        // new NoteEntity[0] - чтобы вернуть массив определённого типа (NoteEntity)
 
         // Аккаунты из общего списка (notes) добавлены вручную, для проверки
-        Object[] accFromNotes = { note1, note2, note6 };
+        NoteEntity[] accFromNotes = { note1, note2, note6 };
 
         Assertions.assertArrayEquals(accFromNotes, accountsFromOneService);
     }
