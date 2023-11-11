@@ -177,13 +177,13 @@ class UsefulMethodsTest extends UsefulMethods {
         notes.add(note1); notes.add(note2); notes.add(note3); notes.add(note4); notes.add(note5); notes.add(note6);
         
         // Отсортированный массив из списка notes с использованием метода
-        NoteEntity[] sortedByMethod = UsefulMethods.sortNoteEntityByServiceName(notes).toArray(new NoteEntity[0]);
-        // new NoteEntity[0] - чтобы вернуть массив определённого типа (NoteEntity)
+        List<NoteEntity> sortedByMethod = UsefulMethods.sortNoteEntityByServiceName(notes);
 
         // Массив созданный вручную для тестирования
-        NoteEntity[] sortMyself = { note4, note3, note1, note2, note6, note5 };
+        NoteEntity[] arrayNote = { note4, note3, note1, note2, note6, note5 };
+        List<NoteEntity> sortMyself = Arrays.asList(arrayNote);
 
-        Assertions.assertArrayEquals(sortMyself, sortedByMethod);
+        Assertions.assertEquals(sortMyself, sortedByMethod);
     }
 
     @Test
