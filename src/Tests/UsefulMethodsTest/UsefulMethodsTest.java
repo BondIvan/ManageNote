@@ -3,11 +3,13 @@ package Tests.UsefulMethodsTest;
 import Entity.NoteEntity;
 import OptionsExceptions.UnknownArgsException;
 import Tools.UsefulMethods;
+import org.glassfish.grizzly.http.Note;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 class UsefulMethodsTest extends UsefulMethods {
 
@@ -105,7 +107,24 @@ class UsefulMethodsTest extends UsefulMethods {
     }
 
     @Test
-    void testGetAllAccountsForOneService() {
+    void testGetAllAccountsForOneService() throws UnknownArgsException {
+
+        List<NoteEntity> notes = new ArrayList<>();
+        NoteEntity note1 = new NoteEntity("Vk.com (1-st account)", "vk_first.account@gmail.com"); note1.setPassword("password_vk_1");
+        NoteEntity note2 = new NoteEntity("Vk.com (2-nd account)", "vk_second.account@gmail.com"); note2.setPassword("password_vk_2");
+        NoteEntity note3 = new NoteEntity("Telegram.com", "teleg.account@gmail.com"); note3.setPassword("password_teleg_1");
+        NoteEntity note4 = new NoteEntity("logo.com", "logo.account@gmail.com"); note4.setPassword("password_logo_1");
+        NoteEntity note5 = new NoteEntity("Yandex.ru", "yandex.account@gmail.com"); note5.setPassword("password_yandex_1");
+        NoteEntity note6 = new NoteEntity("Vk.com (3-rd account)", "vk_third.account@gmail.com"); note6.setPassword("password_vk_3");
+        notes.add(note1); notes.add(note2); notes.add(note3); notes.add(note4); notes.add(note5); notes.add(note6);
+
+        // Аккаунты из общего списка (notes) используя метод
+        Object[] accountsFromOneService = UsefulMethods.getAllAccountsForOneService(notes, "Vk.com").toArray();
+
+        // Аккаунты из общего списка (notes) добавлены вручную, для проверки
+        Object[] accFromNotes = { note1, note2, note6 };
+
+        Assertions.assertArrayEquals(accFromNotes, accountsFromOneService);
     }
 
     @Test
