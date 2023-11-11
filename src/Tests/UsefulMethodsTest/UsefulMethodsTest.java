@@ -163,7 +163,25 @@ class UsefulMethodsTest extends UsefulMethods {
     }
 
     @Test
-    void testSortNoteEntityByServiceName() {
+    void testSortNoteEntityByServiceName() throws UnknownArgsException {
+
+        List<NoteEntity> notes = new ArrayList<>();
+        NoteEntity note1 = new NoteEntity("Vk.com (1-st account)", "vk_first.account@gmail.com"); note1.setPassword("password_vk_1");
+        NoteEntity note2 = new NoteEntity("Vk.com (2-nd account)", "vk_second.account@gmail.com"); note2.setPassword("password_vk_2");
+        NoteEntity note3 = new NoteEntity("Telegram.com", "teleg.account@gmail.com"); note3.setPassword("password_teleg_1");
+        NoteEntity note4 = new NoteEntity("Logo.com", "logo.account@gmail.com"); note4.setPassword("password_logo_1");
+        NoteEntity note5 = new NoteEntity("Yandex.ru", "yandex.account@gmail.com"); note5.setPassword("password_yandex_1");
+        NoteEntity note6 = new NoteEntity("Vk.com (3-rd account)", "vk_third.account@gmail.com"); note6.setPassword("password_vk_3");
+        notes.add(note1); notes.add(note2); notes.add(note3); notes.add(note4); notes.add(note5); notes.add(note6);
+        
+        // Отсортированный массив из списка notes с использованием метода
+        NoteEntity[] sortedByMethod = UsefulMethods.sortNoteEntityByServiceName(notes).toArray(new NoteEntity[0]);
+        // new NoteEntity[0] - чтобы вернуть массив определённого типа (NoteEntity)
+
+        // Массив созданный вручную для тестирования
+        NoteEntity[] sortMyself = { note4, note3, note1, note2, note6, note5 };
+
+        Assertions.assertArrayEquals(sortMyself, sortedByMethod);
     }
 
     @Test
