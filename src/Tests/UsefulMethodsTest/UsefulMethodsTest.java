@@ -119,13 +119,13 @@ class UsefulMethodsTest extends UsefulMethods {
         notes.add(note1); notes.add(note2); notes.add(note3); notes.add(note4); notes.add(note5); notes.add(note6);
 
         // Аккаунты из общего списка (notes) используя метод
-        NoteEntity[] accountsFromOneService = UsefulMethods.getAllAccountsForOneService(notes, "Vk.com").toArray(new NoteEntity[0]);
-        // new NoteEntity[0] - чтобы вернуть массив определённого типа (NoteEntity)
+        List<NoteEntity> accountsFromOneService = UsefulMethods.getAllAccountsForOneService(notes, "Vk.com");
 
         // Аккаунты из общего списка (notes) добавлены вручную, для проверки
-        NoteEntity[] accFromNotes = { note1, note2, note6 };
+        NoteEntity[] arrayNote = { note1, note2, note6 };
+        List<NoteEntity> accFromNotes = Arrays.asList(arrayNote);
 
-        Assertions.assertArrayEquals(accFromNotes, accountsFromOneService);
+        Assertions.assertEquals(accFromNotes, accountsFromOneService);
     }
 
     @Test
