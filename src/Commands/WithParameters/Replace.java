@@ -132,6 +132,18 @@ public class Replace implements Commands {
             }
         }
 
+        // Если изменять название одного из аккаунта на "само себя" (изменён регистр букв/ы), то нет смысла изменять нумерацию других аккаунтов
+        if(replacedNote.getIdService().split(" ")[0].equalsIgnoreCase(newNameReplacedNote)) {
+
+            String similarName = newNameReplacedNote + " " // изменён регистр в названии
+                    + replacedNote.getIdService().split(" ")[1] + " " // (№-th
+                    + replacedNote.getIdService().split(" ")[2]; // account)
+
+            replacedNote.setIdService(similarName);
+
+            return true;
+        }
+
         replacedNote.setIdService(newNameReplacedNote); // Переименовывание
 
         UsefulMethods.changingNameWhenRemove(listWithNotes, oldNameReplacedNote); // Переименовывание сервиса со старым названием
