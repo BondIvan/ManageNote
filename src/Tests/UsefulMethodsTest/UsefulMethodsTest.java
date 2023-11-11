@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 class UsefulMethodsTest extends UsefulMethods {
@@ -186,6 +187,26 @@ class UsefulMethodsTest extends UsefulMethods {
     }
 
     @Test
-    void testGetAllUniqueServiceName() {
+    void testGetAllUniqueServiceName() throws UnknownArgsException {
+
+        List<NoteEntity> notes = new ArrayList<>();
+        NoteEntity note1 = new NoteEntity("Vk.com (1-st account)", "vk_first.account@gmail.com"); note1.setPassword("password_vk_1");
+        NoteEntity note2 = new NoteEntity("Vk.com (2-nd account)", "vk_second.account@gmail.com"); note2.setPassword("password_vk_2");
+        NoteEntity note3 = new NoteEntity("Telegram.com", "teleg.account@gmail.com"); note3.setPassword("password_teleg_1");
+        NoteEntity note4 = new NoteEntity("Logo.com (1-st account)", "logo_first.account@gmail.com"); note4.setPassword("password_logo_1");
+        NoteEntity note5 = new NoteEntity("Logo.com (2-nd account)", "logo_second.account@gmail.com"); note5.setPassword("password_logo_2");
+        NoteEntity note6 = new NoteEntity("Yandex.ru", "yandex.account@gmail.com"); note6.setPassword("password_yandex_1");
+        NoteEntity note7 = new NoteEntity("Vk.com (3-rd account)", "vk_third.account@gmail.com"); note7.setPassword("password_vk_3");
+        NoteEntity note8 = new NoteEntity("Steam.com (1-st account)", "steam_first.account@gmail.com"); note8.setPassword("password_steam_1");
+        NoteEntity note9 = new NoteEntity("Steam.com (2-nd account)", "steam_second.account@gmail.com"); note9.setPassword("password_steam_2");
+        notes.add(note1); notes.add(note2); notes.add(note3); notes.add(note4); notes.add(note5); notes.add(note6); notes.add(note7); notes.add(note8); notes.add(note9);
+
+        // Список уникальных названий с использованием метода
+        List<String> uniqueServiceName = UsefulMethods.getAllUniqueServiceName(notes);
+
+        // Список уникальных названий созданый руками
+        List<String> mySelfUnique = Arrays.asList("Vk.com", "Yandex.ru", "Telegram.com", "Steam.com", "Logo.com");
+
+        Assertions.assertEquals(mySelfUnique, uniqueServiceName);
     }
 }
