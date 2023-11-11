@@ -60,7 +60,11 @@ class ReplaceTest implements TestCommands {
         NoteEntity note5 = new NoteEntity("logo.com (2-nd account)", "logo_second.account@gmail.com"); note5.setPassword("password_logo_2");
         NoteEntity note6 = new NoteEntity("logo.com (3-rd account)", "logo_third.account@gmail.com"); note6.setPassword("password_logo_3");
         NoteEntity note7 = new NoteEntity("Telegram.com (2-nd account)", "teleg_second.account@gmail.com"); note7.setPassword("password_telg_2");
-        notes.add(note1); notes.add(note2); notes.add(note3); notes.add(note4); notes.add(note5); notes.add(note6); notes.add(note7);
+        NoteEntity note8 = new NoteEntity("Yandex.com (1-st account)", "yandex_first.account@gmail.com"); note8.setPassword("password_yandex_1");
+        NoteEntity note9 = new NoteEntity("Yandex.com (2-nd account)", "yandex_second.account@gmail.com"); note9.setPassword("password_yandex_2");
+        NoteEntity note10 = new NoteEntity("Yandex.com (3-rd account)", "yandex_third.account@gmail.com"); note10.setPassword("password_yandex_3");
+        notes.add(note1); notes.add(note2); notes.add(note3); notes.add(note4); notes.add(note5);
+        notes.add(note6); notes.add(note7); notes.add(note8); notes.add(note9); notes.add(note10);
 
         Replace replace = new Replace(notes);
 
@@ -88,6 +92,15 @@ class ReplaceTest implements TestCommands {
         Assertions.assertEquals("Telegram.com", note7.getIdService());
         Assertions.assertEquals("Micro.com (1-st account)", note3.getIdService());
         Assertions.assertEquals("Micro.com (2-nd account)", note4.getIdService());
+
+        // Изменить регистр букв/ы в названии какого-либо аккаунта
+        String[] args4 = "yandex.com service yandex.com".split(" ");
+        NoteEntity workNote4 = UsefulMethods.getAccountFromServiceByLogin(notes, args4[0], "yandex_second.account@gmail.com");
+        replace.replaceServiceName(workNote4, args4[2]);
+
+        Assertions.assertEquals("Yandex.com (1-st account)", note8.getIdService());
+        Assertions.assertEquals("yandex.com (2-nd account)", note9.getIdService());
+        Assertions.assertEquals("Yandex.com (3-rd account)", note10.getIdService());
     }
 
     @Test
