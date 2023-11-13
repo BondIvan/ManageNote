@@ -135,7 +135,7 @@ public class Replace implements Commands {
         }
 
         // Если изменять название одного из аккаунта на "само себя" (изменён регистр букв/ы), то нет смысла изменять нумерацию других аккаунтов
-        if(replacedNote.getIdService().split(" ")[0].equalsIgnoreCase(newNameReplacedNote)) {
+        if(replacedNote.getIdService().split(" ")[0].equalsIgnoreCase(newNameReplacedNote) && replacedNote.getIdService().contains("account")) {
 
             String similarName = newNameReplacedNote + " " // изменён регистр в названии
                     + replacedNote.getIdService().split(" ")[1] + " " // (№-th
