@@ -6,8 +6,13 @@ import Commands.WithOrWithoutParameters.GetAll;
 import Commands.WithParameters.*;
 import Commands.WithoutParameters.*;
 import Entity.NoteEntity;
+import Telegram.Bot.BotWithBackups;
 import Tools.AutoCorrection.Dictionaries;
 import Tools.UsefulMethods;
+import org.telegram.telegrambots.meta.ApiConstants;
+import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.generics.BotSession;
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.util.*;
 
@@ -49,6 +54,11 @@ public class StartConsole {
         factory.registerCommand("getall", GetAll.class);
         factory.registerCommand("help", Help.class);
         factory.registerCommand("save", Save.class);
+        factory.registerCommand("pushfile", PushFile.class);
+
+        BotWithBackups bot = new BotWithBackups();
+        TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
+        telegramBotsApi.registerBot(bot);
 
         Scanner inputLine = new Scanner(System.in);
         while (true) {
