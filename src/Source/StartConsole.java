@@ -7,6 +7,7 @@ import Commands.WithParameters.*;
 import Commands.WithoutParameters.*;
 import Entity.NoteEntity;
 import Telegram.Bot.BotWithBackups;
+import Telegram.Sender.MessageSender;
 import Tools.AutoCorrection.Dictionaries;
 import Tools.UsefulMethods;
 import org.telegram.telegrambots.meta.ApiConstants;
@@ -60,6 +61,10 @@ public class StartConsole {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         telegramBotsApi.registerBot(bot);
 
+        System.out.println("Отправляю сообщение");
+        bot.sendMessage(347329462, "ServiceName\nLogin: serviceLogin\nPassword: servicePassword_test-with-case");
+        //bot.sendFile(347329462);
+
         Scanner inputLine = new Scanner(System.in);
         while (true) {
             System.out.print("Введите команду: ");
@@ -75,7 +80,7 @@ public class StartConsole {
                 Commands command = factory.getCommand(prefix);
                 System.out.println(command.perform(postfix));
             } catch (Exception e) {
-                System.out.println("Ошибка: " + e.getMessage());
+                System.out.println("Ошибка в: " + factory.getCommand(prefix).getClass() + ", сообщение: " + e.getMessage());
             }
 
         }
