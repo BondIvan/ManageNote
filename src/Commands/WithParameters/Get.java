@@ -54,7 +54,7 @@ public class Get implements Commands {
             throw new AccessNotFoundException("Сервис не найден");
         }
 
-        return accounts;
+        return UsefulMethods.sortNoteEntityByServiceName(accounts);
     }
 
     public NoteEntity getNoteByLogin(String[] args) throws AccessNotFoundException {
