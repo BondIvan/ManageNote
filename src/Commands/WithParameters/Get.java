@@ -59,6 +59,11 @@ public class Get implements Commands {
 
     public NoteEntity getNoteByLogin(String[] args) throws AccessNotFoundException {
 
+        List<NoteEntity> service = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[0]);
+
+        if(service.isEmpty())
+            throw new AccessNotFoundException("Сервис не найден");
+
         return UsefulMethods.getAccountFromServiceByLogin(listWithNotes, args[0], args[1]);
     }
 
