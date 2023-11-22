@@ -63,7 +63,7 @@ public class StartConsole {
 
             try {
                 Commands command = factory.getCommand(prefix);
-                System.out.println(command.perform(postfix));
+                System.out.println(command.perform(postfix) + "\n");
             } catch (Exception e) {
                 System.out.println("Ошибка: " + e.getMessage());
             }

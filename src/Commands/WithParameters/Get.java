@@ -29,17 +29,17 @@ public class Get implements Commands {
 
         String[] args = UsefulMethods.makeArgsTrue(postfix); // Разбитие postfix-а на состовляющие (конкретные аргументы команды)
 
-        //TODO [serviceName] [login]
-
         if(args.length == 0)
             throw  new UnknownArgsException("Нет параметров");
         if(args.length > 2)
             throw new UnknownArgsException("Параметров больше чем нужно");
 
+        // [serviceName] + [login]
         if(args.length > 1) {
             return printNotes( List.of(getNoteByLogin(args)) );
         }
 
+        // [serviceName]
         return printNotes( getListWithNotes(args) );
     }
 
@@ -74,9 +74,9 @@ public class Get implements Commands {
 
         for(int i = 0; i < notes.size(); i++) {
             stringBuilder.append(start).append(notes.get(i).toString());
-            if(i+1 != notes.size()) {
+
+            if(i+1 != notes.size())
                 stringBuilder.append("\n");
-            }
         }
         stringBuilder.append(end);
 
