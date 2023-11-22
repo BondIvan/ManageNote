@@ -57,8 +57,6 @@ public class NoteEntity {
     @Override
     public String toString() { //TODO Подумать, нужно ли здесь расшифровывать пароль
 
-        return "--------------------------------------\n" +
-                idService + "\nLogin: " + login + "\nPassword: " + getPassword(true) +
-                "\n--------------------------------------";
+        return idService + "\nLogin: " + login + "\nPassword: " + getPassword(true);
     }
 }
