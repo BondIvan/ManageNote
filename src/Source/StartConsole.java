@@ -63,6 +63,15 @@ public class StartConsole {
 
             try {
                 Commands command = factory.getCommand(prefix);
+
+                if(command instanceof Delete) {
+                    System.out.println("Действительно удалить этот сервис? " + postfix);
+                    if(!inputLine.nextLine().equals("y")) {
+                        System.out.println("Удаление НЕ произошло");
+                        continue;
+                    }
+                }
+
                 System.out.println(command.perform(postfix) + "\n");
             } catch (Exception e) {
                 System.out.println("Ошибка: " + e.getMessage());

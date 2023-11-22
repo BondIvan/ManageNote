@@ -73,13 +73,6 @@ public class Delete implements Commands {
             deletedNote = UsefulMethods.getAccountFromServiceByLogin(searchedServices, args[0], inputLogin);
         }
 
-        System.out.println("Будет удалён сервис: " + deletedNote.getIdService());
-
-        System.out.println("Подтвердить? (y/n)");
-        if( !confirm.nextLine().equals("y") ) {
-            return false;
-        }
-
         listWithNotes.remove(deletedNote);
         UsefulMethods.changingNameWhenRemove(listWithNotes, args[0]);
 
