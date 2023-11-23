@@ -74,6 +74,8 @@ public class Delete implements Commands {
         listWithNotes.remove(searchedServices.get(0));
         UsefulMethods.changingNameWhenRemove(listWithNotes, args[0]);
 
+        CheckingForUpdate.isUpdated = true;
+
         return "Удалено";
     }
 
@@ -84,6 +86,8 @@ public class Delete implements Commands {
         // [serviceName]
         listWithNotes.remove(deletedNote);
         UsefulMethods.changingNameWhenRemove(listWithNotes, args[0]);
+
+        CheckingForUpdate.isUpdated = true;
 
         return "Удалено";
     }
