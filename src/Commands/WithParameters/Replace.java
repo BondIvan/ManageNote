@@ -160,7 +160,7 @@ public class Replace implements Commands {
 
             UsefulMethods.changingNameWhenRemove(listWithNotes, oldNameReplacedNote);
 
-            return true;
+            return;
         }
 
         // Есть ли хоть один сервис с таким же логином как и у переименовываемого (отрицательное условие позволяет переименовывать сервис на такое же название)
@@ -175,13 +175,19 @@ public class Replace implements Commands {
         // Если изменять название одного из аккаунта на "само себя" (изменён регистр букв/ы), то нет смысла изменять нумерацию других аккаунтов
         if(replacedNote.getIdService().split(" ")[0].equalsIgnoreCase(newNameReplacedNote)) {
 
+            // Переименовывание название на само себя у сервиса без аккаунтов
+            if(searchedAccountsWithNewName.size() == 1) {
+                replacedNote.setIdService(newNameReplacedNote);
+                return;
+            }
+
             String similarName = newNameReplacedNote + " " // изменён регистр в названии
                     + replacedNote.getIdService().split(" ")[1] + " " // (№-th
                     + replacedNote.getIdService().split(" ")[2]; // account)
 
             replacedNote.setIdService(similarName);
 
-            return true;
+            return;
         }
 
         replacedNote.setIdService(newNameReplacedNote); // Переименовывание
@@ -189,7 +195,7 @@ public class Replace implements Commands {
         UsefulMethods.changingNameWhenRemove(listWithNotes, oldNameReplacedNote); // Переименовывание сервиса со старым названием
         UsefulMethods.changingNameWhenAdd(listWithNotes, newNameReplacedNote); // Переименовывание сервиса с новым названием
 
-        return true;
+        return;
     }
 
     public void replaceServiceLogin(NoteEntity replacedNote, String newLoginReplacedNote) {
