@@ -24,49 +24,121 @@ class GetTest implements TestCommands {
      ***/
 
     @Test
-    void testGetByLogin() throws UnknownArgsException, AccessNotFoundException {
+    void testGet_perform() throws UnknownArgsException, AccessNotFoundException {
 
         List<NoteEntity> notes = new ArrayList<>();
         NoteEntity note1 = new NoteEntity("Vk.com (1-st account)", "first.account@gmail.com"); note1.setPassword("password_vk_1");
         NoteEntity note2 = new NoteEntity("Vk.com (2-nd account)", "second.account@gmail.com"); note2.setPassword("password_vk_2");
-        NoteEntity note3 = new NoteEntity("Vk.com (3-rd account)", "third.account@gmail.com"); note3.setPassword("password_vk_3");
-        NoteEntity note4 = new NoteEntity("Vk.com (4-th account)", "fourth.account@gmail.com"); note4.setPassword("password_vk_4");
-        notes.add(note1); notes.add(note2); notes.add(note3); notes.add(note4);
-
-        String[] args = "vk.com".split(" ");
-        NoteEntity workNote1 = UsefulMethods.getAccountFromServiceByLogin(notes, args[0], "third.account@gmail.com");
-        NoteEntity workNote2 = UsefulMethods.getAccountFromServiceByLogin(notes, args[0], "first.account@gmail.com");
-
-        Assertions.assertEquals(note3, workNote1);
-        Assertions.assertEquals(note1, workNote2);
-    }
-
-    @Test
-    void testIgnoreCase() throws IOException, AccessNotFoundException, UnknownArgsException {
-
-        List<NoteEntity> notes = UsefulMethods.getAllNoteFromFile("C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\ForTesting.txt");
+        NoteEntity note3 = new NoteEntity("Telegram.com", "teleg.account@gmail.com"); note3.setPassword("password_teleg_1");
+        NoteEntity note4 = new NoteEntity("logo.com", "logo.account@gmail.com"); note4.setPassword("password_logo_1");
+        NoteEntity note5 = new NoteEntity("Yandex.ru", "yandex.account@gmail.com"); note5.setPassword("password_yandex_1");
+        notes.add(note1); notes.add(note2); notes.add(note3); notes.add(note4); notes.add(note5);
 
         Dictionaries dictionaries = new Dictionaries();
         dictionaries.fillingDictionaries(notes);
 
         Get get = new Get(notes);
 
-        String postfix1 = "Telegram.com";
-        String postfix2 = "teleGram.com";
+        String postfix1 = "telegram.com";
+        String postfix2  = "telegram.com teleg.account@gmail.com";
+        String postfix3 = "vk.com";
+        String postfix4 = "vk.com first.account@gmail.com";
+
+        String actual1 = get.perform(postfix1);
+        String actual2 = get.perform(postfix2);
+        String actual3 = get.perform(postfix3);
+        String actual4 = get.perform(postfix4);
 
         String expected1 = """
+                --------------------------------------
                 Telegram.com
-                Login: Anien
-                Password: guardianWith525Shield""";
-
+                Login: teleg.account@gmail.com
+                Password: password_teleg_1
+                --------------------------------------""";
         String expected2 = """
+                --------------------------------------
                 Telegram.com
-                Login: Anien
-                Password: guardianWith525Shield""";
+                Login: teleg.account@gmail.com
+                Password: password_teleg_1
+                --------------------------------------""";
+        String expected3 = """
+                --------------------------------------
+                Vk.com (1-st account)
+                Login: first.account@gmail.com
+                Password: password_vk_1
+                --------------------------------------
+                Vk.com (2-nd account)
+                Login: second.account@gmail.com
+                Password: password_vk_2
+                --------------------------------------""";
+        String expected4 = """
+                --------------------------------------
+                Vk.com (1-st account)
+                Login: first.account@gmail.com
+                Password: password_vk_1
+                --------------------------------------""";
 
-        // Проверка возвращаемого результа
-        Assertions.assertEquals(expected1, get.perform(postfix1));
-        Assertions.assertEquals(expected2, get.perform(postfix2));
+        // Проверка совпадает ли результат метода perform с ожидаемым
+        Assertions.assertEquals(expected1, actual1);
+        Assertions.assertEquals(expected2, actual2);
+        Assertions.assertEquals(expected3, actual3);
+        Assertions.assertEquals(expected4, actual4);
+    }
+
+    @Test
+    void testGet_getListWithNotes() throws AccessNotFoundException, UnknownArgsException {
+
+        List<NoteEntity> notes = new ArrayList<>();
+        NoteEntity note1 = new NoteEntity("Vk.com (1-st account)", "first.account@gmail.com"); note1.setPassword("password_vk_1");
+        NoteEntity note2 = new NoteEntity("Vk.com (2-nd account)", "second.account@gmail.com"); note2.setPassword("password_vk_2");
+        NoteEntity note3 = new NoteEntity("Telegram.com", "teleg.account@gmail.com"); note3.setPassword("password_teleg_1");
+        NoteEntity note4 = new NoteEntity("logo.com", "logo.account@gmail.com"); note4.setPassword("password_logo_1");
+        NoteEntity note5 = new NoteEntity("Yandex.ru", "yandex.account@gmail.com"); note5.setPassword("password_yandex_1");
+        notes.add(note1); notes.add(note2); notes.add(note3); notes.add(note4); notes.add(note5);
+
+        Dictionaries dictionaries = new Dictionaries();
+        dictionaries.fillingDictionaries(notes);
+
+        Get get = new Get(notes);
+
+        String postfix3 = "vk.com";
+        String postfix4 = "vk.com second.account@gmail.com";
+
+        List<NoteEntity> actual3 = get.getListWithNotes(UsefulMethods.makeArgsTrue(postfix3));
+        List<NoteEntity> actual4 = get.getListWithNotes(UsefulMethods.makeArgsTrue(postfix4));
+
+        // Получение аккаунтов сервиса, с параметром логин и без него
+        Assertions.assertEquals(List.of(note1, note2), actual3);
+        Assertions.assertNotEquals(List.of(note2, note1), actual3);
+        Assertions.assertEquals(List.of(note2), actual4);
+    }
+
+    @Test
+    void testGet_getNoteByLogin() throws AccessNotFoundException, UnknownArgsException {
+
+        List<NoteEntity> notes = new ArrayList<>();
+        NoteEntity note1 = new NoteEntity("Vk.com (1-st account)", "first.account@gmail.com"); note1.setPassword("password_vk_1");
+        NoteEntity note2 = new NoteEntity("Vk.com (2-nd account)", "second.account@gmail.com"); note2.setPassword("password_vk_2");
+        NoteEntity note3 = new NoteEntity("Telegram.com", "teleg.account@gmail.com"); note3.setPassword("password_teleg_1");
+        NoteEntity note4 = new NoteEntity("logo.com", "logo.account@gmail.com"); note4.setPassword("password_logo_1");
+        NoteEntity note5 = new NoteEntity("Yandex.ru", "yandex.account@gmail.com"); note5.setPassword("password_yandex_1");
+        notes.add(note1); notes.add(note2); notes.add(note3); notes.add(note4); notes.add(note5);
+
+        Dictionaries dictionaries = new Dictionaries();
+        dictionaries.fillingDictionaries(notes);
+
+        Get get = new Get(notes);
+
+        // Специально с нижним регистром, для проверки.
+        String postfix1 = "telegram.com";
+        String postfix2 = "telegram.com teleg.account@gmail.com";
+
+        NoteEntity actual1 = get.getNoteByLogin(UsefulMethods.makeArgsTrue(postfix1));
+        NoteEntity actual2 = get.getNoteByLogin(UsefulMethods.makeArgsTrue(postfix2));
+
+        // Получение сервиса без аккаунтов двумя способами
+        Assertions.assertEquals(note3, actual1);
+        Assertions.assertEquals(note3, actual2);
     }
 
     // Проверка аргументов
@@ -76,21 +148,23 @@ class GetTest implements TestCommands {
 
         List<NoteEntity> notes;
         try {
-            notes = UsefulMethods.getAllNoteFromFile("C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\ForTesting.txt");
+            notes = UsefulMethods.getAllNoteFromFile("/Users/Anien/Documents/ManageNote/src/ForTxtFiles/ForTesting.txt");
         } catch (Exception e) {
-            System.err.println("Ошибка: " + e.getMessage());
+            System.err.println("Ошибка (я): " + e.getMessage());
             return;
         }
 
         Get get = new Get(notes);
 
-        Exception accessNotFoundException = assertThrows(AccessNotFoundException.class, () -> get.perform("Telegram"));
-        Exception unknownArgsException1 = assertThrows(OptionsExceptions.UnknownArgsException.class, () -> get.perform("Telegram.com arg2"));
+        Exception accessNotFoundException1 = assertThrows(AccessNotFoundException.class, () -> get.perform("DontExist"));
+        Exception accessNotFoundException2 = assertThrows(AccessNotFoundException.class, () -> get.perform("Telegram.com wrongLogin"));
+        Exception unknownArgsException1 = assertThrows(OptionsExceptions.UnknownArgsException.class, () -> get.perform("Telegram.com arg2 arg3"));
         Exception unknownArgsException2 = assertThrows(OptionsExceptions.UnknownArgsException.class, () -> get.perform(""));
 
-        Assertions.assertEquals("Сервис не найден", accessNotFoundException.getMessage());
+        Assertions.assertEquals("Сервис не найден", accessNotFoundException1.getMessage());
         Assertions.assertEquals("Параметров больше чем нужно", unknownArgsException1.getMessage());
         Assertions.assertEquals("Нет параметров", unknownArgsException2.getMessage());
+        Assertions.assertEquals("Неправильный логин аккаунта", accessNotFoundException2.getMessage());
     }
 
 }
