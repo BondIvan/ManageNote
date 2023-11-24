@@ -39,6 +39,9 @@ public class StartConsole {
         dictionaries.fillingDictionaries(NOTES);
 
         CommandFactory factory = new CommandFactory();
+
+        factory.registerCommand("getall", GetAll.class);
+        
         factory.registerCommand("add", Add.class);
         factory.registerCommand("delete", Delete.class);
         factory.registerCommand("get", Get.class);
@@ -46,7 +49,6 @@ public class StartConsole {
 
         factory.registerCommand("copyfile", CopyFile.class);
         factory.registerCommand("exit", Exit.class);
-        factory.registerCommand("getall", GetAll.class);
         factory.registerCommand("help", Help.class);
         factory.registerCommand("save", Save.class);
 
@@ -63,7 +65,18 @@ public class StartConsole {
 
             try {
                 Commands command = factory.getCommand(prefix);
-                System.out.println(command.perform(postfix));
+
+                if(command instanceof Delete) {
+                    System.out.println("Действительно удалить этот сервис? (y/n) " + postfix);
+                    if(!inputLine.nextLine().equals("y")) {
+                        System.out.println("Удаление НЕ произошло");
+                        continue;
+                    }
+                }
+
+                System.out.println(command.perform(postfix) + "\n");
+
+                dictionaries.fillingDictionaries(NOTES); // Обновление словаря, после изменения главного списка (удаление, добавление, изменение сервиса)
             } catch (Exception e) {
                 System.out.println("Ошибка: " + e.getMessage());
             }

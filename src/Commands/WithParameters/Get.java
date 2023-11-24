@@ -2,18 +2,15 @@ package Commands.WithParameters;
 
 import Commands.Commands;
 import Entity.NoteEntity;
-
-import java.util.List;
-import java.util.Scanner;
-import java.util.stream.Collectors;
-
 import OptionsExceptions.AccessNotFoundException;
 import OptionsExceptions.UnknownArgsException;
-
 import Source.StartConsole;
 import Tools.AutoCorrection.AutoCorrectionServiceName;
 import Tools.AutoCorrection.Dictionaries;
 import Tools.UsefulMethods;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Get implements Commands {
 
@@ -34,40 +31,61 @@ public class Get implements Commands {
 
         if(args.length == 0)
             throw  new UnknownArgsException("Нет параметров");
-        if(args.length > 1)
+        if(args.length > 2)
             throw new UnknownArgsException("Параметров больше чем нужно");
-        else
-            return getNote(args).toString();
+
+        // [serviceName] + [login]
+        if(args.length > 1) {
+            return printNotes( List.of(getNoteByLogin(args)) );
+        }
+
+        // [serviceName]
+        return printNotes( getListWithNotes(args) );
     }
 
-    private NoteEntity getNote(String[] args) throws AccessNotFoundException {
+    public List<NoteEntity> getListWithNotes(String[] args) throws AccessNotFoundException {
 
-        List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[0]);
+        List<NoteEntity> accounts = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[0]);
 
-        if(searchedServices.isEmpty()) {
-
+        if( accounts.isEmpty() ) {
             String possibleVariant = AutoCorrectionServiceName.autoCorrect(args[0], Dictionaries.uniqueServiceNames);
             System.out.println("Возможно вы имели в виду: " + possibleVariant);
 
             throw new AccessNotFoundException("Сервис не найден");
         }
 
-        NoteEntity findNote;
-        if(searchedServices.size() == 1) {
-            findNote = searchedServices.get(0);
-        } else {
-
-            // Отсортировать все аккаунты сервиса по названию + вывести их названия и логины
-            UsefulMethods.sortNoteEntityByServiceName( listWithNotes.stream()
-                    .filter(note -> note.getIdService().split(" ")[0].equalsIgnoreCase(args[0]))
-                    .collect(Collectors.toList()) ).forEach((note) -> System.out.println(note.getIdService() + " -> " + note.getLogin()));
-
-            System.out.print("Введите логин: ");
-            String inputLogin = new Scanner(System.in).nextLine();
-
-            findNote = UsefulMethods.getAccountFromServiceByLogin(searchedServices, args[0], inputLogin);
-        }
-
-        return findNote;
+        return UsefulMethods.sortNoteEntityByServiceName(accounts);
     }
+
+    public NoteEntity getNoteByLogin(String[] args) throws AccessNotFoundException {
+
+        List<NoteEntity> service = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[0]);
+
+        if(service.isEmpty())
+            throw new AccessNotFoundException("Сервис не найден");
+
+        return UsefulMethods.getAccountFromServiceByLogin(listWithNotes, args[0], args[1]);
+    }
+
+    private String printNotes(List<NoteEntity> notes) {
+
+        String start = "--------------------------------------\n";
+        String end = "\n--------------------------------------";
+
+        if(notes.size() < 2)
+            return start + notes.get(0).toString() + end;
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for(int i = 0; i < notes.size(); i++) {
+            stringBuilder.append(start).append(notes.get(i).toString());
+
+            if(i+1 != notes.size())
+                stringBuilder.append("\n");
+        }
+        stringBuilder.append(end);
+
+        return stringBuilder.toString();
+    }
+
 }
