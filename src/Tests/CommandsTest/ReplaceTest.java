@@ -39,6 +39,8 @@ class ReplaceTest implements TestCommands {
         String postfix2 = "logo.com service Logo.com";
         System.out.println( replace.perform(postfix2) );
 
+        //TODO тест на переименовывание названия само на себя у сервиса без аккаунтов
+
         Assertions.assertEquals("Logo.com", note4.getIdService());
 
         // Изменить название сервиса без аккаунтов на сервис также без аккаунтов
