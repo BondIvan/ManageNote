@@ -36,19 +36,19 @@ public class Get implements Commands {
 
         // [serviceName] + [login]
         if(args.length > 1) {
-            return printNotes( List.of(getNoteByLogin(args)) );
+            return printNotes( List.of(getNoteByLogin(args[0], args[1])) );
         }
 
         // [serviceName]
-        return printNotes( getListWithNotes(args) );
+        return printNotes( getListWithNotes(args[0]) );
     }
 
-    public List<NoteEntity> getListWithNotes(String[] args) throws AccessNotFoundException {
+    public List<NoteEntity> getListWithNotes(String serviceName) throws AccessNotFoundException {
 
-        List<NoteEntity> accounts = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[0]);
+        List<NoteEntity> accounts = UsefulMethods.getAllAccountsForOneService(listWithNotes, serviceName);
 
         if( accounts.isEmpty() ) {
-            String possibleVariant = AutoCorrectionServiceName.autoCorrect(args[0], Dictionaries.uniqueServiceNames);
+            String possibleVariant = AutoCorrectionServiceName.autoCorrect(serviceName, Dictionaries.uniqueServiceNames);
             System.out.println("Возможно вы имели в виду: " + possibleVariant);
 
             throw new AccessNotFoundException("Сервис не найден");
@@ -57,14 +57,14 @@ public class Get implements Commands {
         return UsefulMethods.sortNoteEntityByServiceName(accounts);
     }
 
-    public NoteEntity getNoteByLogin(String[] args) throws AccessNotFoundException {
+    public NoteEntity getNoteByLogin(String serviceName, String serviceLogin) throws AccessNotFoundException {
 
-        List<NoteEntity> service = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[0]);
+        List<NoteEntity> service = UsefulMethods.getAllAccountsForOneService(listWithNotes, serviceName);
 
         if(service.isEmpty())
             throw new AccessNotFoundException("Сервис не найден");
 
-        return UsefulMethods.getAccountFromServiceByLogin(listWithNotes, args[0], args[1]);
+        return UsefulMethods.getAccountFromServiceByLogin(listWithNotes, serviceName, serviceLogin);
     }
 
     private String printNotes(List<NoteEntity> notes) {

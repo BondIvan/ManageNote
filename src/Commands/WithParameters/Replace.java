@@ -44,46 +44,46 @@ public class Replace implements Commands {
 
         // [serviceName] [login] [type] [newString]
         if(args.length > 3) {
-            return replaceNoteByLogin(args, replaceType);
+            return replaceNoteByLogin(args[0], args[1], replaceType, args[3]);
         }
 
         // [serviceName] [type] [newString]
-        return replaceNote(args, replaceType);
+        return replaceNote(args[0], replaceType, args[2]);
     }
 
     // [serviceName] [login] [type] [newString]
-    public String replaceNoteByLogin(String[] args, String replaceType) throws AccessNotFoundException, IncorrectValueException, UnknownArgsException {
+    public String replaceNoteByLogin(String serviceName, String serviceLogin, String replaceType, String newString) throws AccessNotFoundException, IncorrectValueException, UnknownArgsException {
 
-        NoteEntity replacedNote = UsefulMethods.getAccountFromServiceByLogin(listWithNotes, args[0], args[1]);
+        NoteEntity replacedNote = UsefulMethods.getAccountFromServiceByLogin(listWithNotes, serviceName, serviceLogin);
 
         //Тернарный оператор с 3 условиями (вложенные)
         System.out.println( "Будут произведены следующие изменения в сервисе " + replacedNote.getIdService() + " с параметром " + replaceType + ": "
                 + ( replaceType.equals("service") ? replacedNote.getIdService()
                 :replaceType.equals("login") ? replacedNote.getLogin()
                 :replacedNote.getPassword(true) )
-                + " -> " + args[3] );
+                + " -> " + newString );
 
         switch (replaceType) {
 
             case "service" -> {
-                replaceServiceName(replacedNote, args[3]); // Название нового сервиса
+                replaceServiceName(replacedNote, newString); // Название нового сервиса
 
                 return "Заменено название сервиса";
             }
             case "login" -> {
-                List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[0]);
+                List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, serviceName);
 
                 // Если какого-либо аккаунта, одного сервиса, уже есть такой логин
-                if (searchedServices.stream().anyMatch(note -> note.getLogin().equals(args[3])))
+                if (searchedServices.stream().anyMatch(note -> note.getLogin().equals(newString)))
                     throw new IncorrectValueException("У этого сервиса такой логин уже существует");
 
-                replaceServiceLogin(replacedNote, args[3]); // Replacement without checks
+                replaceServiceLogin(replacedNote, newString); // Replacement without checks
 
                 return "Заменён логин сервиса";
             }
             case "password" -> {
 
-                replaceServicePassword(replacedNote, args[3]); // Replacement without checks
+                replaceServicePassword(replacedNote, newString); // Replacement without checks
 
                 return "Заменён пароль сервиса";
             }
@@ -93,12 +93,12 @@ public class Replace implements Commands {
     }
 
     // [serviceName] [type] [newString]
-    public String replaceNote(String[] args, String replaceType) throws AccessNotFoundException, IncorrectValueException, UnknownArgsException {
+    public String replaceNote(String serviceName, String replaceType, String newString) throws AccessNotFoundException, IncorrectValueException, UnknownArgsException {
 
-        List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[0]); // Содержит необходимы-й/е аккаунт-/ы
+        List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, serviceName); // Содержит необходимы-й/е аккаунт-/ы
 
         if(searchedServices.isEmpty()) {
-            String possibleVariant = AutoCorrectionServiceName.autoCorrect(args[0], Dictionaries.uniqueServiceNames);
+            String possibleVariant = AutoCorrectionServiceName.autoCorrect(serviceName, Dictionaries.uniqueServiceNames);
             System.out.println("Возможно вы имели в виду: " + possibleVariant);
 
             throw new AccessNotFoundException("Сервис не найден");
@@ -109,7 +109,7 @@ public class Replace implements Commands {
 
             // Отсортировать все аккаунты сервиса по названию + вывести их названия и логины
             UsefulMethods.sortNoteEntityByServiceName( listWithNotes.stream()
-                    .filter(note -> note.getIdService().split(" ")[0].equalsIgnoreCase(args[0]))
+                    .filter(note -> note.getIdService().split(" ")[0].equalsIgnoreCase(serviceName))
                     .collect(Collectors.toList()) ).forEach((note) -> System.out.println(note.getIdService() + " -> " + note.getLogin()));
 
             return "Теперь введите команду";
@@ -122,22 +122,22 @@ public class Replace implements Commands {
                 + ( replaceType.equals("service") ? replacedNote.getIdService()
                 :replaceType.equals("login") ? replacedNote.getLogin()
                 :replacedNote.getPassword(true) )
-                + " -> " + args[2] );
+                + " -> " + newString );
 
         switch (replaceType) {
             case "service" -> {
-                replaceServiceName(replacedNote, args[2]); // Название нового сервиса
+                replaceServiceName(replacedNote, newString); // Название нового сервиса
 
                 return "Заменено название сервиса";
             }
             case "login" -> {
                 // Это единственный аккаунт у сервиса
-                replaceServiceLogin(replacedNote, args[2]); // Replacement without checks
+                replaceServiceLogin(replacedNote, newString); // Replacement without checks
 
                 return "Заменён логин сервиса";
             }
             case "password" -> {
-                replaceServicePassword(replacedNote, args[2]); // Replacement without checks
+                replaceServicePassword(replacedNote, newString); // Replacement without checks
 
                 return "Заменён пароль сервиса";
             }

@@ -35,38 +35,38 @@ public class Add implements Commands {
         if(args[2].contains(".")) // Символ '.' используется для шифрования и расшифрования
             throw new UnknownArgsException("В пароле не должен содержаться символ '.'");
 
-        if( addNewNote(args) ) {
+        if( addNewNote(args[0], args[1], args[2]) ) {
             CheckingForUpdate.isUpdated = true;
             return "Сервис добавлен";
         } else
             return "Сервис НЕ добавлен";
     }
 
-    private boolean addNewNote(String[] args) throws UnknownArgsException, IncorrectValueException {
+    private boolean addNewNote(String serviceName, String serviceLogin, String servicePassword) throws UnknownArgsException, IncorrectValueException {
 
-        List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[0]); // Содержит необходимы-й/е аккаунт-/ы
+        List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, serviceName); // Содержит необходимы-й/е аккаунт-/ы
 
         String[] numberOfAccount = {"1-st", "2-nd", "3-rd", "4-th", "5-th", "6-th", "7-th", "8-th", "9-th", "10-th"}; // 10 "аккаунтов" максимум
 
         System.out.println( "Добавить " + numberOfAccount[searchedServices.size()] + " сервис с такими данными ? (y/n):\n"
-                + args[0] +
-                "\nLogin: " + args[1] +
-                "\nPassword: " + args[2] );
+                + serviceName +
+                "\nLogin: " + serviceLogin +
+                "\nPassword: " + servicePassword );
 
         Scanner confirm = new Scanner(System.in);
         if( !confirm.nextLine().equals("y") )
             return false;
 
         NoteEntity newNote = new NoteEntity( // Добавляемый сервис/аккаунт
-                args[0], // Название
-                args[1] ); // Логин
-        newNote.setPassword(args[2]); // Пароль
+                serviceName, // Название
+                serviceLogin ); // Логин
+        newNote.setPassword(servicePassword); // Пароль
 
-        if( searchedServices.stream().anyMatch(note -> note.getLogin().equals(args[1])) )
+        if( searchedServices.stream().anyMatch(note -> note.getLogin().equals(serviceLogin)) )
             throw new IncorrectValueException("У этого сервиса такой логин уже существует");
 
         listWithNotes.add(newNote);
-        UsefulMethods.changingNameWhenAdd(listWithNotes, args[0]);
+        UsefulMethods.changingNameWhenAdd(listWithNotes, serviceName);
 
         return true;
     }

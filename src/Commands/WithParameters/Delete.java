@@ -40,19 +40,19 @@ public class Delete implements Commands {
 
         // [serviceName] + [login]
         if(args.length > 1) {
-            return deleteNoteByLogin(args);
+            return deleteNoteByLogin(args[0], args[1]);
         }
 
         // [serviceName]
-        return deleteNote(args);
+        return deleteNote(args[0]);
     }
 
-    public String deleteNote(String[] args) throws AccessNotFoundException {
+    public String deleteNote(String serviceName) throws AccessNotFoundException {
 
-        List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[0]); // Содержит необходимы-й/е аккаунт-/ы
+        List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, serviceName); // Содержит необходимы-й/е аккаунт-/ы
 
         if(searchedServices.isEmpty()) {
-            String possibleVariant = AutoCorrectionServiceName.autoCorrect(args[0], Dictionaries.uniqueServiceNames);
+            String possibleVariant = AutoCorrectionServiceName.autoCorrect(serviceName, Dictionaries.uniqueServiceNames);
             System.out.println("Возможно вы имели в виду: " + possibleVariant);
 
             throw new AccessNotFoundException("Сервис не найден");
@@ -64,7 +64,7 @@ public class Delete implements Commands {
 
             // Отсортировать все аккаунты сервиса по названию + вывести их названия и логины
             UsefulMethods.sortNoteEntityByServiceName( listWithNotes.stream()
-                    .filter(note -> note.getIdService().split(" ")[0].equalsIgnoreCase(args[0]))
+                    .filter(note -> note.getIdService().split(" ")[0].equalsIgnoreCase(serviceName))
                     .collect(Collectors.toList()) ).forEach((note) -> System.out.println(note.getIdService() + " -> " + note.getLogin()));
 
             return "Теперь введите команду";
@@ -72,20 +72,20 @@ public class Delete implements Commands {
 
         // [serviceName]
         listWithNotes.remove(searchedServices.get(0));
-        UsefulMethods.changingNameWhenRemove(listWithNotes, args[0]);
+        UsefulMethods.changingNameWhenRemove(listWithNotes, serviceName);
 
         CheckingForUpdate.isUpdated = true;
 
         return "Удалено";
     }
 
-    public String deleteNoteByLogin(String[] args) throws AccessNotFoundException {
+    public String deleteNoteByLogin(String serviceName, String serviceLogin) throws AccessNotFoundException {
 
-        NoteEntity deletedNote = UsefulMethods.getAccountFromServiceByLogin(listWithNotes, args[0], args[1]);
+        NoteEntity deletedNote = UsefulMethods.getAccountFromServiceByLogin(listWithNotes, serviceName, serviceLogin);
 
         // [serviceName]
         listWithNotes.remove(deletedNote);
-        UsefulMethods.changingNameWhenRemove(listWithNotes, args[0]);
+        UsefulMethods.changingNameWhenRemove(listWithNotes, serviceName);
 
         CheckingForUpdate.isUpdated = true;
 
