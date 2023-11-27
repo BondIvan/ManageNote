@@ -53,10 +53,6 @@ public class Add implements Commands {
                 "\nLogin: " + serviceLogin +
                 "\nPassword: " + servicePassword );
 
-        Scanner confirm = new Scanner(System.in);
-        if( !confirm.nextLine().equals("y") )
-            return false;
-
         NoteEntity newNote = new NoteEntity( // Добавляемый сервис/аккаунт
                 serviceName, // Название
                 serviceLogin ); // Логин
