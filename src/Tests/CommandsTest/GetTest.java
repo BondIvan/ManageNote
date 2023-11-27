@@ -101,16 +101,15 @@ class GetTest implements TestCommands {
 
         Get get = new Get(notes);
 
-        String postfix3 = "vk.com";
-        String postfix4 = "vk.com second.account@gmail.com";
+        String[] args1 = UsefulMethods.makeArgsTrue("vk.com"); // Сервис с аккаунтами
+        String[] args2 = UsefulMethods.makeArgsTrue("telegram.com"); // Сервис без аккаунтов
 
-        List<NoteEntity> actual3 = get.getListWithNotes(UsefulMethods.makeArgsTrue(postfix3));
-        List<NoteEntity> actual4 = get.getListWithNotes(UsefulMethods.makeArgsTrue(postfix4));
+        List<NoteEntity> actual1 = get.getListWithNotes( args1[0] );
+        List<NoteEntity> actual2 = get.getListWithNotes( args2[0] );
 
-        // Получение аккаунтов сервиса, с параметром логин и без него
-        Assertions.assertEquals(List.of(note1, note2), actual3);
-        Assertions.assertNotEquals(List.of(note2, note1), actual3);
-        Assertions.assertEquals(List.of(note2), actual4);
+        // Получение сервиса с аккаунтами и без
+        Assertions.assertEquals(List.of(note1, note2), actual1);
+        Assertions.assertEquals(List.of(note3), actual2);
     }
 
     @Test
@@ -129,16 +128,13 @@ class GetTest implements TestCommands {
 
         Get get = new Get(notes);
 
-        // Специально с нижним регистром, для проверки.
-        String postfix1 = "telegram.com";
-        String postfix2 = "telegram.com teleg.account@gmail.com";
+        // Специально с нижним регистром
+        String[] args1 = UsefulMethods.makeArgsTrue("telegram.com teleg.account@gmail.com");
 
-        NoteEntity actual1 = get.getNoteByLogin(UsefulMethods.makeArgsTrue(postfix1));
-        NoteEntity actual2 = get.getNoteByLogin(UsefulMethods.makeArgsTrue(postfix2));
+        NoteEntity actual1 = get.getNoteByLogin( args1[0], args1[1] );
 
-        // Получение сервиса без аккаунтов двумя способами
+        // Получение сервиса без аккаунтов
         Assertions.assertEquals(note3, actual1);
-        Assertions.assertEquals(note3, actual2);
     }
 
     // Проверка аргументов
@@ -148,7 +144,7 @@ class GetTest implements TestCommands {
 
         List<NoteEntity> notes;
         try {
-            notes = UsefulMethods.getAllNoteFromFile("/Users/Anien/Documents/ManageNote/src/ForTxtFiles/ForTesting.txt");
+            notes = UsefulMethods.getAllNoteFromFile("C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\ForTesting.txt");
         } catch (Exception e) {
             System.err.println("Ошибка (я): " + e.getMessage());
             return;
