@@ -9,6 +9,7 @@ import Tools.AutoCorrection.AutoCorrectionServiceName;
 import Tools.AutoCorrection.Dictionaries;
 import Tools.UsefulMethods;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Get implements Commands {
@@ -28,20 +29,18 @@ public class Get implements Commands {
 
         String[] args = UsefulMethods.makeArgsTrue(postfix); // Разбитие postfix-а на состовляющие (конкретные аргументы команды)
 
-        //TODO [serviceName ][login]
-
         if(args.length == 0)
             throw  new UnknownArgsException("Нет параметров");
         if(args.length > 2)
             throw new UnknownArgsException("Параметров больше чем нужно");
 
-        if(args.length > 1)
-            return getNoteByLogin(args).toString();
+        // [serviceName] + [login]
+        if(args.length > 1) {
+            return printNotes( List.of(getNoteByLogin(args)) );
+        }
 
-        StringBuilder stringBuilder = new StringBuilder();
-        getListWithNotes(args).forEach(note -> stringBuilder.append(note).append("\n"));
-
-        return stringBuilder.toString();
+        // [serviceName]
+        return printNotes( getListWithNotes(args) );
     }
 
     public List<NoteEntity> getListWithNotes(String[] args) throws AccessNotFoundException {
@@ -55,12 +54,38 @@ public class Get implements Commands {
             throw new AccessNotFoundException("Сервис не найден");
         }
 
-        return accounts;
+        return UsefulMethods.sortNoteEntityByServiceName(accounts);
     }
 
     public NoteEntity getNoteByLogin(String[] args) throws AccessNotFoundException {
 
+        List<NoteEntity> service = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[0]);
+
+        if(service.isEmpty())
+            throw new AccessNotFoundException("Сервис не найден");
+
         return UsefulMethods.getAccountFromServiceByLogin(listWithNotes, args[0], args[1]);
+    }
+
+    private String printNotes(List<NoteEntity> notes) {
+
+        String start = "--------------------------------------\n";
+        String end = "\n--------------------------------------";
+
+        if(notes.size() < 2)
+            return start + notes.get(0).toString() + end;
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for(int i = 0; i < notes.size(); i++) {
+            stringBuilder.append(start).append(notes.get(i).toString());
+
+            if(i+1 != notes.size())
+                stringBuilder.append("\n");
+        }
+        stringBuilder.append(end);
+
+        return stringBuilder.toString();
     }
 
 }

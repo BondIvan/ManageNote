@@ -98,7 +98,7 @@ public class UsefulMethods {
                 .filter(note -> note.getIdService().split(" ")[0].equalsIgnoreCase(searchedName))
                 .filter(note -> note.getLogin().equalsIgnoreCase(searchedLogin))
                 .findFirst()
-                .orElseThrow(() -> new AccessNotFoundException("Такой записи нет"));
+                .orElseThrow(() -> new AccessNotFoundException("Неправильный логин аккаунта"));
 
         return noteEntity;
     }
