@@ -84,22 +84,17 @@ class DeleteTest implements TestCommands {
 
         Delete delete = new Delete(notes);
 
-        String postfix1 = "vk.com";
-        String postfix3 = "telegram.com";
-        String postfix4 = "logo.com logo.account@gmail.com";
+        String[] args1 = UsefulMethods.makeArgsTrue("vk.com"); // Сервис с аккаунтами
+        String[] args2 = UsefulMethods.makeArgsTrue("telegram.com"); // Сервис без аккаунтов
 
-        String actual1 = delete.deleteNote(UsefulMethods.makeArgsTrue(postfix1));
+        String actual1 = delete.deleteNote( args1[0] );
+        String actual2 = delete.deleteNote( args2[0] );
+
+        boolean isDeleted1 = notes.stream().anyMatch(note -> note.getIdService().equals("Telegram.com"));
 
         Assertions.assertEquals("Теперь введите команду", actual1);
-
-        String message3 = delete.deleteNote(UsefulMethods.makeArgsTrue(postfix3));
-        String message4 = delete.deleteNote(UsefulMethods.makeArgsTrue(postfix4));
-
-        boolean doesntEsist1 = notes.stream().anyMatch(note -> note.getIdService().equals("Telegram.com"));
-        boolean doesntEsist2 = notes.stream().anyMatch(note -> note.getIdService().equals("logo.com"));
-
-        Assertions.assertFalse(doesntEsist1, message3);
-        Assertions.assertFalse(doesntEsist2, message3);
+        Assertions.assertFalse(isDeleted1);
+        Assertions.assertEquals("Удалено", actual2);
     }
 
     @Override
