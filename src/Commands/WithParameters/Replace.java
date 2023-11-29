@@ -12,7 +12,6 @@ import Tools.CheckingForUpdate;
 import Tools.UsefulMethods;
 
 import java.util.List;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class Replace implements Commands {
@@ -67,8 +66,6 @@ public class Replace implements Commands {
 
             case "service" -> {
                 replaceServiceName(replacedNote, newString); // Название нового сервиса
-
-                return "Заменено название сервиса";
             }
             case "login" -> {
                 List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, serviceName);
@@ -79,17 +76,17 @@ public class Replace implements Commands {
 
                 replaceServiceLogin(replacedNote, newString); // Replacement without checks
 
-                return "Заменён логин сервиса";
             }
             case "password" -> {
-
                 replaceServicePassword(replacedNote, newString); // Replacement without checks
-
-                return "Заменён пароль сервиса";
+            }
+            default -> {
+                throw new UnknownArgsException("Не верный тип параметра");
             }
         }
 
-        return "Что-то пошло не так";
+        CheckingForUpdate.isUpdated = true;
+        return "Заменено " + replaceType + " у сервиса";
     }
 
     // [serviceName] [type] [newString]
@@ -127,23 +124,21 @@ public class Replace implements Commands {
         switch (replaceType) {
             case "service" -> {
                 replaceServiceName(replacedNote, newString); // Название нового сервиса
-
-                return "Заменено название сервиса";
             }
             case "login" -> {
                 // Это единственный аккаунт у сервиса
                 replaceServiceLogin(replacedNote, newString); // Replacement without checks
-
-                return "Заменён логин сервиса";
             }
             case "password" -> {
                 replaceServicePassword(replacedNote, newString); // Replacement without checks
-
-                return "Заменён пароль сервиса";
+            }
+            default -> {
+                throw new UnknownArgsException("Не верный тип параметра");
             }
         }
 
-        return "Что-то пошло не так";
+        CheckingForUpdate.isUpdated = true;
+        return "Заменено " + replaceType + " у сервиса";
     }
 
     // Обработка всех возможных проблем при изменении названия сервиса (аккаунта)
@@ -194,8 +189,6 @@ public class Replace implements Commands {
 
         UsefulMethods.changingNameWhenRemove(listWithNotes, oldNameReplacedNote); // Переименовывание сервиса со старым названием
         UsefulMethods.changingNameWhenAdd(listWithNotes, newNameReplacedNote); // Переименовывание сервиса с новым названием
-
-        return;
     }
 
     public void replaceServiceLogin(NoteEntity replacedNote, String newLoginReplacedNote) {
