@@ -11,8 +11,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-class UsefulMethodsTest extends UsefulMethods {
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+class UsefulMethodsTest {
     @Test
     void testChangingNameWhenAdd() throws UnknownArgsException {
 
@@ -143,6 +144,11 @@ class UsefulMethodsTest extends UsefulMethods {
             Assertions.assertEquals(nt, noteByLogin);
         }
 
+        // Ошибка при неправильном логине аккаунта
+        String wrongLogin = "wrongLogin_vk.account@gmail.com";
+        Exception accessNotFoundException = assertThrows(AccessNotFoundException.class,() ->
+                UsefulMethods.getAccountFromServiceByLogin(notes, "vk.com", wrongLogin));
+        Assertions.assertEquals("Неправильный логин аккаунта", accessNotFoundException.getMessage());
     }
 
     @Test

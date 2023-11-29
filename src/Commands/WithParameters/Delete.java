@@ -3,6 +3,7 @@ package Commands.WithParameters;
 import Commands.Commands;
 import Entity.NoteEntity;
 import OptionsExceptions.AccessNotFoundException;
+import OptionsExceptions.IncorrectValueException;
 import OptionsExceptions.UnknownArgsException;
 import Source.StartConsole;
 import Tools.AutoCorrection.AutoCorrectionServiceName;
@@ -10,6 +11,7 @@ import Tools.AutoCorrection.Dictionaries;
 import Tools.CheckingForUpdate;
 import Tools.UsefulMethods;
 
+import javax.ws.rs.client.ClientRequestFilter;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -33,56 +35,60 @@ public class Delete implements Commands {
 
         if(args.length == 0)
             throw  new UnknownArgsException("Нет параметров");
-        if(args.length > 1)
+        if(args.length > 2)
             throw new UnknownArgsException("Параметров больше чем нужно");
 
-        if( deleteNote(args) ) {
-            CheckingForUpdate.isUpdated = true;
-            return "Сервис удалён";
-        } else
-            return "Удаление НЕ произошло";
+        // [serviceName] + [login]
+        if(args.length > 1) {
+            return deleteNoteByLogin(args[0], args[1]);
+        }
+
+        // [serviceName]
+        return deleteNote(args[0]);
     }
 
-    private boolean deleteNote(String[] args) throws AccessNotFoundException {
+    public String deleteNote(String serviceName) throws AccessNotFoundException {
 
-        List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, args[0]); // Содержит необходимы-й/е аккаунт-/ы
-
-        Scanner confirm = new Scanner(System.in);
+        List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, serviceName); // Содержит необходимы-й/е аккаунт-/ы
 
         if(searchedServices.isEmpty()) {
-
-            String possibleVariant = AutoCorrectionServiceName.autoCorrect(args[0], Dictionaries.uniqueServiceNames);
+            String possibleVariant = AutoCorrectionServiceName.autoCorrect(serviceName, Dictionaries.uniqueServiceNames);
             System.out.println("Возможно вы имели в виду: " + possibleVariant);
 
             throw new AccessNotFoundException("Сервис не найден");
         }
 
-        NoteEntity deletedNote;
-        if(searchedServices.size() == 1) {
-            deletedNote = searchedServices.get(0);
-        } else {
-            
+        // [serviceName] + [login]
+        if(searchedServices.size() > 1) {
+            System.out.println("Укажите в команде логин аккаунта, который необходимо удалить");
+
             // Отсортировать все аккаунты сервиса по названию + вывести их названия и логины
             UsefulMethods.sortNoteEntityByServiceName( listWithNotes.stream()
-                    .filter(note -> note.getIdService().split(" ")[0].equalsIgnoreCase(args[0]))
+                    .filter(note -> note.getIdService().split(" ")[0].equalsIgnoreCase(serviceName))
                     .collect(Collectors.toList()) ).forEach((note) -> System.out.println(note.getIdService() + " -> " + note.getLogin()));
 
-            System.out.print("Введите логин: ");
-            String inputLogin = new Scanner(System.in).nextLine();
-
-            deletedNote = UsefulMethods.getAccountFromServiceByLogin(searchedServices, args[0], inputLogin);
+            return "Теперь введите команду";
         }
 
-        System.out.println("Будет удалён сервис: " + deletedNote.getIdService());
+        // [serviceName]
+        listWithNotes.remove(searchedServices.get(0));
+        UsefulMethods.changingNameWhenRemove(listWithNotes, serviceName);
 
-        System.out.println("Подтвердить? (y/n)");
-        if( !confirm.nextLine().equals("y") ) {
-            return false;
-        }
+        CheckingForUpdate.isUpdated = true;
 
+        return "Удалено";
+    }
+
+    public String deleteNoteByLogin(String serviceName, String serviceLogin) throws AccessNotFoundException {
+
+        NoteEntity deletedNote = UsefulMethods.getAccountFromServiceByLogin(listWithNotes, serviceName, serviceLogin);
+
+        // [serviceName]
         listWithNotes.remove(deletedNote);
-        UsefulMethods.changingNameWhenRemove(listWithNotes, args[0]);
+        UsefulMethods.changingNameWhenRemove(listWithNotes, serviceName);
 
-        return true;
+        CheckingForUpdate.isUpdated = true;
+
+        return "Удалено";
     }
 }
