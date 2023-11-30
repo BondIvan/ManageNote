@@ -3,19 +3,21 @@ package Source;
 import Commands.CommandFactory;
 import Commands.Commands;
 import Commands.WithOrWithoutParameters.GetAll;
-import Commands.WithParameters.*;
+import Commands.WithParameters.Add;
+import Commands.WithParameters.Delete;
+import Commands.WithParameters.Get;
+import Commands.WithParameters.Replace;
 import Commands.WithoutParameters.*;
 import Entity.NoteEntity;
-import Telegram.Bot.BotWithBackups;
-import Telegram.Sender.MessageSender;
+import Telegram.BotForBackup.MyBkBot;
 import Tools.AutoCorrection.Dictionaries;
 import Tools.UsefulMethods;
-import org.telegram.telegrambots.meta.ApiConstants;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.generics.BotSession;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class StartConsole {
 
@@ -59,13 +61,10 @@ public class StartConsole {
         factory.registerCommand("save", Save.class);
         factory.registerCommand("pushfile", PushFile.class);
 
-        BotWithBackups bot = new BotWithBackups();
+        // Активация бота
+        MyBkBot bot = new MyBkBot();
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         telegramBotsApi.registerBot(bot);
-
-        System.out.println("Отправляю сообщение");
-        bot.sendMessage(347329462, "ServiceName\nLogin: serviceLogin\nPassword: servicePassword_test-with-case");
-        //bot.sendFile(347329462);
 
         Scanner inputLine = new Scanner(System.in);
         while (true) {
@@ -93,7 +92,7 @@ public class StartConsole {
 
                 dictionaries.fillingDictionaries(NOTES); // Обновление словаря, после изменения главного списка (удаление, добавление, изменение сервиса)
             } catch (Exception e) {
-                System.out.println("Ошибка в: " + factory.getCommand(prefix).getClass() + ", сообщение: " + e.getMessage());
+                System.out.println("Ошибка в: " + factory.getCommand(prefix).getClass().getName() + ", сообщение: " + e.getMessage());
             }
 
         }
