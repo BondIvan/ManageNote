@@ -49,9 +49,8 @@ public class Get implements Commands {
 
         if( accounts.isEmpty() ) {
             String possibleVariant = AutoCorrectionServiceName.autoCorrect(serviceName, Dictionaries.uniqueServiceNames);
-            System.out.println("Возможно вы имели в виду: " + possibleVariant);
 
-            throw new AccessNotFoundException("Сервис не найден");
+            throw new AccessNotFoundException("Сервис не найден.\n" + "Возможно вы имели в виду: " + possibleVariant);
         }
 
         return UsefulMethods.sortNoteEntityByServiceName(accounts);
