@@ -5,7 +5,7 @@ import OptionsExceptions.AccessNotFoundException;
 import OptionsExceptions.IncorrectValueException;
 import OptionsExceptions.UnknownArgsException;
 import Source.StartConsole;
-import Telegram.Sender.FileSender;
+import Telegram.Commands.SendFile;
 import Tools.UsefulMethods;
 
 import java.io.IOException;
@@ -26,14 +26,12 @@ public class PushFile implements Commands {
         if(args.length > 1)
             throw new UnknownArgsException("Параметров больше чем нужно");
 
-        return pushToBot(args);
+        return pushToBot();
     }
 
-    private String pushToBot(String[] args) throws IOException {
+    private String pushToBot() throws IOException {
 
-        FileSender fileSender = new FileSender();
-
-        fileSender.sendFile(347329462, pathToFile);
+//        String path =
 
         return "Файл отправлен";
     }
