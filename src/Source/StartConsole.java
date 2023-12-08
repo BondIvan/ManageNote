@@ -9,11 +9,8 @@ import Commands.WithParameters.Get;
 import Commands.WithParameters.Replace;
 import Commands.WithoutParameters.*;
 import Entity.NoteEntity;
-import Telegram.BotForBackup.MyBkBot;
 import Tools.AutoCorrection.Dictionaries;
 import Tools.UsefulMethods;
-import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,12 +56,7 @@ public class StartConsole {
         factory.registerCommand("exit", Exit.class);
         factory.registerCommand("help", Help.class);
         factory.registerCommand("save", Save.class);
-        factory.registerCommand("pushfile", PushFile.class);
-
-        // Активация бота
-        MyBkBot bot = new MyBkBot();
-        TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-        telegramBotsApi.registerBot(bot);
+        factory.registerCommand("push", Push.class);
 
         Scanner inputLine = new Scanner(System.in);
         while (true) {
