@@ -19,14 +19,11 @@ import org.apache.http.impl.client.HttpClients;
 import java.io.File;
 import java.io.IOException;
 
-public class PushFile implements Commands {
-
-    private final String bot_token = "6223631615:AAFX66jboE6jDmL9m6fhY9pknTYBP4fMIxA";
-    private final String API_BASE_URL = "https://api.telegram.org/bot" + bot_token + "/";
+public class Push implements Commands {
 
     private final String pathToFile;
 
-    public PushFile() {
+    public Push() {
         this.pathToFile = StartConsole.PATH;
     }
 
@@ -37,18 +34,22 @@ public class PushFile implements Commands {
 
         if(args.length > 2)
             throw new UnknownArgsException("Параметров больше чем нужно");
+        if(!args[0].equals("bot"))
+            throw new UnknownArgsException("Неверный параметр");
 
         return pushToBot();
     }
 
-    private String pushToBot() throws IOException {
+    private String pushToBot() throws IOException, IncorrectValueException {
 
-//        String path =
+        // sendFile(pathToFile);
+
+        //TODO Файл отправляется от лица бота, нужно, чтобы файл был отправлен от моего лица
 
         return "Файл отправлен";
     }
 
-    public void sendFile(String filePath) throws IOException {
+    public void sendFile(String filePath) throws IOException, IncorrectValueException {
 
         HttpClient httpClient = HttpClients.createDefault();
 
@@ -61,6 +62,8 @@ public class PushFile implements Commands {
         builder.addTextBody("chat_id", String.valueOf(chatId));
         builder.addPart("document", new FileBody(fileSender, ContentType.DEFAULT_TEXT));
 
+        String bot_token = "6223631615:AAFX66jboE6jDmL9m6fhY9pknTYBP4fMIxA";
+        String API_BASE_URL = "https://api.telegram.org/bot" + bot_token + "/";
         HttpPost httpPost = new HttpPost(API_BASE_URL + "sendDocument");
         HttpEntity httpEntity = builder.build();
         httpPost.setEntity(httpEntity);
@@ -69,7 +72,7 @@ public class PushFile implements Commands {
         if (response.getStatusLine().getStatusCode() == 200) {
             System.out.println("File successfully send!");
         } else {
-            System.out.println("Error sending the file. Status code: " + response.getStatusLine().getStatusCode());
+            throw new IncorrectValueException("Error sending the file. Status code: " + response.getStatusLine().getStatusCode());
         }
     }
 
