@@ -9,6 +9,7 @@ import Commands.WithParameters.Get;
 import Commands.WithParameters.Replace;
 import Commands.WithoutParameters.*;
 import Entity.NoteEntity;
+import OptionsExceptions.CommandNotFoundException;
 import Tools.AutoCorrection.Dictionaries;
 import Tools.UsefulMethods;
 
@@ -84,7 +85,7 @@ public class StartConsole {
 
                 dictionaries.fillingDictionaries(NOTES); // Обновление словаря, после изменения главного списка (удаление, добавление, изменение сервиса)
             } catch (Exception e) {
-                System.out.println("Ошибка в: " + factory.getCommand(prefix).getClass().getName() + ", сообщение: " + e.getMessage());
+                System.out.println("Сообщение ошибки: " + e.getMessage());
             }
 
         }
