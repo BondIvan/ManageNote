@@ -48,7 +48,9 @@ public class Get implements Commands {
         List<NoteEntity> accounts = UsefulMethods.getAllAccountsForOneService(listWithNotes, serviceName);
 
         if( accounts.isEmpty() ) {
-            String possibleVariant = AutoCorrectionServiceName.autoCorrect(serviceName, Dictionaries.uniqueServiceNames);
+            String possibleVariant = AutoCorrectionServiceName.getOneBestMatch(serviceName, Dictionaries.uniqueServiceNames);
+
+            System.out.println( AutoCorrectionServiceName.getThreeBestMatch(serviceName, Dictionaries.uniqueServiceNames) );
 
             throw new AccessNotFoundException("Сервис не найден.\n" + "Возможно вы имели в виду: " + possibleVariant);
         }

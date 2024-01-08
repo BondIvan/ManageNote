@@ -8,7 +8,9 @@ import Source.StartConsole;
 import Tools.UsefulMethods;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GetAll implements Commands {
 
@@ -30,13 +32,28 @@ public class GetAll implements Commands {
 
             String[] args = UsefulMethods.makeArgsTrue(postfix);
 
-            if (args.length > 1)
+            if (args.length > 2)
                 throw new UnknownArgsException("Параметров больше чем нужно");
-            if (!args[0].equals("date"))
-                throw new UnknownArgsException("Неверный параметр");
 
-            getAllByDate();
+            List<NoteEntity> list = new ArrayList<>();
+            for(String str: args) {
+
+                if( str.equals("date") )
+                    list = getAllByDate();
+                if(str.length() == 1)
+                    getAllByFirstLetter(list, str);
+
+            }
+
+//            if (args.length > 2)
+//                throw new UnknownArgsException("Параметров больше чем нужно");
+//            if (!args[0].equals("date"))
+//                throw new UnknownArgsException("Неверный параметр");
+
+            System.out.println("-----------------");
+            getAllByDate().forEach(System.out::println);
         } else {
+            System.out.println("-----------------");
             getAllByAlphabet();
         }
 
@@ -50,14 +67,35 @@ public class GetAll implements Commands {
 
     private void getAllByAlphabet() {
         List<NoteEntity> listForShow = new ArrayList<>(listWithNotes);
-        System.out.println("-----------------");
         UsefulMethods.sortNoteEntityByServiceName(listForShow) // Этот список будет отображаться, чтобы не сортировать основной список
                 .forEach(note -> System.out.println(note.getIdService()));
     }
 
-    private void getAllByDate() {
-        System.out.println("-----------------");
-        listWithNotes.forEach(note -> System.out.println(note.getIdService()));
+    private List<String> getAllByDate() {
+        //listWithNotes.forEach(note -> System.out.println(note.getIdService()));
+
+        return listWithNotes.stream().map(NoteEntity::getIdService).toList();
+    }
+
+    private List<String> getAllByDate(List<String> listByFirstLetter) {
+        return listByFirstLetter;
+    }
+
+    private void getAllByFirstLetter(String letter) {
+
+        List<String> uniqueName = UsefulMethods.getAllUniqueServiceName(listWithNotes);
+        uniqueName.stream()
+                .filter(note -> note.startsWith(letter))
+                .forEach(System.out::println);
+
+    }
+
+    private List<String> getAllByFirstLetter(List<NoteEntity> list, String letter) {
+
+        List<String> uniqueName = UsefulMethods.getAllUniqueServiceName(list);
+        return uniqueName.stream()
+                .filter(note -> note.startsWith(letter))
+                .collect(Collectors.toList());
     }
 
 }
