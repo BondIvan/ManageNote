@@ -22,7 +22,8 @@ public class CommandFactory {
         Class<? extends Commands> commandClass = registeredCommand.get(name);
 
         if(commandClass == null)
-            throw new CommandNotFoundException("Такой команды нет");
+//            throw new CommandNotFoundException("Такой команды нет");
+            return null;
 
         return commandClass.getDeclaredConstructor().newInstance();
     }
