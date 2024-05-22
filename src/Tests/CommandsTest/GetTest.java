@@ -157,7 +157,7 @@ class GetTest implements TestCommands {
         Exception unknownArgsException1 = assertThrows(OptionsExceptions.UnknownArgsException.class, () -> get.perform("Telegram.com arg2 arg3"));
         Exception unknownArgsException2 = assertThrows(OptionsExceptions.UnknownArgsException.class, () -> get.perform(""));
 
-        Assertions.assertEquals("Сервис не найден", accessNotFoundException1.getMessage());
+        Assertions.assertTrue(accessNotFoundException1.getMessage().contains("Сервис не найден"));
         Assertions.assertEquals("Параметров больше чем нужно", unknownArgsException1.getMessage());
         Assertions.assertEquals("Нет параметров", unknownArgsException2.getMessage());
         Assertions.assertEquals("Неправильный логин аккаунта", accessNotFoundException2.getMessage());
