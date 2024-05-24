@@ -1,4 +1,4 @@
-package Tests.CommandsTest;
+package CommandsTest;
 
 import Commands.WithParameters.Add;
 import Entity.NoteEntity;
@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class AddTest implements TestCommands {
+public class AddTest implements TestCommands {
 
     /***
      * Закоментировать подтверждение в Add.class перед выполнением

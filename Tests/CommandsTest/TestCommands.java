@@ -1,4 +1,4 @@
-package Tests.CommandsTest;
+package CommandsTest;
 
 import org.junit.jupiter.api.Test;
 

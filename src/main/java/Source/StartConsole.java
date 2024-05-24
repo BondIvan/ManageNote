@@ -28,7 +28,7 @@ public class StartConsole {
 
      ***/
 
-    public static final String PATH = "C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\" +
+    public static final String PATH = "C:\\My place\\Java projects\\ItsClone\\ManageNote\\Files\\Txt\\" +
             "ForTesting.txt"; // Тестовый файл
             //"Access.txt"; // Рабочий файл
 
@@ -57,7 +57,6 @@ public class StartConsole {
         factory.registerCommand("exit", Exit.class);
         factory.registerCommand("help", Help.class);
         factory.registerCommand("save", Save.class);
-        factory.registerCommand("push", Push.class);
 
         Scanner inputLine = new Scanner(System.in);
         while (true) {

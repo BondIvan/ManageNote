@@ -1,4 +1,4 @@
-package Tests.CommandsTest;
+package CommandsTest;
 
 import Commands.WithParameters.Replace;
 import Entity.NoteEntity;

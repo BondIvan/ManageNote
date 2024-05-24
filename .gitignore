@@ -1,6 +1,6 @@
 #Myself
-/src/ForTxtFiles/*
-!/src/ForTxtFiles/.gitkeep
+/Files/Txt/*
+!/Files/Txt/.gitkeep
 /.idea/
 /lib/
 /out/
@@ -9,3 +9,4 @@
 /.DS_Store
 /ManageNote.iml
 /MyNewTest.iml
+/target

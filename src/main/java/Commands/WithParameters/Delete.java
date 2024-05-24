@@ -3,7 +3,6 @@ package Commands.WithParameters;
 import Commands.Commands;
 import Entity.NoteEntity;
 import OptionsExceptions.AccessNotFoundException;
-import OptionsExceptions.IncorrectValueException;
 import OptionsExceptions.UnknownArgsException;
 import Source.StartConsole;
 import Tools.AutoCorrection.AutoCorrectionServiceName;
@@ -11,9 +10,7 @@ import Tools.AutoCorrection.Dictionaries;
 import Tools.CheckingForUpdate;
 import Tools.UsefulMethods;
 
-import javax.ws.rs.client.ClientRequestFilter;
 import java.util.List;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class Delete implements Commands {
