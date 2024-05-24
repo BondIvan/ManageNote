@@ -29,7 +29,7 @@ public class StartConsole {
      ***/
 
     public static final String PATH = "C:\\My place\\Java projects\\ItsClone\\ManageNote\\Files\\Txt\\" +
-            "ForTesting.txt"; // Тестовый файл
+            "TestingAccess.txt"; // Тестовый файл
             //"Access.txt"; // Рабочий файл
 
     public static List<NoteEntity> NOTES = new ArrayList<>(); // Список всех записей (сервисов)

@@ -144,7 +144,7 @@ class GetTest implements TestCommands {
 
         List<NoteEntity> notes;
         try {
-            notes = UsefulMethods.getAllNoteFromFile("C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\ForTesting.txt");
+            notes = UsefulMethods.getAllNoteFromFile("C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\TestingAccess.txt");
         } catch (Exception e) {
             System.err.println("Ошибка (я): " + e.getMessage());
             return;
