@@ -1,8 +1,8 @@
 package Entity;
 
-import Encrypting.Alphabet.Alphabet;
-import Encrypting.ViewDecrypt;
-import Encrypting.ViewEncrypt;
+import Encrypting.MyEncrypt.Alphabet.Alphabet;
+import Encrypting.MyEncrypt.Alphabet.ViewDecrypt;
+import Encrypting.MyEncrypt.Alphabet.ViewEncrypt;
 import OptionsExceptions.UnknownArgsException;
 
 public class NoteEntity {

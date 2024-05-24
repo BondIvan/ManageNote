@@ -1,4 +1,4 @@
-package Encrypting;
+package Encrypting.MyEncrypt.Alphabet;
 
 import java.util.ArrayList;
 import java.util.List;

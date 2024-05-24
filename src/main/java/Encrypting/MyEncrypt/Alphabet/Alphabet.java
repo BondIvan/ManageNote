@@ -1,4 +1,4 @@
-package Encrypting.Alphabet;
+package Encrypting.MyEncrypt.Alphabet;
 
 public class Alphabet {
 

@@ -1,8 +1,8 @@
 package Tests.EncryptionTest;
 
-import Encrypting.Alphabet.Alphabet;
-import Encrypting.ViewDecrypt;
-import Encrypting.ViewEncrypt;
+import Encrypting.MyEncrypt.Alphabet.Alphabet;
+import Encrypting.MyEncrypt.Alphabet.ViewDecrypt;
+import Encrypting.MyEncrypt.Alphabet.ViewEncrypt;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
