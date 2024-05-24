@@ -1,5 +1,5 @@
 chcp 1251
 
-java -jar MyNewTest.jar
+java -jar ManageNote.jar
 
 pause
