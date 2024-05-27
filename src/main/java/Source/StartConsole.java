@@ -17,6 +17,16 @@ import OptionsExceptions.CommandNotFoundException;
 import Tools.AutoCorrection.Dictionaries;
 import Tools.UsefulMethods;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.security.auth.DestroyFailedException;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,13 +51,38 @@ public class StartConsole {
 
     public static void main(String[] args) throws Exception {
 
-        Scanner inputLine = new Scanner(System.in);
+        // Мастер-пароль
+        masterPassword();
 
+        // Чтение сервисов из файла
+        NOTES = UsefulMethods.getAllNoteFromFile(PATH);
+
+        // Указание с каким файлом идёт работа
+        String currentFile = Paths.get(PATH).getFileName().toString();
+        System.out.println("Запущено с файлом: " + currentFile);
+
+        // Заполнение словаря для автокоррекции
+        Dictionaries dictionaries = new Dictionaries();
+        dictionaries.fillingDictionaries(NOTES);
+
+        // Регистрация команд в фабрику
+        CommandFactory factory = assembleCommandFabric();
+
+        while (true) {
+
+            console(factory, dictionaries);
+
+        }
+
+    }
+
+    private static void masterPassword() throws DestroyFailedException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, BadPaddingException, InvalidKeyException {
+
+        Scanner inputLine = new Scanner(System.in);
         Validation validation = new Validation();
         if(validation.isExist()) {
             int max_attempts = 3;
             for (int i = 1; i <= max_attempts; i++) {
-
                 System.out.print("Введите мастер-пароль: ");
                 String input = inputLine.nextLine();
                 if (validation.checkInputPassword(input)) {
@@ -69,62 +104,60 @@ public class StartConsole {
             validation.createMasterPassword(inputPassword);
             Arrays.fill(inputPassword, '\0');
         }
+    }
 
-        NOTES = UsefulMethods.getAllNoteFromFile(PATH);
+    private static CommandFactory assembleCommandFabric() {
+        CommandFactory commandFactory = new CommandFactory();
 
-        String[] selectedFile = PATH.split("\\\\");
-        System.out.println("Запущено с файлом: " + selectedFile[selectedFile.length-1]);
+        // Команды с и без аргументов
+        commandFactory.registerCommand("getall", GetAll.class);
 
-        Dictionaries dictionaries = new Dictionaries();
-        dictionaries.fillingDictionaries(NOTES);
+        // Команды с аргументами
+        commandFactory.registerCommand("add", Add.class);
+        commandFactory.registerCommand("delete", Delete.class);
+        commandFactory.registerCommand("get", Get.class);
+        commandFactory.registerCommand("replace", Replace.class);
 
-        CommandFactory factory = new CommandFactory();
+        // Команды без аргументов
+        commandFactory.registerCommand("copyfile", CopyFile.class);
+        commandFactory.registerCommand("exit", Exit.class);
+        commandFactory.registerCommand("help", Help.class);
+        commandFactory.registerCommand("save", Save.class);
 
-        factory.registerCommand("getall", GetAll.class);
-        
-        factory.registerCommand("add", Add.class);
-        factory.registerCommand("delete", Delete.class);
-        factory.registerCommand("get", Get.class);
-        factory.registerCommand("replace", Replace.class);
+        return commandFactory;
+    }
 
-        factory.registerCommand("copyfile", CopyFile.class);
-        factory.registerCommand("exit", Exit.class);
-        factory.registerCommand("help", Help.class);
-        factory.registerCommand("save", Save.class);
+    private static void console(CommandFactory factory, Dictionaries dictionaries) {
+        Scanner inputLine = new Scanner(System.in);
+        System.out.print("Введите команду: ");
+        String input = inputLine.nextLine().trim(); // Введённая строка
 
-        while (true) {
-            System.out.print("Введите команду: ");
-            String input = inputLine.nextLine().trim(); // Введённая строка
+        if (input.isEmpty())
+            return; //continue;
 
-            if (input.isEmpty())
-                continue;
+        String prefix = input.split(" ")[0]; // Введённая команда
+        String postfix = input.substring(prefix.length()).trim(); // Аргументы введённой команды
 
-            String prefix = input.split(" ")[0]; // Введённая команда
-            String postfix = input.substring(prefix.length()).trim(); // Аргументы введённой команды
+        try {
+            Commands command = factory.getCommand(prefix);
 
-            try {
-                Commands command = factory.getCommand(prefix);
+            if(command == null)
+                throw new CommandNotFoundException("Такой команды нет");
 
-                if(command == null)
-                    throw new CommandNotFoundException("Такой команды нет");
-
-                if(command instanceof Delete) {
-                    System.out.println("Действительно удалить этот сервис? (y/n) " + postfix);
-                    if(!inputLine.nextLine().equals("y")) {
-                        System.out.println("Удаление НЕ произошло");
-                        continue;
-                    }
+            if(command instanceof Delete) {
+                System.out.println("Действительно удалить этот сервис? (y/n) " + postfix);
+                if(!inputLine.nextLine().equals("y")) {
+                    System.out.println("Удаление НЕ произошло");
+                    return; //continue;
                 }
-
-                System.out.println(command.perform(postfix) + "\n");
-
-                dictionaries.fillingDictionaries(NOTES); // Обновление словаря, после изменения главного списка (удаление, добавление, изменение сервиса)
-            } catch (Exception e) {
-                System.out.println("Ошибка с сообщением: " + e.getMessage());
             }
 
+            System.out.println(command.perform(postfix) + "\n");
+
+            dictionaries.fillingDictionaries(NOTES); // Обновление словаря, после изменения главного списка (удаление, добавление, изменение сервиса)
+        } catch (Exception e) {
+            System.out.println("Ошибка с сообщением: " + e.getMessage());
         }
 
     }
-
 }
