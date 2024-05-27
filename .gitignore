@@ -1,5 +1,5 @@
 #Myself
-/Files/Txt/*
+/Files/*
 !/Files/Txt/.gitkeep
 /.idea/
 /lib/

@@ -7,7 +7,11 @@ import Commands.WithParameters.Add;
 import Commands.WithParameters.Delete;
 import Commands.WithParameters.Get;
 import Commands.WithParameters.Replace;
-import Commands.WithoutParameters.*;
+import Commands.WithoutParameters.CopyFile;
+import Commands.WithoutParameters.Exit;
+import Commands.WithoutParameters.Help;
+import Commands.WithoutParameters.Save;
+import Encrypting.Secure.Validation;
 import Entity.NoteEntity;
 import OptionsExceptions.CommandNotFoundException;
 import Tools.AutoCorrection.Dictionaries;
@@ -36,6 +40,24 @@ public class StartConsole {
 
     public static void main(String[] args) throws Exception {
 
+        Scanner inputLine = new Scanner(System.in);
+        Validation validation = new Validation();
+
+        int max_attempts = 3;
+        for(int i = 1; i <= max_attempts; i++) {
+            if (validation.checkInputPassword(inputLine.nextLine())) {
+                System.out.println("Мастер-пароль верный");
+                break;
+            } else {
+                System.out.print("Мастер-пароль НЕ верный. Осталось попыток - " + (max_attempts-i));
+            }
+
+            if(i == max_attempts) {
+                System.out.println("Попыток больше нет");
+                System.exit(1);
+            }
+        }
+
         NOTES = UsefulMethods.getAllNoteFromFile(PATH);
 
         String[] selectedFile = PATH.split("\\\\");
@@ -58,7 +80,6 @@ public class StartConsole {
         factory.registerCommand("help", Help.class);
         factory.registerCommand("save", Save.class);
 
-        Scanner inputLine = new Scanner(System.in);
         while (true) {
             System.out.print("Введите команду: ");
             String input = inputLine.nextLine().trim(); // Введённая строка
