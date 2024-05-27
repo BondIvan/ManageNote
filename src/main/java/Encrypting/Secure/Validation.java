@@ -13,7 +13,6 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Arrays;
-import java.util.Scanner;
 
 public class Validation {
 
@@ -22,10 +21,6 @@ public class Validation {
     private final int AES_KEY_SIZE = 256;
 
     public boolean checkInputPassword(String inputPassword) throws NoSuchPaddingException, IllegalBlockSizeException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, BadPaddingException, InvalidKeyException {
-
-        if( !isExist() ) {
-            createMasterPassword();
-        }
 
         char[] input = inputPassword.toCharArray();
         byte[] salt = Files.readAllBytes(Paths.get(PATH_SALT));
@@ -43,26 +38,22 @@ public class Validation {
     }
 
     // Проверить, установлен ли уже мастер-пароль (если файлы есть, значит установлен)
-    private boolean isExist() {
+    public boolean isExist() {
 
         return Files.exists(Paths.get(PATH_SALT)) && Files.exists(Paths.get(PATH_VALIDATION));
     }
 
     // Создать мастер-пароль
-    private void createMasterPassword() throws IOException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, InvalidKeySpecException, BadPaddingException, InvalidKeyException {
-
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Задайте мастер-пароль: ");
-        char[] inputPassword = scanner.nextLine().toCharArray();
+    public void createMasterPassword(char[] inputNewPassword) throws IOException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, InvalidKeySpecException, BadPaddingException, InvalidKeyException {
 
         if(!Files.exists(Paths.get(PATH_SALT)) || !Files.exists(Paths.get(PATH_VALIDATION))) {
             byte[] salt = generateSalt();
-            byte[] validation = createValidation(inputPassword, salt);
+            byte[] validation = createValidation(inputNewPassword, salt);
 
             Files.write(Paths.get(PATH_SALT), salt);
             Files.write(Paths.get(PATH_VALIDATION), validation);
 
-            Arrays.fill(inputPassword, '\0');
+            Arrays.fill(inputNewPassword, '\0');
 
             System.out.println("Мастер-пароль установлен");
         }
