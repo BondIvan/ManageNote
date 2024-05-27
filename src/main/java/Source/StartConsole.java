@@ -18,6 +18,7 @@ import Tools.AutoCorrection.Dictionaries;
 import Tools.UsefulMethods;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -41,8 +42,8 @@ public class StartConsole {
     public static void main(String[] args) throws Exception {
 
         Scanner inputLine = new Scanner(System.in);
-        Validation validation = new Validation();
 
+        Validation validation = new Validation();
         if(validation.isExist()) {
             int max_attempts = 3;
             for (int i = 1; i <= max_attempts; i++) {
@@ -51,6 +52,7 @@ public class StartConsole {
                 String input = inputLine.nextLine();
                 if (validation.checkInputPassword(input)) {
                     System.out.println("Мастер-пароль верный");
+                    input = null;
                     break;
                 } else {
                     System.out.println("Мастер-пароль НЕ верный. Осталось попыток - " + (max_attempts - i));
@@ -62,9 +64,10 @@ public class StartConsole {
                 }
             }
         } else {
-            System.out.print("Задайте мастер-пароль: ");
+            System.out.print("Задайте мастер-пароль: "); // asd
             char[] inputPassword = inputLine.nextLine().toCharArray();
             validation.createMasterPassword(inputPassword);
+            Arrays.fill(inputPassword, '\0');
         }
 
         NOTES = UsefulMethods.getAllNoteFromFile(PATH);
