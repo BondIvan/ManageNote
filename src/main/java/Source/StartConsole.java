@@ -43,19 +43,28 @@ public class StartConsole {
         Scanner inputLine = new Scanner(System.in);
         Validation validation = new Validation();
 
-        int max_attempts = 3;
-        for(int i = 1; i <= max_attempts; i++) {
-            if (validation.checkInputPassword(inputLine.nextLine())) {
-                System.out.println("Мастер-пароль верный");
-                break;
-            } else {
-                System.out.print("Мастер-пароль НЕ верный. Осталось попыток - " + (max_attempts-i));
-            }
+        if(validation.isExist()) {
+            int max_attempts = 3;
+            for (int i = 1; i <= max_attempts; i++) {
 
-            if(i == max_attempts) {
-                System.out.println("Попыток больше нет");
-                System.exit(1);
+                System.out.print("Введите мастер-пароль: ");
+                String input = inputLine.nextLine();
+                if (validation.checkInputPassword(input)) {
+                    System.out.println("Мастер-пароль верный");
+                    break;
+                } else {
+                    System.out.println("Мастер-пароль НЕ верный. Осталось попыток - " + (max_attempts - i));
+                }
+
+                if (i == max_attempts) {
+                    System.out.println("Попыток больше нет");
+                    System.exit(1);
+                }
             }
+        } else {
+            System.out.print("Задайте мастер-пароль: ");
+            char[] inputPassword = inputLine.nextLine().toCharArray();
+            validation.createMasterPassword(inputPassword);
         }
 
         NOTES = UsefulMethods.getAllNoteFromFile(PATH);
