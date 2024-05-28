@@ -1,4 +1,4 @@
-package Encrypting.Secure;
+package Encrypting.Security.MasterPassword;
 
 public class IncorrectInputDataException extends Exception {
 

@@ -11,7 +11,7 @@ import Commands.WithoutParameters.CopyFile;
 import Commands.WithoutParameters.Exit;
 import Commands.WithoutParameters.Help;
 import Commands.WithoutParameters.Save;
-import Encrypting.Secure.Validation;
+import Encrypting.Security.MasterPassword.Validation;
 import Entity.NoteEntity;
 import OptionsExceptions.CommandNotFoundException;
 import Tools.AutoCorrection.Dictionaries;

@@ -1,4 +1,4 @@
-package Encrypting.Secure;
+package Encrypting.Security.MasterPassword;
 
 import javax.crypto.*;
 import javax.crypto.spec.GCMParameterSpec;
