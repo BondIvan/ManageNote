@@ -20,7 +20,7 @@ public class AES_GCM {
     private static final int GCM_IV_LENGTH = 12;
     private static final int GCM_TAG_LENGTH = 128;
     private static final int SALT_LENGTH = 16;
-    private static String storePassworod = "";
+    private static String storePassword = null;
 
     // Шифрование пароля
     public String encrypt(String password, String serviceName) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, CertificateException, KeyStoreException, IOException  {
@@ -117,12 +117,12 @@ public class AES_GCM {
 
     // Задание пароля к защищённому хранилищу
     public static void transferKeyStorePassword(String password) {
-        storePassworod = password;
+        storePassword = password;
     }
 
     // Получить пароль от защищённого хранилища
     private char[] getKeyStorePassword() {
-        return storePassworod.toCharArray();
+        return storePassword.toCharArray();
     }
 
 }
