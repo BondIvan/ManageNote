@@ -1,7 +1,6 @@
 package Encrypting.Security.Encryption_AES;
 
 import Encrypting.Security.Storage.PasswordStorage;
-import Encrypting.Security.Storage.SaltStorage;
 
 import javax.crypto.*;
 import javax.crypto.spec.GCMParameterSpec;
@@ -29,7 +28,6 @@ public class AES_GCM {
         byte[] iv = generateIV();
         SecretKey key = generateKey(password.toCharArray(), salt);
 
-        saveSaltToStorage(serviceName, salt);
         saveKeyToStorage(serviceName, key);
 
         // Создание экземплера шифра AES
@@ -49,15 +47,6 @@ public class AES_GCM {
         return base64View;
     }
 
-    // Сохранить соль в защищённое хранилище
-    private void saveSaltToStorage(String serviceName, byte[] salt) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException {
-        String tmpPassword = "123";
-        SaltStorage saltStorage = new SaltStorage();
-        KeyStore keyStore = saltStorage.initializeKeyStore(tmpPassword.toCharArray());
-
-        saltStorage.saveSalt(keyStore, serviceName, salt, tmpPassword.toCharArray());
-    }
-
     // Сохранить ключ в защищённое хранилище
     private void saveKeyToStorage(String serviceName, SecretKey key) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException {
         String tmpPassword = "123";
@@ -67,17 +56,7 @@ public class AES_GCM {
         passwordStorage.saveKey(keyStore, serviceName, key, tmpPassword.toCharArray());
     }
 
-    private byte[] getSaltFromStorage(String serviceName) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException, UnrecoverableEntryException {
-
-        String tmpPassword = "123";
-        SaltStorage saltStorage = new SaltStorage();
-        KeyStore keyStore = saltStorage.initializeKeyStore(tmpPassword.toCharArray());
-
-        byte[] salt = saltStorage.loadSalt(keyStore, serviceName, tmpPassword.toCharArray());
-
-        return salt;
-    }
-
+    // Получить ключ из защищённого хранилища
     private SecretKey getKeyFromStorage(String serviceName) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException, UnrecoverableEntryException {
 
         String tmpPAssword = "123";
