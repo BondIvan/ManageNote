@@ -3,6 +3,7 @@ package Entity;
 import Encrypting.MyEncrypt.Alphabet.Alphabet;
 import Encrypting.MyEncrypt.Alphabet.ViewDecrypt;
 import Encrypting.MyEncrypt.Alphabet.ViewEncrypt;
+import Encrypting.Security.Encryption_AES.AES_GCM;
 import OptionsExceptions.UnknownArgsException;
 
 public class NoteEntity {
@@ -39,13 +40,17 @@ public class NoteEntity {
         return this.login;
     }
 
-    public void setPassword(String password) throws UnknownArgsException { //TODO Подумать, насколько это разумно
+    public void setPassword(String password) throws UnknownArgsException {
 
-        if(password.contains(".")) // Символ '.' используется для шифрования и расшифрования
-            throw new UnknownArgsException("В пароле не должен содержаться символ '.'");
+        //TODO Посмотреть корректно ли будет работать замена пароля через команду replace
+        
+        try {
+            AES_GCM aesGcm = new AES_GCM();
+            this.password = aesGcm.encrypt(password, this.idService); // password = "Without -> Password: ..."
+        } catch (Exception e) {
+            System.out.println("Не удалось задать пароль, тип ошибки - " + e.getMessage());
+        }
 
-        ViewEncrypt viewEncrypt = new ViewEncrypt(Alphabet.getAlpha());
-        this.password = viewEncrypt.encrypting(password); // password = "Without -> Password: ..."
     }
     public String getPassword(boolean needDecrypt) { // needDecrypt - будет говорить, нужно ли расшифровать пароль
 
