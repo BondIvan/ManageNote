@@ -45,6 +45,13 @@ public class AES_GCM {
 
         String base64View = Base64.getEncoder().encodeToString(concatenatedIvAndEncrypted);
 
+        // Очистка чувствиельных данных из памяти
+        Arrays.fill(iv, (byte) '\0');
+        Arrays.fill(salt, (byte) '\0');
+        Arrays.fill(encrypted, (byte) '\0');
+        Arrays.fill(concatenatedIvAndEncrypted, (byte) '\0');
+        key = null;
+
         return base64View;
     }
 
@@ -54,6 +61,9 @@ public class AES_GCM {
         KeyStore keyStore = passwordStorage.initializeKeyStore(getKeyStorePassword());
 
         passwordStorage.saveKey(keyStore, serviceName, key, getKeyStorePassword());
+
+        // Очистка чувствиельных данных из памяти
+        key = null;
     }
 
     // Получить ключ из защищённого хранилища
@@ -80,6 +90,12 @@ public class AES_GCM {
         GCMParameterSpec gcmSpec = new GCMParameterSpec(GCM_TAG_LENGTH, iv);
         cipher.init(Cipher.DECRYPT_MODE, key, gcmSpec);
         byte[] decrypted = cipher.doFinal(encryptText);
+
+        // Очистка чувствиельных данных из памяти
+        Arrays.fill(fromBase64ToByteView, (byte) '\0');
+        Arrays.fill(iv, (byte) '\0');
+        Arrays.fill(encryptText, (byte) '\0');
+        key = null;
 
         return new String(decrypted);
     }

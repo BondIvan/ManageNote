@@ -11,6 +11,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
+import java.util.Arrays;
 
 public class PasswordStorage {
 
@@ -21,17 +22,22 @@ public class PasswordStorage {
 
         KeyStore keyStore = KeyStore.getInstance("PKCS12");
 
-        if(Files.exists(Paths.get(PATH_TO_KEY_STORE))) {
-            FileInputStream fileInputStream = new FileInputStream(PATH_TO_KEY_STORE);
-            keyStore.load(fileInputStream, storePassword);
-
-            return keyStore;
+        try {
+            if(Files.exists(Paths.get(PATH_TO_KEY_STORE))) {
+                try (FileInputStream fileInputStream = new FileInputStream(PATH_TO_KEY_STORE)) {
+                    keyStore.load(fileInputStream, storePassword);
+                }
+            } else {
+                // Если хранилище keyStore ещё не создали, создать его пустым
+                keyStore.load(null, storePassword);
+                try (FileOutputStream fileOutputStream = new FileOutputStream(PATH_TO_KEY_STORE)) {
+                    keyStore.store(fileOutputStream, storePassword);
+                }
+            }
+        } finally { // Очистка чувствиельных данных из памяти
+            Arrays.fill(storePassword, '\0');
+            // Благодаря блоку try-with-resources fileOutputStream поток закроется автоматически, даже если произойдёт исключение
         }
-
-        // Если хранилище keyStore ещё не создали, создать его пустым
-        keyStore.load(null, storePassword);
-        FileOutputStream fileOutputStream = new FileOutputStream(PATH_TO_KEY_STORE);
-        keyStore.store(fileOutputStream, storePassword);
 
         return keyStore;
     }
@@ -43,8 +49,13 @@ public class PasswordStorage {
         KeyStore.ProtectionParameter protectionParameter = new KeyStore.PasswordProtection(storePassword);
         keyStore.setEntry(aliasServiceName, secretKeyEntry, protectionParameter);
 
-        FileOutputStream fileOutputStream = new FileOutputStream(PATH_TO_KEY_STORE);
-        keyStore.store(fileOutputStream, storePassword);
+        try (FileOutputStream fileOutputStream = new FileOutputStream(PATH_TO_KEY_STORE)) {
+            keyStore.store(fileOutputStream, storePassword);
+        } finally { // Очистка чувствиельных данных из памяти
+            Arrays.fill(storePassword, '\0');
+            secretKeyEntry = null;
+        }
+
     }
 
     // Загрузить ключ из keyStore
@@ -54,6 +65,10 @@ public class PasswordStorage {
         KeyStore.SecretKeyEntry secretKeyEntry = (KeyStore.SecretKeyEntry) keyStore.getEntry(aliasServiceName, protectionParameter);
 
         SecretKey secretKey = secretKeyEntry.getSecretKey();
+
+        // Очистка чувствиельных данных из памяти
+        Arrays.fill(storePassword, '\0');
+        secretKeyEntry = null;
 
         return secretKey;
     }
@@ -68,8 +83,11 @@ public class PasswordStorage {
 
         keyStore.deleteEntry(aliasServiceName);
 
-        FileOutputStream fileOutputStream = new FileOutputStream(PATH_TO_KEY_STORE);
-        keyStore.store(fileOutputStream, storePassword);
+        try (FileOutputStream fileOutputStream = new FileOutputStream(PATH_TO_KEY_STORE)) {
+            keyStore.store(fileOutputStream, storePassword);
+        } finally { // Очистка чувствиельных данных из памяти
+            Arrays.fill(storePassword, '\0');
+        }
 
         System.out.println("Ключ удален из keyStore");
     }

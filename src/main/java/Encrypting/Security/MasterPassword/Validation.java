@@ -115,6 +115,8 @@ public class Validation {
 
         // Очистка чувствиельных данных из памяти
         Arrays.fill(key, (byte) '\0');
+        Arrays.fill(salt, (byte) '\0');
+        Arrays.fill(iv, (byte) '\0');
         Arrays.fill(password, '\0');
         spec.clearPassword();
         keySpec = null;
