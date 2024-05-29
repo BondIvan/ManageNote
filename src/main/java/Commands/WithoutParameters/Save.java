@@ -36,12 +36,12 @@ public class Save implements Commands {
 
     private boolean saving(List<NoteEntity> listWithNotesForSave) throws IOException {
 
-        Scanner confirm = new Scanner(System.in);
-        System.out.println("Сохранить файл ? (y/n)");
-
-        if( !confirm.nextLine().equals("y") ) {
-            return false;
-        }
+//        Scanner confirm = new Scanner(System.in);
+//        System.out.println("Сохранить файл ? (y/n)");
+//
+//        if( !confirm.nextLine().equals("y") ) {
+//            return false;
+//        }
 
         FileWriter fileWriter = new FileWriter(pathToSave);
         // Построчная запись в файл всех объктов NoteEntity

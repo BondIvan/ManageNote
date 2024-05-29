@@ -1,6 +1,7 @@
 package Commands.WithParameters;
 
 import Commands.Commands;
+import Encrypting.Security.Encryption_AES.AES_GCM;
 import Entity.NoteEntity;
 import OptionsExceptions.AccessNotFoundException;
 import OptionsExceptions.UnknownArgsException;
@@ -73,6 +74,12 @@ public class Delete implements Commands {
 
         CheckingForUpdate.isUpdated = true;
 
+        try {
+            AES_GCM.deleteKeyFromStorage(serviceName);
+        } catch (Exception e) {
+            return "Не удалось удалить, тип ошибки - " + e.getMessage();
+        }
+
         return "Удалено";
     }
 
@@ -85,6 +92,12 @@ public class Delete implements Commands {
         UsefulMethods.changingNameWhenRemove(listWithNotes, serviceName);
 
         CheckingForUpdate.isUpdated = true;
+
+        try {
+            AES_GCM.deleteKeyFromStorage(serviceName);
+        } catch (Exception e) {
+            return "Не удалось удалить, тип ошибки - " + e.getMessage();
+        }
 
         return "Удалено";
     }
