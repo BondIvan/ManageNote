@@ -20,6 +20,7 @@ public class AES_GCM {
     private static final int GCM_IV_LENGTH = 12;
     private static final int GCM_TAG_LENGTH = 128;
     private static final int SALT_LENGTH = 16;
+    private static String storePassworod = "";
 
     // Шифрование пароля
     public String encrypt(String password, String serviceName) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, CertificateException, KeyStoreException, IOException  {
@@ -49,21 +50,19 @@ public class AES_GCM {
 
     // Сохранить ключ в защищённое хранилище
     private void saveKeyToStorage(String serviceName, SecretKey key) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException {
-        String tmpPassword = "123";
         PasswordStorage passwordStorage = new PasswordStorage();
-        KeyStore keyStore = passwordStorage.initializeKeyStore(tmpPassword.toCharArray());
+        KeyStore keyStore = passwordStorage.initializeKeyStore(getKeyStorePassword());
 
-        passwordStorage.saveKey(keyStore, serviceName, key, tmpPassword.toCharArray());
+        passwordStorage.saveKey(keyStore, serviceName, key, getKeyStorePassword());
     }
 
     // Получить ключ из защищённого хранилища
     private SecretKey getKeyFromStorage(String serviceName) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException, UnrecoverableEntryException {
 
-        String tmpPAssword = "123";
         PasswordStorage passwordStorage = new PasswordStorage();
-        KeyStore keyStore = passwordStorage.initializeKeyStore(tmpPAssword.toCharArray());
+        KeyStore keyStore = passwordStorage.initializeKeyStore(getKeyStorePassword());
 
-        SecretKey key = passwordStorage.loadKey(keyStore, serviceName, tmpPAssword.toCharArray());
+        SecretKey key = passwordStorage.loadKey(keyStore, serviceName, getKeyStorePassword());
 
         return key;
     }
@@ -114,6 +113,16 @@ public class AES_GCM {
         secureRandom.nextBytes(iv);
 
         return iv;
+    }
+
+    // Задание пароля к защищённому хранилищу
+    public static void transferKeyStorePassword(String password) {
+        storePassworod = password;
+    }
+
+    // Получить пароль от защищённого хранилища
+    private char[] getKeyStorePassword() {
+        return storePassworod.toCharArray();
     }
 
 }

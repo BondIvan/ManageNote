@@ -11,6 +11,7 @@ import Commands.WithoutParameters.CopyFile;
 import Commands.WithoutParameters.Exit;
 import Commands.WithoutParameters.Help;
 import Commands.WithoutParameters.Save;
+import Encrypting.Security.Encryption_AES.AES_GCM;
 import Encrypting.Security.MasterPassword.Validation;
 import Entity.NoteEntity;
 import OptionsExceptions.CommandNotFoundException;
@@ -87,6 +88,7 @@ public class StartConsole {
                 String input = inputLine.nextLine();
                 if (validation.checkInputPassword(input)) {
                     System.out.println("Мастер-пароль верный");
+                    AES_GCM.transferKeyStorePassword(input);
                     input = null;
                     break;
                 } else {
