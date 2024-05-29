@@ -6,6 +6,7 @@ import javax.crypto.*;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
@@ -77,6 +78,14 @@ public class AES_GCM {
         return key;
     }
 
+    public static void deleteKeyFromStorage(String serviceName) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException {
+
+        PasswordStorage passwordStorage = new PasswordStorage();
+        KeyStore keyStore = passwordStorage.initializeKeyStore(getKeyStorePassword());
+
+        passwordStorage.deleteKey(keyStore, serviceName, getKeyStorePassword());
+    }
+
     // Расшифровка пароля
     public String decrypt(String encrypted, String serviceName) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, UnrecoverableEntryException, CertificateException, KeyStoreException, IOException, InvalidAlgorithmParameterException {
 
@@ -137,7 +146,7 @@ public class AES_GCM {
     }
 
     // Получить пароль от защищённого хранилища
-    private char[] getKeyStorePassword() {
+    private static char[] getKeyStorePassword() {
         return storePassword.toCharArray();
     }
 
