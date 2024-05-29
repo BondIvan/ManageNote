@@ -54,9 +54,15 @@ public class NoteEntity {
     }
     public String getPassword(boolean needDecrypt) { // needDecrypt - будет говорить, нужно ли расшифровать пароль
 
-        ViewDecrypt viewDecrypt = new ViewDecrypt(Alphabet.getAlpha());
+        try {
+            AES_GCM aesGcm = new AES_GCM();
 
-        return needDecrypt ? viewDecrypt.decrypt(this.password) : this.password;
+            return needDecrypt ? aesGcm.decrypt(this.password, this.idService) : this.password;
+        } catch (Exception e) {
+            System.out.println("Не удалось вывести пароль, тип ошибки - " + e.getMessage());
+        }
+
+        return null;
     }
 
     @Override

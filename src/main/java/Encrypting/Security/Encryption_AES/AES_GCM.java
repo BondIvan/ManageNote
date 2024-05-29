@@ -23,7 +23,7 @@ public class AES_GCM {
     private static final int SALT_LENGTH = 16;
 
     // Шифрование пароля
-    public String encrypt(String password, String serviceName) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, CertificateException, KeyStoreException, IOException {
+    public String encrypt(String password, String serviceName) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, CertificateException, KeyStoreException, IOException  {
 
         byte[] salt = generateSalt();
         byte[] iv = generateIV();
@@ -67,9 +67,32 @@ public class AES_GCM {
         passwordStorage.saveKey(keyStore, serviceName, key, tmpPassword.toCharArray());
     }
 
-    // Расшифровка пароля
-    public String decrypt(String encrypted, SecretKey key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+    private byte[] getSaltFromStorage(String serviceName) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException, UnrecoverableEntryException {
 
+        String tmpPassword = "123";
+        SaltStorage saltStorage = new SaltStorage();
+        KeyStore keyStore = saltStorage.initializeKeyStore(tmpPassword.toCharArray());
+
+        byte[] salt = saltStorage.loadSalt(keyStore, serviceName, tmpPassword.toCharArray());
+
+        return salt;
+    }
+
+    private SecretKey getKeyFromStorage(String serviceName) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException, UnrecoverableEntryException {
+
+        String tmpPAssword = "123";
+        PasswordStorage passwordStorage = new PasswordStorage();
+        KeyStore keyStore = passwordStorage.initializeKeyStore(tmpPAssword.toCharArray());
+
+        SecretKey key = passwordStorage.loadKey(keyStore, serviceName, tmpPAssword.toCharArray());
+
+        return key;
+    }
+
+    // Расшифровка пароля
+    public String decrypt(String encrypted, String serviceName) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, UnrecoverableEntryException, CertificateException, KeyStoreException, IOException, InvalidAlgorithmParameterException {
+
+        SecretKey key = getKeyFromStorage(serviceName);
 
         byte[] fromBase64ToByteView = Base64.getDecoder().decode(encrypted);
         byte[] iv = Arrays.copyOfRange(fromBase64ToByteView, 0, GCM_IV_LENGTH);
@@ -77,7 +100,7 @@ public class AES_GCM {
 
         Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
         GCMParameterSpec gcmSpec = new GCMParameterSpec(GCM_TAG_LENGTH, iv);
-        cipher.init(Cipher.DECRYPT_MODE, key);
+        cipher.init(Cipher.DECRYPT_MODE, key, gcmSpec);
         byte[] decrypted = cipher.doFinal(encryptText);
 
         return new String(decrypted);
