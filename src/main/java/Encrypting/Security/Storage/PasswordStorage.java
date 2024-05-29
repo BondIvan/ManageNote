@@ -1,57 +1,56 @@
 package Encrypting.Security.Storage;
 
 import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.*;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
 
 public class PasswordStorage {
 
-    private static final String PATH_TO_SALT_STORE = "C:\\My place\\Java projects\\ItsClone\\ManageNote\\Files\\Storage\\PasswordStore.ks";
+    private static final String PATH_TO_KEY_STORE = "C:\\My place\\Java projects\\ItsClone\\ManageNote\\Files\\Storage\\KeysStorage.ks";
 
     // Инициализация защищённого хранилища keyStore
-    private static KeyStore initializeKeyStore(String pathToPasswordKeyStore, char[] storePassword) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
+    public KeyStore initializeKeyStore(char[] storePassword) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
 
-        KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+        KeyStore keyStore = KeyStore.getInstance("PKCS12");
 
-        if(Files.exists(Paths.get(pathToPasswordKeyStore))) {
-            FileInputStream fileInputStream = new FileInputStream(pathToPasswordKeyStore);
+        if(Files.exists(Paths.get(PATH_TO_KEY_STORE))) {
+            FileInputStream fileInputStream = new FileInputStream(PATH_TO_KEY_STORE);
             keyStore.load(fileInputStream, storePassword);
 
             return keyStore;
         }
 
+        // Если хранилище keyStore ещё не создали, создать его пустым
         keyStore.load(null, storePassword);
-        FileOutputStream fileOutputStream = new FileOutputStream(pathToPasswordKeyStore);
+        FileOutputStream fileOutputStream = new FileOutputStream(PATH_TO_KEY_STORE);
         keyStore.store(fileOutputStream, storePassword);
 
         return keyStore;
     }
 
     // Сохранение ключа в keyStore
-    private static void saveKey(KeyStore keyStore, String aliasServiceName, SecretKey key, char[] storePassword) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
+    public void saveKey(KeyStore keyStore, String aliasServiceName, SecretKey key, char[] storePassword) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
 
         KeyStore.SecretKeyEntry secretKeyEntry = new KeyStore.SecretKeyEntry(key);
         KeyStore.ProtectionParameter protectionParameter = new KeyStore.PasswordProtection(storePassword);
         keyStore.setEntry(aliasServiceName, secretKeyEntry, protectionParameter);
 
-        FileOutputStream fileOutputStream = new FileOutputStream(PATH_TO_KS);
+        FileOutputStream fileOutputStream = new FileOutputStream(PATH_TO_KEY_STORE);
         keyStore.store(fileOutputStream, storePassword);
     }
 
     // Загрузить ключ из keyStore
-    private static SecretKey loadKey(KeyStore keyStore, String aliasServiceName) throws UnrecoverableEntryException, NoSuchAlgorithmException, KeyStoreException {
+    public SecretKey loadKey(KeyStore keyStore, String aliasServiceName, char[] storePassword) throws UnrecoverableEntryException, NoSuchAlgorithmException, KeyStoreException {
 
-        KeyStore.ProtectionParameter protectionParameter = new KeyStore.PasswordProtection(keyStorePassword.toCharArray());
+        KeyStore.ProtectionParameter protectionParameter = new KeyStore.PasswordProtection(storePassword);
         KeyStore.SecretKeyEntry secretKeyEntry = (KeyStore.SecretKeyEntry) keyStore.getEntry(aliasServiceName, protectionParameter);
 
         SecretKey secretKey = secretKeyEntry.getSecretKey();
@@ -59,7 +58,8 @@ public class PasswordStorage {
         return secretKey;
     }
 
-    private static void deleteKey(KeyStore keyStore, String aliasServiceName, char[] storePassword) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
+    // Удалить ключ из keyStore
+    public void deleteKey(KeyStore keyStore, String aliasServiceName, char[] storePassword) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
 
         if(!keyStore.containsAlias(aliasServiceName)) {
             System.out.println("В keyStore нет такого сервиса");
@@ -68,32 +68,10 @@ public class PasswordStorage {
 
         keyStore.deleteEntry(aliasServiceName);
 
-        FileOutputStream fileOutputStream = new FileOutputStream(PATH_TO_KS);
+        FileOutputStream fileOutputStream = new FileOutputStream(PATH_TO_KEY_STORE);
         keyStore.store(fileOutputStream, storePassword);
 
         System.out.println("Ключ удален из keyStore");
-    }
-
-    public static SecretKey generateSyncKey(char[] password) throws InvalidKeySpecException, NoSuchAlgorithmException {
-
-        // Генерация ключа на основе пароля и соли
-        SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-        KeySpec spec = new PBEKeySpec(password, generateSalt(), 65536, 256);
-        SecretKey tmp = secretKeyFactory.generateSecret(spec);
-
-        // Это строка, указывающая алгоритм, для которого предназначен ключ. В данном случае мы указываем, что это ключ для алгоритма AES.
-        SecretKey secretKey = new SecretKeySpec(tmp.getEncoded(), "AES");
-
-        return secretKey;
-    }
-
-    public static byte[] generateSalt() {
-
-        SecureRandom secureRandom = new SecureRandom();
-        byte[] salt = new byte[16];
-        secureRandom.nextBytes(salt);
-
-        return salt;
     }
 
 }

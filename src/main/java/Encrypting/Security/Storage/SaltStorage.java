@@ -7,32 +7,38 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.*;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
 
 public class SaltStorage {
 
-    private static final String PATH_TO_SALT_STORE = "C:\\My place\\Java projects\\ItsClone\\ManageNote\\Files\\Storage\\SaltStore.ks";
+    private static final String PATH_TO_SALT_STORE = "C:\\My place\\Java projects\\ItsClone\\ManageNote\\Files\\Storage\\SaltStorage.ks";
 
-    private static KeyStore initializeKeyStore(String pathToSaltKeyStore, char[] storePassword) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
+    // Инициализация защищённого хранилища keyStore
+    public KeyStore initializeKeyStore(char[] storePassword) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
 
-        KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+        KeyStore keyStore = KeyStore.getInstance("PKCS12");
 
-        if(Files.exists(Paths.get(pathToSaltKeyStore))) {
-            FileInputStream fileInputStream = new FileInputStream(pathToSaltKeyStore);
+        if(Files.exists(Paths.get(PATH_TO_SALT_STORE))) {
+            FileInputStream fileInputStream = new FileInputStream(PATH_TO_SALT_STORE);
             keyStore.load(fileInputStream, storePassword);
 
             return keyStore;
         }
 
+        // Если хранилище keyStore ещё не создали, создать его пустым
         keyStore.load(null, storePassword);
-        FileOutputStream fileOutputStream = new FileOutputStream(pathToSaltKeyStore);
+        FileOutputStream fileOutputStream = new FileOutputStream(PATH_TO_SALT_STORE);
         keyStore.store(fileOutputStream, storePassword);
 
         return keyStore;
     }
 
-    private static void saveSalt(KeyStore keyStore, String pathKeyStoreFile, String aliasServiceName, byte[] salt, char[] storePassword) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
+    // Сохранение соли в keyStore
+    public void saveSalt(KeyStore keyStore, String aliasServiceName, byte[] salt, char[] storePassword) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
 
         SecretKey secretKey = new SecretKeySpec(salt, "AES");
         KeyStore.SecretKeyEntry secretKeyEntry = new KeyStore.SecretKeyEntry(secretKey);
@@ -40,13 +46,14 @@ public class SaltStorage {
 
         keyStore.setEntry(aliasServiceName, secretKeyEntry, protectionParameter);
 
-        FileOutputStream fileOutputStream = new FileOutputStream(pathKeyStoreFile);
+        FileOutputStream fileOutputStream = new FileOutputStream(PATH_TO_SALT_STORE);
         keyStore.store(fileOutputStream, storePassword);
     }
 
-    private static byte[] loadSalt(KeyStore keyStore, String alias) throws UnrecoverableEntryException, NoSuchAlgorithmException, KeyStoreException {
+    // Загрузить соль из keyStore
+    public byte[] loadSalt(KeyStore keyStore, String alias, char[] storePassword) throws UnrecoverableEntryException, NoSuchAlgorithmException, KeyStoreException {
 
-        KeyStore.ProtectionParameter protectionParameter = new KeyStore.PasswordProtection(keyStorePassword.toCharArray());
+        KeyStore.ProtectionParameter protectionParameter = new KeyStore.PasswordProtection(storePassword);
         KeyStore.SecretKeyEntry secretKeyEntry = (KeyStore.SecretKeyEntry) keyStore.getEntry(alias, protectionParameter);
 
         SecretKey secretKey = secretKeyEntry.getSecretKey();
@@ -54,7 +61,8 @@ public class SaltStorage {
         return secretKey.getEncoded();
     }
 
-    private static void deleteSalt(KeyStore keyStore, String pathKeyStoreFile, String aliasServiceName, char[] storePassword) throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException {
+    // Удалить соль из keyStore
+    public void deleteSalt(KeyStore keyStore, String aliasServiceName, char[] storePassword) throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException {
 
         if(!keyStore.containsAlias(aliasServiceName)) {
             System.out.println("В keyStore нет такого сервиса");
@@ -63,20 +71,10 @@ public class SaltStorage {
 
         keyStore.deleteEntry(aliasServiceName);
 
-        FileOutputStream fileOutputStream = new FileOutputStream(pathKeyStoreFile);
+        FileOutputStream fileOutputStream = new FileOutputStream(PATH_TO_SALT_STORE);
         keyStore.store(fileOutputStream, storePassword);
 
         System.out.println("Ключ удален из keyStore");
-
-    }
-
-    public static byte[] generateSalt() {
-
-        SecureRandom secureRandom = new SecureRandom();
-        byte[] salt = new byte[16];
-        secureRandom.nextBytes(salt);
-
-        return salt;
     }
 
 }
