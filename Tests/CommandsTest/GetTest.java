@@ -142,14 +142,28 @@ class GetTest implements TestCommands {
     @Test
     public void testForExceptions() {
 
-        List<NoteEntity> notes;
+        List<NoteEntity> notes = new ArrayList<>();
         try {
-            notes = UsefulMethods.getAllNoteFromFile("C:\\My place\\Java projects\\MyNewTest_firstTry\\src\\ForTxtFiles\\TestingAccess.txt");
-        } catch (Exception e) {
-            System.err.println("Ошибка (я): " + e.getMessage());
-            return;
-        }
+            NoteEntity note1 = new NoteEntity("Vk.com (1-st account)", "first.account@gmail.com");
+            note1.setPassword("password_vk_1");
+            NoteEntity note2 = new NoteEntity("Vk.com (2-nd account)", "second.account@gmail.com");
+            note2.setPassword("password_vk_2");
+            NoteEntity note3 = new NoteEntity("Telegram.com", "teleg.account@gmail.com");
+            note3.setPassword("password_teleg_1");
+            NoteEntity note4 = new NoteEntity("logo.com", "logo.account@gmail.com");
+            note4.setPassword("password_logo_1");
+            NoteEntity note5 = new NoteEntity("Yandex.ru (1-st account)", "yandex1.account@gmail.com");
+            note5.setPassword("password_yandex_1");
+            NoteEntity note6 = new NoteEntity("Yandex.ru (2-nd account)", "yandex2.account@gmail.com");
+            note6.setPassword("password_yandex_2");
+            NoteEntity note7 = new NoteEntity("Yandex.ru (3-rd account)", "yandex3.account@gmail.com");
+            note7.setPassword("password_yandex_3");
 
+            notes.add(note1); notes.add(note2); notes.add(note3); notes.add(note4); notes.add(note5); notes.add(note6); notes.add(note7);
+        } catch (UnknownArgsException e) {
+            System.out.println("Ошибка (я): " + e.getMessage());
+        }
+        
         Get get = new Get(notes);
 
         Exception accessNotFoundException1 = assertThrows(AccessNotFoundException.class, () -> get.perform("DontExist"));

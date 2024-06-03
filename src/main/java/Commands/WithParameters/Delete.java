@@ -62,8 +62,8 @@ public class Delete implements Commands {
 
             // Отсортировать все аккаунты сервиса по названию + вывести их названия и логины
             UsefulMethods.sortNoteEntityByServiceName( listWithNotes.stream()
-                    .filter(note -> note.getIdService().split(" ")[0].equalsIgnoreCase(serviceName))
-                    .collect(Collectors.toList()) ).forEach((note) -> System.out.println(note.getIdService() + " -> " + note.getLogin()));
+                    .filter(note -> note.getServiceName().split(" ")[0].equalsIgnoreCase(serviceName))
+                    .collect(Collectors.toList()) ).forEach((note) -> System.out.println(note.getServiceName() + " -> " + note.getLogin()));
 
             return "Теперь введите команду";
         }

@@ -31,6 +31,14 @@
             <version>0.4</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/de.huxhorn.sulky/de.huxhorn.sulky.ulid -->
+        <!-- ULID -->
+        <dependency>
+            <groupId>de.huxhorn.sulky</groupId>
+            <artifactId>de.huxhorn.sulky.ulid</artifactId>
+            <version>8.3.0</version>
+        </dependency>
+
     </dependencies>
 
 </project>

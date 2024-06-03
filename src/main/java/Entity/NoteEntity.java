@@ -5,32 +5,37 @@ import Encrypting.MyEncrypt.Alphabet.ViewDecrypt;
 import Encrypting.MyEncrypt.Alphabet.ViewEncrypt;
 import Encrypting.Security.Encryption_AES.AES_GCM;
 import OptionsExceptions.UnknownArgsException;
+import de.huxhorn.sulky.ulid.ULID;
 
 public class NoteEntity {
-    private String idService; // id -> name
+    private static final ULID ULID = new ULID(); // Генерация уникальных id
+    private final String id;
+    private String serviceName;
     private String login;
     private String password;
 
     public NoteEntity() {
-
+        this.id = generateID();
     }
 
-    public NoteEntity(String idService, String login) {
-        this.idService = idService; // id -> name
+    public NoteEntity(String serviceName, String login) {
+        this.id = generateID();
+        this.serviceName = serviceName;
         this.login = login;
     }
 
-    public NoteEntity(String idService, String login, String password) {
-        this.idService = idService; // id -> name
+    public NoteEntity(String serviceName, String id, String login, String password) {
+        this.serviceName = serviceName;
+        this.id = id;
         this.login = login;
         this.password = password;
     }
 
-    public void setIdService(String idService) {
-        this.idService = idService;
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
-    public String getIdService() {
-        return this.idService;
+    public String getServiceName() {
+        return this.serviceName;
     }
 
     public void setLogin(String login) {
@@ -65,9 +70,18 @@ public class NoteEntity {
         return null;
     }
 
+    private String generateID() {
+        // Возможно стоит добавить проверку, существует ли такой id
+        return ULID.nextULID();
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
     @Override
     public String toString() { //TODO Подумать, нужно ли здесь расшифровывать пароль
 
-        return idService + "\nLogin: " + login + "\nPassword: " + getPassword(true);
+        return serviceName + "\nLogin: " + login + "\nPassword: " + getPassword(true);
     }
 }
