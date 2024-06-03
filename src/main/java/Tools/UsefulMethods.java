@@ -129,7 +129,11 @@ public class UsefulMethods {
 
             data = file.nextLine();
             if(!data.isEmpty()) {
-                NoteEntity noteEntity = new NoteEntity(data, file.nextLine().substring(7), file.nextLine().substring(10));
+                String id = file.nextLine().substring(4);
+                String login = file.nextLine().substring(7);
+                String password = file.nextLine().substring(10);
+
+                NoteEntity noteEntity = new NoteEntity(data, id, login, password);
                 allNoteFromFile.add(noteEntity);
             }
 

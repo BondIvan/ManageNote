@@ -4,23 +4,28 @@ import Encrypting.MyEncrypt.Alphabet.Alphabet;
 import Encrypting.MyEncrypt.Alphabet.ViewDecrypt;
 import Encrypting.MyEncrypt.Alphabet.ViewEncrypt;
 import OptionsExceptions.UnknownArgsException;
+import de.huxhorn.sulky.ulid.ULID;
 
 public class NoteEntity {
-    private String serviceName; // id -> name
+    private static final ULID ULID = new ULID(); // Генерация уникальных id
+    private final String id;
+    private String serviceName;
     private String login;
     private String password;
 
     public NoteEntity() {
-
+        this.id = generateID();
     }
 
     public NoteEntity(String serviceName, String login) {
-        this.serviceName = serviceName; // id -> name
+        this.id = generateID();
+        this.serviceName = serviceName;
         this.login = login;
     }
 
-    public NoteEntity(String serviceName, String login, String password) {
-        this.serviceName = serviceName; // id -> name
+    public NoteEntity(String serviceName, String id, String login, String password) {
+        this.serviceName = serviceName;
+        this.id = id;
         this.login = login;
         this.password = password;
     }
@@ -52,6 +57,15 @@ public class NoteEntity {
         ViewDecrypt viewDecrypt = new ViewDecrypt(Alphabet.getAlpha());
 
         return needDecrypt ? viewDecrypt.decrypt(this.password) : this.password;
+    }
+
+    private String generateID() {
+        // Возможно стоит добавить проверку, существует ли такой id
+        return ULID.nextULID();
+    }
+
+    public String getId() {
+        return this.id;
     }
 
     @Override
