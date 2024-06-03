@@ -69,16 +69,18 @@ public class Delete implements Commands {
         }
 
         // [serviceName]
-        listWithNotes.remove(searchedServices.get(0));
+        NoteEntity deletedNote = searchedServices.get(0);
+        String serviceID = deletedNote.getId();
+        listWithNotes.remove(deletedNote);
         UsefulMethods.changingNameWhenRemove(listWithNotes, serviceName);
 
-        CheckingForUpdate.isUpdated = true;
-
         try {
-            AES_GCM.deleteKeyFromStorage(serviceName);
+            AES_GCM.deleteKeyFromStorage(serviceID);
         } catch (Exception e) {
             return "Не удалось удалить, тип ошибки - " + e.getMessage();
         }
+
+        CheckingForUpdate.isUpdated = true;
 
         return "Удалено";
     }

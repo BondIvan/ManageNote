@@ -6,7 +6,6 @@ import javax.crypto.*;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
@@ -24,13 +23,13 @@ public class AES_GCM {
     private static String storePassword = null;
 
     // Шифрование пароля
-    public String encrypt(String password, String serviceName) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, CertificateException, KeyStoreException, IOException  {
+    public String encrypt(String password, String id) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, CertificateException, KeyStoreException, IOException  {
 
         byte[] salt = generateSalt();
         byte[] iv = generateIV();
         SecretKey key = generateKey(password.toCharArray(), salt);
 
-        saveKeyToStorage(serviceName, key);
+        saveKeyToStorage(id, key);
 
         // Создание экземплера шифра AES
         Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
@@ -57,39 +56,39 @@ public class AES_GCM {
     }
 
     // Сохранить ключ в защищённое хранилище
-    private void saveKeyToStorage(String serviceName, SecretKey key) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException {
+    private void saveKeyToStorage(String id, SecretKey key) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException {
         PasswordStorage passwordStorage = new PasswordStorage();
         KeyStore keyStore = passwordStorage.initializeKeyStore(getKeyStorePassword());
 
-        passwordStorage.saveKey(keyStore, serviceName, key, getKeyStorePassword());
+        passwordStorage.saveKey(keyStore, id, key, getKeyStorePassword());
 
         // Очистка чувствиельных данных из памяти
         key = null;
     }
 
     // Получить ключ из защищённого хранилища
-    private SecretKey getKeyFromStorage(String serviceName) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException, UnrecoverableEntryException {
+    private SecretKey getKeyFromStorage(String id) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException, UnrecoverableEntryException {
 
         PasswordStorage passwordStorage = new PasswordStorage();
         KeyStore keyStore = passwordStorage.initializeKeyStore(getKeyStorePassword());
 
-        SecretKey key = passwordStorage.loadKey(keyStore, serviceName, getKeyStorePassword());
+        SecretKey key = passwordStorage.loadKey(keyStore, id, getKeyStorePassword());
 
         return key;
     }
 
-    public static void deleteKeyFromStorage(String serviceName) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException {
+    public static void deleteKeyFromStorage(String id) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException {
 
         PasswordStorage passwordStorage = new PasswordStorage();
         KeyStore keyStore = passwordStorage.initializeKeyStore(getKeyStorePassword());
 
-        passwordStorage.deleteKey(keyStore, serviceName, getKeyStorePassword());
+        passwordStorage.deleteKey(keyStore, id, getKeyStorePassword());
     }
 
     // Расшифровка пароля
-    public String decrypt(String encrypted, String serviceName) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, UnrecoverableEntryException, CertificateException, KeyStoreException, IOException, InvalidAlgorithmParameterException {
+    public String decrypt(String encrypted, String id) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, UnrecoverableEntryException, CertificateException, KeyStoreException, IOException, InvalidAlgorithmParameterException {
 
-        SecretKey key = getKeyFromStorage(serviceName);
+        SecretKey key = getKeyFromStorage(id);
 
         byte[] fromBase64ToByteView = Base64.getDecoder().decode(encrypted);
         byte[] iv = Arrays.copyOfRange(fromBase64ToByteView, 0, GCM_IV_LENGTH);

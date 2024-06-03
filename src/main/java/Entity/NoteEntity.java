@@ -1,8 +1,5 @@
 package Entity;
 
-import Encrypting.MyEncrypt.Alphabet.Alphabet;
-import Encrypting.MyEncrypt.Alphabet.ViewDecrypt;
-import Encrypting.MyEncrypt.Alphabet.ViewEncrypt;
 import Encrypting.Security.Encryption_AES.AES_GCM;
 import OptionsExceptions.UnknownArgsException;
 import de.huxhorn.sulky.ulid.ULID;
@@ -51,7 +48,7 @@ public class NoteEntity {
         
         try {
             AES_GCM aesGcm = new AES_GCM();
-            this.password = aesGcm.encrypt(password, this.idService); // password = "Without -> Password: ..."
+            this.password = aesGcm.encrypt(password, this.id); // password = "Without -> Password: ..."
         } catch (Exception e) {
             System.out.println("Не удалось задать пароль, тип ошибки - " + e.getMessage());
         }
@@ -62,7 +59,7 @@ public class NoteEntity {
         try {
             AES_GCM aesGcm = new AES_GCM();
 
-            return needDecrypt ? aesGcm.decrypt(this.password, this.idService) : this.password;
+            return needDecrypt ? aesGcm.decrypt(this.password, this.id) : this.password;
         } catch (Exception e) {
             System.out.println("Не удалось вывести пароль, тип ошибки - " + e.getMessage());
         }

@@ -43,11 +43,11 @@ public class PasswordStorage {
     }
 
     // Сохранение ключа в keyStore
-    public void saveKey(KeyStore keyStore, String aliasServiceName, SecretKey key, char[] storePassword) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
+    public void saveKey(KeyStore keyStore, String aliasID, SecretKey key, char[] storePassword) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
 
         KeyStore.SecretKeyEntry secretKeyEntry = new KeyStore.SecretKeyEntry(key);
         KeyStore.ProtectionParameter protectionParameter = new KeyStore.PasswordProtection(storePassword);
-        keyStore.setEntry(aliasServiceName, secretKeyEntry, protectionParameter);
+        keyStore.setEntry(aliasID, secretKeyEntry, protectionParameter);
 
         try (FileOutputStream fileOutputStream = new FileOutputStream(PATH_TO_KEY_STORE)) {
             keyStore.store(fileOutputStream, storePassword);
@@ -59,10 +59,10 @@ public class PasswordStorage {
     }
 
     // Загрузить ключ из keyStore
-    public SecretKey loadKey(KeyStore keyStore, String aliasServiceName, char[] storePassword) throws UnrecoverableEntryException, NoSuchAlgorithmException, KeyStoreException {
+    public SecretKey loadKey(KeyStore keyStore, String aliasID, char[] storePassword) throws UnrecoverableEntryException, NoSuchAlgorithmException, KeyStoreException {
 
         KeyStore.ProtectionParameter protectionParameter = new KeyStore.PasswordProtection(storePassword);
-        KeyStore.SecretKeyEntry secretKeyEntry = (KeyStore.SecretKeyEntry) keyStore.getEntry(aliasServiceName, protectionParameter);
+        KeyStore.SecretKeyEntry secretKeyEntry = (KeyStore.SecretKeyEntry) keyStore.getEntry(aliasID, protectionParameter);
 
         SecretKey secretKey = secretKeyEntry.getSecretKey();
 
@@ -74,14 +74,14 @@ public class PasswordStorage {
     }
 
     // Удалить ключ из keyStore
-    public void deleteKey(KeyStore keyStore, String aliasServiceName, char[] storePassword) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
+    public void deleteKey(KeyStore keyStore, String aliasID, char[] storePassword) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
 
-        if(!keyStore.containsAlias(aliasServiceName)) {
-            System.out.println("В keyStore нет такого сервиса");
+        if(!keyStore.containsAlias(aliasID)) {
+            System.out.println("В keyStore нет такого ID");
             return;
         }
 
-        keyStore.deleteEntry(aliasServiceName);
+        keyStore.deleteEntry(aliasID);
 
         try (FileOutputStream fileOutputStream = new FileOutputStream(PATH_TO_KEY_STORE)) {
             keyStore.store(fileOutputStream, storePassword);
