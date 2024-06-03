@@ -6,7 +6,7 @@ import Encrypting.MyEncrypt.Alphabet.ViewEncrypt;
 import OptionsExceptions.UnknownArgsException;
 
 public class NoteEntity {
-    private String idService; // id -> name
+    private String serviceName; // id -> name
     private String login;
     private String password;
 
@@ -14,22 +14,22 @@ public class NoteEntity {
 
     }
 
-    public NoteEntity(String idService, String login) {
-        this.idService = idService; // id -> name
+    public NoteEntity(String serviceName, String login) {
+        this.serviceName = serviceName; // id -> name
         this.login = login;
     }
 
-    public NoteEntity(String idService, String login, String password) {
-        this.idService = idService; // id -> name
+    public NoteEntity(String serviceName, String login, String password) {
+        this.serviceName = serviceName; // id -> name
         this.login = login;
         this.password = password;
     }
 
-    public void setIdService(String idService) {
-        this.idService = idService;
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
-    public String getIdService() {
-        return this.idService;
+    public String getServiceName() {
+        return this.serviceName;
     }
 
     public void setLogin(String login) {
@@ -57,6 +57,6 @@ public class NoteEntity {
     @Override
     public String toString() { //TODO Подумать, нужно ли здесь расшифровывать пароль
 
-        return idService + "\nLogin: " + login + "\nPassword: " + getPassword(true);
+        return serviceName + "\nLogin: " + login + "\nPassword: " + getPassword(true);
     }
 }

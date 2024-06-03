@@ -37,7 +37,7 @@ public class AddTest implements TestCommands {
 
         String[] numberOfAccount = {"1-st", "2-nd", "3-rd", "4-th", "5-th", "6-th", "7-th", "8-th", "9-th", "10-th"}; // 10 "аккаунтов" максимум
         for(int i = 0; i < notes.size(); i++) {
-            Assertions.assertEquals(notes.get(i).getIdService(), "Vk.com (" + numberOfAccount[i] + " account)");
+            Assertions.assertEquals(notes.get(i).getServiceName(), "Vk.com (" + numberOfAccount[i] + " account)");
         }
 
     }
@@ -54,7 +54,7 @@ public class AddTest implements TestCommands {
         System.out.println( add.perform("Test.com test_log test_123_pass") );
 
         boolean existNewService = notes.stream()
-                        .anyMatch(noteNew -> noteNew.getIdService().equalsIgnoreCase("Test.com"));
+                        .anyMatch(noteNew -> noteNew.getServiceName().equalsIgnoreCase("Test.com"));
 
         Assertions.assertTrue(existNewService);
     }
@@ -73,9 +73,9 @@ public class AddTest implements TestCommands {
         System.out.println( add.perform(postfix) ); // Добавление нового аккаунта к сервису Vk.com
 
         boolean existForSecondAccount = notes.stream()
-                .anyMatch(note1 -> note1.getIdService().equalsIgnoreCase("Vk.com (2-nd account)"));
+                .anyMatch(note1 -> note1.getServiceName().equalsIgnoreCase("Vk.com (2-nd account)"));
 
-        Assertions.assertEquals("Vk.com (1-st account)", note.getIdService());
+        Assertions.assertEquals("Vk.com (1-st account)", note.getServiceName());
         Assertions.assertTrue(existForSecondAccount, "Сервис не был добавлен");
     }
 

@@ -30,8 +30,8 @@ class UsefulMethodsTest {
         notes.add(newNote1);
         UsefulMethods.changingNameWhenAdd(notes, "Telegram.com");
 
-        Assertions.assertEquals("Telegram.com (1-st account)", note3.getIdService());
-        Assertions.assertEquals("Telegram.com (2-nd account)", newNote1.getIdService());
+        Assertions.assertEquals("Telegram.com (1-st account)", note3.getServiceName());
+        Assertions.assertEquals("Telegram.com (2-nd account)", newNote1.getServiceName());
 
         // Добавление нового аккаунта у сервиса, до 10 аккаунтов
         for(int i = 3; i < 11; i++) {
@@ -42,10 +42,10 @@ class UsefulMethodsTest {
 
         // Добавление нового аккаунта у сервиса, до 10 аккаунтов
         for(int i = 0, k = 0; i < notes.size(); i++) {
-            if(!notes.get(i).getIdService().contains("Vk.com"))
+            if(!notes.get(i).getServiceName().contains("Vk.com"))
                 continue;
 
-            Assertions.assertEquals("Vk.com (" + numberOfAccount[k] + " account)", notes.get(i).getIdService());
+            Assertions.assertEquals("Vk.com (" + numberOfAccount[k] + " account)", notes.get(i).getServiceName());
             k++;
         }
 
@@ -70,16 +70,16 @@ class UsefulMethodsTest {
         notes.remove(note5);
         UsefulMethods.changingNameWhenRemove(notes, "Telegram.com");
 
-        Assertions.assertEquals("Telegram.com", note4.getIdService());
+        Assertions.assertEquals("Telegram.com", note4.getServiceName());
 
         // Удаление одного из многих аккаунтов сервиса (из центра)
         notes.remove(note3);
         UsefulMethods.changingNameWhenRemove(notes, "Vk.com");
         for(int i = 0, k = 0; i < notes.size(); i++) {
-            if(!notes.get(i).getIdService().contains("Vk.com"))
+            if(!notes.get(i).getServiceName().contains("Vk.com"))
                 continue;
 
-            Assertions.assertEquals("Vk.com (" + numberOfAccount[k] + " account)", notes.get(i).getIdService());
+            Assertions.assertEquals("Vk.com (" + numberOfAccount[k] + " account)", notes.get(i).getServiceName());
             k++;
         }
 
@@ -87,10 +87,10 @@ class UsefulMethodsTest {
         notes.remove(note1);
         UsefulMethods.changingNameWhenRemove(notes, "Vk.com");
         for(int i = 0, k = 0; i < notes.size(); i++) {
-            if(!notes.get(i).getIdService().contains("Vk.com"))
+            if(!notes.get(i).getServiceName().contains("Vk.com"))
                 continue;
 
-            Assertions.assertEquals("Vk.com (" + numberOfAccount[k] + " account)", notes.get(i).getIdService());
+            Assertions.assertEquals("Vk.com (" + numberOfAccount[k] + " account)", notes.get(i).getServiceName());
             k++;
         }
 
@@ -98,10 +98,10 @@ class UsefulMethodsTest {
         notes.remove(note7);
         UsefulMethods.changingNameWhenRemove(notes, "Vk.com");
         for(int i = 0, k = 0; i < notes.size(); i++) {
-            if(!notes.get(i).getIdService().contains("Vk.com"))
+            if(!notes.get(i).getServiceName().contains("Vk.com"))
                 continue;
 
-            Assertions.assertEquals("Vk.com (" + numberOfAccount[k] + " account)", notes.get(i).getIdService());
+            Assertions.assertEquals("Vk.com (" + numberOfAccount[k] + " account)", notes.get(i).getServiceName());
             k++;
         }
 
@@ -140,7 +140,7 @@ class UsefulMethodsTest {
 
         for(NoteEntity nt: notes) {
             // Получение аккаунта сервиса по логину
-            NoteEntity noteByLogin = UsefulMethods.getAccountFromServiceByLogin(notes, nt.getIdService().split(" ")[0], nt.getLogin());
+            NoteEntity noteByLogin = UsefulMethods.getAccountFromServiceByLogin(notes, nt.getServiceName().split(" ")[0], nt.getLogin());
             Assertions.assertEquals(nt, noteByLogin);
         }
 

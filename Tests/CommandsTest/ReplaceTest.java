@@ -33,20 +33,20 @@ class ReplaceTest implements TestCommands {
         String postfix1 = "Telegram.com service Vk.com";
         System.out.println( replace.perform(postfix1) );
 
-        Assertions.assertEquals("Vk.com (3-rd account)", note3.getIdService());
+        Assertions.assertEquals("Vk.com (3-rd account)", note3.getServiceName());
 
         // Изменить название сервиса без аккаунта этого же сервиса на "такое" же название
         String postfix2 = "logo.com service Logo.com";
         System.out.println( replace.perform(postfix2) );
 
-        Assertions.assertEquals("Logo.com", note4.getIdService());
+        Assertions.assertEquals("Logo.com", note4.getServiceName());
 
         // Изменить название сервиса без аккаунтов на сервис также без аккаунтов
         String postfix3 = "Yandex.ru service Logo.com";
         System.out.println( replace.perform(postfix3) );
 
-        Assertions.assertEquals("Logo.com (1-st account)", note4.getIdService());
-        Assertions.assertEquals("Logo.com (2-nd account)", note5.getIdService());
+        Assertions.assertEquals("Logo.com (1-st account)", note4.getServiceName());
+        Assertions.assertEquals("Logo.com (2-nd account)", note5.getServiceName());
     }
 
     @Test
@@ -73,34 +73,34 @@ class ReplaceTest implements TestCommands {
         NoteEntity workNote1 = UsefulMethods.getAccountFromServiceByLogin(notes, args1[0], "logo_second.account@gmail.com");
         replace.replaceServiceName(workNote1, args1[2]);
 
-        Assertions.assertEquals("Vk.com (3-rd account)", note5.getIdService());
-        Assertions.assertEquals("logo.com (2-nd account)", note6.getIdService());
+        Assertions.assertEquals("Vk.com (3-rd account)", note5.getServiceName());
+        Assertions.assertEquals("logo.com (2-nd account)", note6.getServiceName());
 
         // Изменить название сервиса с аккаунтами так, чтобы у этого сервиса остался 1 аккаунт
         String[] args2 = "logo.com service Micro.com".split(" ");
         NoteEntity workNote2 = UsefulMethods.getAccountFromServiceByLogin(notes, args2[0], "logo_first.account@gmail.com");
         replace.replaceServiceName(workNote2, args2[2]);
 
-        Assertions.assertEquals("logo.com", note6.getIdService());
-        Assertions.assertEquals("Micro.com", note4.getIdService());
+        Assertions.assertEquals("logo.com", note6.getServiceName());
+        Assertions.assertEquals("Micro.com", note4.getServiceName());
 
         // Передать 1 аккаунт от сервиса с 2 аккаунтами к сервису без аккаунтов
         String[] args3 = "Telegram.com service Micro.com".split(" ");
         NoteEntity workNote3 = UsefulMethods.getAccountFromServiceByLogin(notes, args3[0], "teleg_first.account@gmail.com");
         replace.replaceServiceName(workNote3, args3[2]);
 
-        Assertions.assertEquals("Telegram.com", note7.getIdService());
-        Assertions.assertEquals("Micro.com (1-st account)", note3.getIdService());
-        Assertions.assertEquals("Micro.com (2-nd account)", note4.getIdService());
+        Assertions.assertEquals("Telegram.com", note7.getServiceName());
+        Assertions.assertEquals("Micro.com (1-st account)", note3.getServiceName());
+        Assertions.assertEquals("Micro.com (2-nd account)", note4.getServiceName());
 
         // Изменить регистр букв/ы в названии какого-либо аккаунта
         String[] args4 = "yandex.com service yandex.com".split(" ");
         NoteEntity workNote4 = UsefulMethods.getAccountFromServiceByLogin(notes, args4[0], "yandex_second.account@gmail.com");
         replace.replaceServiceName(workNote4, args4[2]);
 
-        Assertions.assertEquals("Yandex.com (1-st account)", note8.getIdService());
-        Assertions.assertEquals("yandex.com (2-nd account)", note9.getIdService());
-        Assertions.assertEquals("Yandex.com (3-rd account)", note10.getIdService());
+        Assertions.assertEquals("Yandex.com (1-st account)", note8.getServiceName());
+        Assertions.assertEquals("yandex.com (2-nd account)", note9.getServiceName());
+        Assertions.assertEquals("Yandex.com (3-rd account)", note10.getServiceName());
     }
 
     @Test

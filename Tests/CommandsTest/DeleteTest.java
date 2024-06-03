@@ -33,27 +33,27 @@ class DeleteTest implements TestCommands {
 
         String postfix1 = "telegram.com";
         String actual1 = delete.perform(postfix1);
-        boolean isDeleted1 = notes.stream().anyMatch(note -> note.getIdService().equals("Telegram.com"));
+        boolean isDeleted1 = notes.stream().anyMatch(note -> note.getServiceName().equals("Telegram.com"));
         Assertions.assertFalse(isDeleted1);
         Assertions.assertEquals("Удалено", actual1);
 
         String postfix2 = "vk.com first.account@gmail.com";
         String actual2 = delete.perform(postfix2);
-        boolean isDeleted2 = notes.stream().anyMatch(note -> note.getIdService().equals("Vk.com (1-st account)"));
+        boolean isDeleted2 = notes.stream().anyMatch(note -> note.getServiceName().equals("Vk.com (1-st account)"));
         Assertions.assertFalse(isDeleted2);
         Assertions.assertEquals("Удалено", actual2);
-        Assertions.assertEquals("Vk.com", note2.getIdService());
+        Assertions.assertEquals("Vk.com", note2.getServiceName());
 
         String postfix3 = "logo.com logo.account@gmail.com";
         String actual3 = delete.perform(postfix3);
-        boolean isDeleted3 = notes.stream().anyMatch(note -> note.getIdService().equals("logo.com"));
+        boolean isDeleted3 = notes.stream().anyMatch(note -> note.getServiceName().equals("logo.com"));
         Assertions.assertFalse(isDeleted3);
         Assertions.assertEquals("Удалено", actual3);
 
         String postfix4 = "yandex.ru";
         String actual4 = delete.perform(postfix4);
         List<NoteEntity> yandexList = notes.stream()
-                .filter(note -> note.getIdService().contains("Yandex.ru"))
+                .filter(note -> note.getServiceName().contains("Yandex.ru"))
                 .collect(Collectors.toList());
 
         Assertions.assertEquals(List.of(note5, note6, note7), yandexList);
@@ -79,8 +79,8 @@ class DeleteTest implements TestCommands {
         String actual1 = delete.deleteNoteByLogin(args1[0], args1[1]);
         String actual2 = delete.deleteNoteByLogin(args2[0], args2[1]);
 
-        boolean isDeleted1 = notes.stream().anyMatch(note -> note.getIdService().equals("Vk.com (2-nd account)"));
-        boolean isDeleted2 = notes.stream().anyMatch(note -> note.getIdService().equals("telegram.com"));
+        boolean isDeleted1 = notes.stream().anyMatch(note -> note.getServiceName().equals("Vk.com (2-nd account)"));
+        boolean isDeleted2 = notes.stream().anyMatch(note -> note.getServiceName().equals("telegram.com"));
 
         Assertions.assertFalse(isDeleted1);
         Assertions.assertFalse(isDeleted2);
@@ -108,7 +108,7 @@ class DeleteTest implements TestCommands {
         String actual1 = delete.deleteNote( args1[0] );
         String actual2 = delete.deleteNote( args2[0] );
 
-        boolean isDeleted1 = notes.stream().anyMatch(note -> note.getIdService().equals("Telegram.com"));
+        boolean isDeleted1 = notes.stream().anyMatch(note -> note.getServiceName().equals("Telegram.com"));
 
         Assertions.assertEquals("Теперь введите команду", actual1);
         Assertions.assertFalse(isDeleted1);

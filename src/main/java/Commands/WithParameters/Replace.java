@@ -56,8 +56,8 @@ public class Replace implements Commands {
         NoteEntity replacedNote = UsefulMethods.getAccountFromServiceByLogin(listWithNotes, serviceName, serviceLogin);
 
         //Тернарный оператор с 3 условиями (вложенные)
-        System.out.println( "Будут произведены следующие изменения в сервисе " + replacedNote.getIdService() + " с параметром " + replaceType + ": "
-                + ( replaceType.equals("service") ? replacedNote.getIdService()
+        System.out.println( "Будут произведены следующие изменения в сервисе " + replacedNote.getServiceName() + " с параметром " + replaceType + ": "
+                + ( replaceType.equals("service") ? replacedNote.getServiceName()
                 :replaceType.equals("login") ? replacedNote.getLogin()
                 :replacedNote.getPassword(true) )
                 + " -> " + newString );
@@ -106,8 +106,8 @@ public class Replace implements Commands {
 
             // Отсортировать все аккаунты сервиса по названию + вывести их названия и логины
             UsefulMethods.sortNoteEntityByServiceName( listWithNotes.stream()
-                    .filter(note -> note.getIdService().split(" ")[0].equalsIgnoreCase(serviceName))
-                    .collect(Collectors.toList()) ).forEach((note) -> System.out.println(note.getIdService() + " -> " + note.getLogin()));
+                    .filter(note -> note.getServiceName().split(" ")[0].equalsIgnoreCase(serviceName))
+                    .collect(Collectors.toList()) ).forEach((note) -> System.out.println(note.getServiceName() + " -> " + note.getLogin()));
 
             return "Теперь введите команду";
         }
@@ -115,8 +115,8 @@ public class Replace implements Commands {
         // [serviceName] [type] [newString]
         NoteEntity replacedNote = searchedServices.get(0);
         //Тернарный оператор с 3 условиями (вложенные)
-        System.out.println( "Будут произведены следующие изменения в сервисе " + replacedNote.getIdService() + " с параметром " + replaceType + ": "
-                + ( replaceType.equals("service") ? replacedNote.getIdService()
+        System.out.println( "Будут произведены следующие изменения в сервисе " + replacedNote.getServiceName() + " с параметром " + replaceType + ": "
+                + ( replaceType.equals("service") ? replacedNote.getServiceName()
                 :replaceType.equals("login") ? replacedNote.getLogin()
                 :replacedNote.getPassword(true) )
                 + " -> " + newString );
@@ -147,11 +147,11 @@ public class Replace implements Commands {
         // Сервис (аккаунты) у которых название совпало с названием переименуемого сервиса
         List<NoteEntity> searchedAccountsWithNewName = UsefulMethods.getAllAccountsForOneService(listWithNotes, newNameReplacedNote);
 
-        String oldNameReplacedNote = replacedNote.getIdService(); // Старое название сервиса
+        String oldNameReplacedNote = replacedNote.getServiceName(); // Старое название сервиса
 
         // Если аккаунтов нет, значит просто переименовываем сервис
         if(searchedAccountsWithNewName.isEmpty()) {
-            replacedNote.setIdService(newNameReplacedNote);
+            replacedNote.setServiceName(newNameReplacedNote);
 
             UsefulMethods.changingNameWhenRemove(listWithNotes, oldNameReplacedNote);
 
@@ -161,31 +161,31 @@ public class Replace implements Commands {
         // Есть ли хоть один сервис с таким же логином как и у переименовываемого (отрицательное условие позволяет переименовывать сервис на такое же название)
         for(NoteEntity nt: searchedAccountsWithNewName) {
             if (nt.getLogin().equalsIgnoreCase(replacedNote.getLogin())
-                    && !nt.getIdService().split(" ")[0].equalsIgnoreCase(replacedNote.getIdService().split(" ")[0])) {
+                    && !nt.getServiceName().split(" ")[0].equalsIgnoreCase(replacedNote.getServiceName().split(" ")[0])) {
 
                 throw new IncorrectValueException("Такой логин уже есть");
             }
         }
 
         // Если изменять название одного из аккаунта на "само себя" (изменён регистр букв/ы), то нет смысла изменять нумерацию других аккаунтов
-        if(replacedNote.getIdService().split(" ")[0].equalsIgnoreCase(newNameReplacedNote) && replacedNote.getIdService().contains("account")) {
+        if(replacedNote.getServiceName().split(" ")[0].equalsIgnoreCase(newNameReplacedNote) && replacedNote.getServiceName().contains("account")) {
 
             // Переименовывание название на само себя у сервиса без аккаунтов
             if(searchedAccountsWithNewName.size() == 1) {
-                replacedNote.setIdService(newNameReplacedNote);
+                replacedNote.setServiceName(newNameReplacedNote);
                 return;
             }
 
             String similarName = newNameReplacedNote + " " // изменён регистр в названии
-                    + replacedNote.getIdService().split(" ")[1] + " " // (№-th
-                    + replacedNote.getIdService().split(" ")[2]; // account)
+                    + replacedNote.getServiceName().split(" ")[1] + " " // (№-th
+                    + replacedNote.getServiceName().split(" ")[2]; // account)
 
-            replacedNote.setIdService(similarName);
+            replacedNote.setServiceName(similarName);
 
             return;
         }
 
-        replacedNote.setIdService(newNameReplacedNote); // Переименовывание
+        replacedNote.setServiceName(newNameReplacedNote); // Переименовывание
 
         UsefulMethods.changingNameWhenRemove(listWithNotes, oldNameReplacedNote); // Переименовывание сервиса со старым названием
         UsefulMethods.changingNameWhenAdd(listWithNotes, newNameReplacedNote); // Переименовывание сервиса с новым названием

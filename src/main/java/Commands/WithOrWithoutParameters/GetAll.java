@@ -52,12 +52,12 @@ public class GetAll implements Commands {
         List<NoteEntity> listForShow = new ArrayList<>(listWithNotes);
         System.out.println("-----------------");
         UsefulMethods.sortNoteEntityByServiceName(listForShow) // Этот список будет отображаться, чтобы не сортировать основной список
-                .forEach(note -> System.out.println(note.getIdService()));
+                .forEach(note -> System.out.println(note.getServiceName()));
     }
 
     private void getAllByDate() {
         System.out.println("-----------------");
-        listWithNotes.forEach(note -> System.out.println(note.getIdService()));
+        listWithNotes.forEach(note -> System.out.println(note.getServiceName()));
     }
 
 }
