@@ -68,19 +68,20 @@ public class Delete implements Commands {
             return "Теперь введите команду";
         }
 
-        // [serviceName]
-        NoteEntity deletedNote = searchedServices.get(0);
-        String serviceID = deletedNote.getId();
-        listWithNotes.remove(deletedNote);
-        UsefulMethods.changingNameWhenRemove(listWithNotes, serviceName);
-
         try {
+            NoteEntity deletedNote = searchedServices.get(0);
+            String serviceID = deletedNote.getId();
+
             AES_GCM.deleteKeyFromStorage(serviceID);
+
+            listWithNotes.remove(deletedNote);
+            UsefulMethods.changingNameWhenRemove(listWithNotes, serviceName);
+
+            CheckingForUpdate.isUpdated = true;
+
         } catch (Exception e) {
             return "Не удалось удалить, тип ошибки - " + e.getMessage();
         }
-
-        CheckingForUpdate.isUpdated = true;
 
         return "Удалено";
     }
@@ -89,14 +90,16 @@ public class Delete implements Commands {
 
         NoteEntity deletedNote = UsefulMethods.getAccountFromServiceByLogin(listWithNotes, serviceName, serviceLogin);
 
-        // [serviceName]
-        listWithNotes.remove(deletedNote);
-        UsefulMethods.changingNameWhenRemove(listWithNotes, serviceName);
-
-        CheckingForUpdate.isUpdated = true;
-
         try {
-            AES_GCM.deleteKeyFromStorage(serviceName);
+            String serviceID = deletedNote.getId();
+            
+            AES_GCM.deleteKeyFromStorage(serviceID);
+
+            listWithNotes.remove(deletedNote);
+            UsefulMethods.changingNameWhenRemove(listWithNotes, serviceName);
+
+            CheckingForUpdate.isUpdated = true;
+
         } catch (Exception e) {
             return "Не удалось удалить, тип ошибки - " + e.getMessage();
         }
