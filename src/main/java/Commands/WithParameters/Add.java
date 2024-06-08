@@ -32,8 +32,6 @@ public class Add implements Commands {
             throw new UnknownArgsException("Параметров больше чем нужно");
         if(args.length < 3) // Проверка на количество параметров в команде
             throw  new UnknownArgsException("Вы забыли указать логин или пароль");
-        if(args[2].contains(".")) // Символ '.' используется для шифрования и расшифрования
-            throw new UnknownArgsException("В пароле не должен содержаться символ '.'");
 
         if( addNewNote(args[0], args[1], args[2]) ) {
             CheckingForUpdate.isUpdated = true;
