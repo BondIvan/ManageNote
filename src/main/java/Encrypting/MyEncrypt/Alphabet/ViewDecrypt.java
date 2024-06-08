@@ -30,7 +30,6 @@ public class ViewDecrypt {
         for (String value : V_values)
             decryptString.append(getLetterFrom_V(value, h));
 
-        //TODO Проверить на несколько расщифровок подрят, чтобы не было накопления расшифровок в одной строке, как в прошлой версии
         return decryptString.toString();
     }
 

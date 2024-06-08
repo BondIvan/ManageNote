@@ -43,8 +43,6 @@ public class NoteEntity {
     }
 
     public void setPassword(String password) throws UnknownArgsException {
-
-        //TODO Посмотреть корректно ли будет работать замена пароля через команду replace
         
         try {
             AES_GCM aesGcm = new AES_GCM();

@@ -2,7 +2,7 @@ package Encrypting.MyEncrypt.Alphabet;
 
 public class Alphabet {
 
-    //TODO Изменение порядка в alpha пока не реализовано
+    // Изменение порядка в alpha пока не реализовано
 
 //    private static char[][] alpha;
 //
@@ -10,11 +10,6 @@ public class Alphabet {
 //    }
 
     public static char[][] getAlpha() {
-
-        //TODO Узнать для чего в подмассивах стоят нули, а конкретно первый 0 ->
-        // 0 был нужен для того, чтобы если первый символ 'a', то были какие-то проблемы с V (отрицательные значения или что-то в этом роде)
-        // -> нужно перепроверить это
-        // Без 1-го 0 нормально работает )
 
         return new char[][] {
 
