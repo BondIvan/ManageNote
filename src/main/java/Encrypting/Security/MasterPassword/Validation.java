@@ -114,9 +114,7 @@ public class Validation {
         System.arraycopy(encryptedValidation, 0, resultValidation, iv.length, encryptedValidation.length);
 
         // Очистка чувствиельных данных из памяти
-        Arrays.fill(key, (byte) '\0');
-        Arrays.fill(salt, (byte) '\0');
-        Arrays.fill(iv, (byte) '\0');
+        Arrays.fill(key, (byte) '\0');;
         Arrays.fill(password, '\0');
         spec.clearPassword();
         keySpec = null;
