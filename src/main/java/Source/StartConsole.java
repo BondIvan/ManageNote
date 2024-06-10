@@ -16,6 +16,7 @@ import Encrypting.Security.MasterPassword.Validation;
 import Entity.NoteEntity;
 import OptionsExceptions.CommandNotFoundException;
 import Tools.AutoCorrection.Dictionaries;
+import Tools.CheckingForUpdate;
 import Tools.UsefulMethods;
 
 import javax.crypto.BadPaddingException;
@@ -51,6 +52,9 @@ public class StartConsole {
     public static List<NoteEntity> NOTES = new ArrayList<>(); // Список всех записей (сервисов)
 
     public static void main(String[] args) throws Exception {
+
+        // Регистрация потока, который выполнится после любого выхода из приложения
+        Runtime.getRuntime().addShutdownHook( handlingUnexpectedExit() );
 
         // Мастер-пароль
         masterPassword();
@@ -161,5 +165,20 @@ public class StartConsole {
             System.out.println("Ошибка с сообщением: " + e.getMessage());
         }
 
+    }
+
+    private static Thread handlingUnexpectedExit() {
+
+        return new Thread(() -> {
+            Save save = new Save();
+            try {
+                if(CheckingForUpdate.isUpdated) {
+                    System.out.println( save.perform("") );
+                }
+                System.out.println("\nВыход из приложения");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }
