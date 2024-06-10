@@ -18,8 +18,6 @@ public class Exit implements Commands {
             System.out.println( save.perform(postfix) );
         }
 
-        System.out.println("Выход из приложения");
-
         System.exit(0);
         return "";
     }
