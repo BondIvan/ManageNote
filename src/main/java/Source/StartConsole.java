@@ -58,6 +58,8 @@ public class StartConsole {
         // Чтение сервисов из файла
         NOTES = UsefulMethods.getAllNoteFromFile(PATH);
 
+        System.out.println("Количество сервисов прочитанных из файла = " + NOTES.size());
+
         // Указание с каким файлом идёт работа
         String currentFile = Paths.get(PATH).getFileName().toString();
         System.out.println("Запущено с файлом: " + currentFile);
@@ -73,6 +75,9 @@ public class StartConsole {
 
             console(factory, dictionaries);
 
+            System.out.println("Размер NOTES после какой-либо команды = " + NOTES.size());
+
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> System.out.println("hook")));
         }
 
     }

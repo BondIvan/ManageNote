@@ -39,6 +39,8 @@ public class PasswordStorage {
             // Благодаря блоку try-with-resources fileOutputStream поток закроется автоматически, даже если произойдёт исключение
         }
 
+        System.out.println("Текущий размер keyStore = " + keyStore.size());
+
         return keyStore;
     }
 
@@ -51,6 +53,8 @@ public class PasswordStorage {
 
         try (FileOutputStream fileOutputStream = new FileOutputStream(PATH_TO_KEY_STORE)) {
             keyStore.store(fileOutputStream, storePassword);
+
+            System.out.println("Размер keyStore после метода saveKey = " + keyStore.size());
         } finally { // Очистка чувствиельных данных из памяти
             Arrays.fill(storePassword, '\0');
             secretKeyEntry = null;
@@ -85,6 +89,8 @@ public class PasswordStorage {
 
         try (FileOutputStream fileOutputStream = new FileOutputStream(PATH_TO_KEY_STORE)) {
             keyStore.store(fileOutputStream, storePassword);
+
+            System.out.println("Размер keyStore после метода deleteKey = " + keyStore.size());
         } finally { // Очистка чувствиельных данных из памяти
             Arrays.fill(storePassword, '\0');
         }
