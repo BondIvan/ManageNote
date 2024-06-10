@@ -52,6 +52,9 @@ public class StartConsole {
 
     public static void main(String[] args) throws Exception {
 
+        // Обработка неожиданного выхода из приложения
+        handlingUnexpectedExit();
+
         // Мастер-пароль
         masterPassword();
 
@@ -161,5 +164,18 @@ public class StartConsole {
             System.out.println("Ошибка с сообщением: " + e.getMessage());
         }
 
+    }
+
+    private static void handlingUnexpectedExit() {
+        Runtime.getRuntime().addShutdownHook( new Thread(() -> {
+
+            try {
+                Exit exit = new Exit();
+                exit.perform("");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        }) );
     }
 }
