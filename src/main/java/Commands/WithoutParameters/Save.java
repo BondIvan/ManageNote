@@ -46,7 +46,7 @@ public class Save implements Commands {
         FileWriter fileWriter = new FileWriter(pathToSave);
         // Построчная запись в файл всех объктов NoteEntity
         for (NoteEntity note : listWithNotesForSave)
-            fileWriter.write(note.getServiceName() + "\nLogin: " + note.getLogin() + "\nPassword: " + note.getPassword(false) + "\n\n");
+            fileWriter.write(note.getServiceName() + "\nid: " + note.getId() + "\nLogin: " + note.getLogin() + "\nPassword: " + note.getPassword(false) + "\n\n");
         fileWriter.close();
 
         CheckingForUpdate.isUpdated = false;
