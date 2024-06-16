@@ -11,6 +11,7 @@ import Commands.WithoutParameters.CopyFile;
 import Commands.WithoutParameters.Exit;
 import Commands.WithoutParameters.Help;
 import Commands.WithoutParameters.Save;
+import Encrypting.Security.BackupCopy.BackupFile;
 import Encrypting.Security.Encryption_AES.AES_GCM;
 import Encrypting.Security.MasterPassword.Validation;
 import Entity.NoteEntity;
@@ -58,6 +59,10 @@ public class StartConsole {
 
         // Мастер-пароль
         masterPassword();
+
+        // Создание бэкапов важных файлов
+        BackupFile backupFile = new BackupFile();
+        backupFile.create();
 
         // Чтение сервисов из файла
         NOTES = UsefulMethods.getAllNoteFromFile(PATH);
