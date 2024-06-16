@@ -41,23 +41,17 @@ public class BackupFile {
                         String fileName = file.getName();
                         if (checkTimeInterval(fileName)) {
                             try {
-                                System.out.println("Удаление старого бэкапа для файла - " + fileName);
                                 Files.delete(file.toPath());
-                                System.out.println("Бэкап удалён успешно");
                                 System.out.println("Создание нового бэкапа для файла - " + name);
                                 createBackup(path);
-                                System.out.println("Бэкап создан успешно");
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
-                        } else {
-                            System.out.println("Бэкап для файла " + name + " создавать ещё не нужно");
                         }
                     }, () -> {
                         try {
-                            System.out.println("Бэкапа для файла " + name + " ещё нет\nСоздание нового бэкапа для файла " + name);
+                            System.out.println("Создание нового бэкапа для файла " + name);
                             createBackup(path);
-                            System.out.println("Бэкап создан");
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
