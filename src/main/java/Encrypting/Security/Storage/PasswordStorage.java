@@ -1,5 +1,7 @@
 package Encrypting.Security.Storage;
 
+import Encrypting.Security.Encryption_AES.AES_GCM;
+
 import javax.crypto.SecretKey;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -12,6 +14,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class PasswordStorage {
 
@@ -90,6 +94,13 @@ public class PasswordStorage {
         }
 
         System.out.println("Ключ удален из keyStore");
+    }
+
+    // Получить все aliases из KeyStore
+    public List<String> getAliases() throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException {
+        KeyStore keyStore = initializeKeyStore(AES_GCM.getKeyStorePassword());
+
+        return Collections.list( keyStore.aliases() );
     }
 
 }
