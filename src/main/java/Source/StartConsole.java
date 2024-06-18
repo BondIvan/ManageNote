@@ -2,6 +2,7 @@ package Source;
 
 import Commands.CommandFactory;
 import Commands.Commands;
+import Commands.WithOrWithoutParameters.CheckFiles;
 import Commands.WithOrWithoutParameters.GetAll;
 import Commands.WithParameters.Add;
 import Commands.WithParameters.Delete;
