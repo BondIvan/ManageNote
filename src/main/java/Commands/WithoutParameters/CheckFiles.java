@@ -1,4 +1,4 @@
-package Encrypting.Chek;
+package Commands.WithoutParameters;
 
 import Encrypting.Security.Storage.PasswordStorage;
 import Entity.NoteEntity;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class CheckFiles {
 
-    public void inspect() throws IOException, CertificateException, KeyStoreException, NoSuchAlgorithmException {
+    public boolean inspect() throws IOException, CertificateException, KeyStoreException, NoSuchAlgorithmException {
 
         List<NoteEntity> list = UsefulMethods.getAllNoteFromFile(StartConsole.PATH);
         List<String> ids = list.stream()
@@ -26,18 +26,20 @@ public class CheckFiles {
         List<String> aliases = passwordStorage.getAliases();
 
         System.out.println("Первая проверка:");
-        System.out.println( checkKeys(list) );
+        boolean checkKeys =  checkKeys(list);
 
         System.out.println("Вторая проверка:");
-        System.out.println( checkAliases(aliases, ids) );
+        boolean checkAliases = checkAliases(aliases, ids);
 
+        return checkKeys && checkAliases;
     }
 
     // Проверка, соответствует ли ключ паролю
-    private String checkKeys(List<NoteEntity> list) {
+    private boolean checkKeys(List<NoteEntity> list) {
 
         if (list.isEmpty())
-            return "List is empty";
+            return false;
+//            return "List is empty";
 
         List<String> passwordWithNullResult = new ArrayList<>();
         int count = 1;
@@ -56,16 +58,25 @@ public class CheckFiles {
             }
         }
 
-        return passwordWithNullResult.isEmpty() ? "\nПроверка прошла успешно" : passwordWithNullResult.toString();
+        System.out.println(passwordWithNullResult.isEmpty() ? "\nПроверка прошла успешно" : passwordWithNullResult.toString());
+
+        return passwordWithNullResult.isEmpty();
+        //return passwordWithNullResult.isEmpty() ? "\nПроверка прошла успешно" : passwordWithNullResult.toString();
     }
 
     // Проверка соответствует id из файла id в keyStore
-    private String checkAliases(List<String> aliases, List<String> idsFromFile) {
+    private boolean checkAliases(List<String> aliases, List<String> idsFromFile) {
 
-        if(aliases.isEmpty())
-            return "List with aliases is empty";
-        if(idsFromFile.isEmpty())
-            return "List with ids is empty";
+        if(aliases.isEmpty()) {
+            System.out.println("List with aliases is empty");
+            return false;
+//            return "List with aliases is empty";
+        }
+        if(idsFromFile.isEmpty()) {
+            System.out.println("List with ids is empty");
+//            return "List with ids is empty";
+            return false;
+        }
 
         List<String> alias = new ArrayList<>(List.copyOf(aliases));
         List<String> file = new ArrayList<>(List.copyOf(idsFromFile));
@@ -86,15 +97,21 @@ public class CheckFiles {
         }
 
         StringBuilder buffer = new StringBuilder();
-        if( alias.isEmpty() && file.isEmpty() )
-            return "\nПроверка прошла успешно\n";
+        if( alias.isEmpty() && file.isEmpty() ) {
+            System.out.println("\nПроверка прошла успешно\n");
+//            return "\nПроверка прошла успешно\n";
+            return true;
+        }
 
         if ( !alias.isEmpty() )
             buffer.append("\nЭти элементы отсутствуют в списке ids из файла: ").append(Arrays.toString(alias.toArray()));
         if( !file.isEmpty() )
             buffer.append("\nЭти элементы отсутствуют в списке aliases: ").append(Arrays.toString(file.toArray())).append("\n");
 
-        return buffer.toString();
+        System.out.println(buffer.toString());
+
+        return false;
+//        return buffer.toString();
     }
 
 }
