@@ -1,7 +1,11 @@
 package Commands.WithoutParameters;
 
+import Commands.Commands;
 import Encrypting.Security.Storage.PasswordStorage;
 import Entity.NoteEntity;
+import OptionsExceptions.AccessNotFoundException;
+import OptionsExceptions.IncorrectValueException;
+import OptionsExceptions.UnknownArgsException;
 import Source.StartConsole;
 import Tools.UsefulMethods;
 
@@ -13,35 +17,84 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CheckFiles {
+public class CheckFiles implements Commands {
 
-    public boolean inspect() throws IOException, CertificateException, KeyStoreException, NoSuchAlgorithmException {
+    @Override
+    public String perform(String postfix) throws IOException, UnknownArgsException, AccessNotFoundException, IncorrectValueException {
+
+        boolean resultChecking;
+        if(!postfix.isEmpty()) {
+
+            String[] args = UsefulMethods.makeArgsTrue(postfix);
+
+            if (args.length > 1)
+                throw new UnknownArgsException("Параметров больше чем нужно");
+            if (!args[0].equals("false") && !args[0].equals("true"))
+                throw new UnknownArgsException("Неверный параметр");
+
+            // [true/false]
+            if (args[0].equals("true"))
+                resultChecking = inspect(true);
+            else
+                resultChecking = inspect(false);
+
+        // ['empty']
+        } else {
+            resultChecking = inspect(true);
+        }
+
+        if(resultChecking)
+            return "Все проверки прошли успешно";
+        else
+            return "Проверка не прошла успешно";
+
+    }
+
+    private boolean inspect(boolean simulationDelay) throws IOException {
 
         List<NoteEntity> list = UsefulMethods.getAllNoteFromFile(StartConsole.PATH);
         List<String> ids = list.stream()
                 .map(note -> note.getId().toLowerCase())
                 .toList();
 
-        PasswordStorage passwordStorage = new PasswordStorage();
-        List<String> aliases = passwordStorage.getAliases();
+        try {
+            PasswordStorage passwordStorage = new PasswordStorage();
+            List<String> aliases = passwordStorage.getAliases();
 
-        System.out.println("Первая проверка:");
-        boolean checkKeys =  checkKeys(list);
+            System.out.println("Первая проверка:");
+            boolean checkKeys =  checkKeys(list, simulationDelay);
 
-        System.out.println("Вторая проверка:");
-        boolean checkAliases = checkAliases(aliases, ids);
+            System.out.println("Вторая проверка:");
+            boolean checkAliases = checkAliases(aliases, ids, simulationDelay);
 
-        return checkKeys && checkAliases;
+            return checkKeys && checkAliases;
+
+        } catch (CertificateException | KeyStoreException | NoSuchAlgorithmException e) {
+            System.out.println("Не удалось провести проверку. Ошибка связана проблемой с вызовом хранилища, текст ошибки: " + e.getMessage());
+            return false;
+        }
+
     }
 
     // Проверка, соответствует ли ключ паролю
-    private boolean checkKeys(List<NoteEntity> list) {
+    private boolean checkKeys(List<NoteEntity> list, boolean simulationDelay) {
 
         if (list.isEmpty())
             return false;
-//            return "List is empty";
 
         List<String> passwordWithNullResult = new ArrayList<>();
+
+        // Без имитации задержки
+        if(!simulationDelay) {
+            for (NoteEntity note : list)
+                if (note.getPassword(true) == null)
+                    passwordWithNullResult.add(note.getPassword(false));
+
+            System.out.println(passwordWithNullResult.isEmpty() ? "Проверка прошла успешно" : passwordWithNullResult.toString());
+            return passwordWithNullResult.isEmpty();
+        }
+
+        // С имитацией задержки для демонстрации прогресс-бара
         int count = 1;
         int listSize = list.size();
         for (NoteEntity note : list) {
@@ -50,7 +103,6 @@ public class CheckFiles {
             else
                 passwordWithNullResult.add(note.getPassword(false));
 
-            // Имитация задержки для демонстрации прогресс-бара
             try {
                 Thread.sleep(30);
             } catch (InterruptedException e) {
@@ -61,20 +113,17 @@ public class CheckFiles {
         System.out.println(passwordWithNullResult.isEmpty() ? "\nПроверка прошла успешно" : passwordWithNullResult.toString());
 
         return passwordWithNullResult.isEmpty();
-        //return passwordWithNullResult.isEmpty() ? "\nПроверка прошла успешно" : passwordWithNullResult.toString();
     }
 
     // Проверка соответствует id из файла id в keyStore
-    private boolean checkAliases(List<String> aliases, List<String> idsFromFile) {
+    private boolean checkAliases(List<String> aliases, List<String> idsFromFile, boolean simulationDelay) {
 
         if(aliases.isEmpty()) {
             System.out.println("List with aliases is empty");
             return false;
-//            return "List with aliases is empty";
         }
         if(idsFromFile.isEmpty()) {
             System.out.println("List with ids is empty");
-//            return "List with ids is empty";
             return false;
         }
 
@@ -84,22 +133,24 @@ public class CheckFiles {
         alias.removeAll(idsFromFile);
         file.removeAll(aliases);
 
-        int listSize = aliases.size(); //Math.max(aliases.size(), idsFromFile.size());
-        for(int i = 0; i < aliases.size(); i++) {
-            System.out.print("\rПроверено: " + (i+1) + " ... " + listSize);
+        // С имитацией задержки для демонстрации прогресс-бара, если false - нет имитации задержки
+        if(simulationDelay) {
+            int listSize = aliases.size(); //Math.max(aliases.size(), idsFromFile.size());
+            for (int i = 0; i < aliases.size(); i++) {
+                System.out.print("\rПроверено: " + (i + 1) + " ... " + listSize);
 
-            // Имитация задержки для демонстрации прогресс-бара
-            try {
-                Thread.sleep(30);
-            } catch (InterruptedException e) {
-                System.err.println(e.getMessage());
+                try {
+                    Thread.sleep(15);
+                } catch (InterruptedException e) {
+                    System.err.println(e.getMessage());
+                }
             }
+            System.out.println();
         }
 
         StringBuilder buffer = new StringBuilder();
         if( alias.isEmpty() && file.isEmpty() ) {
-            System.out.println("\nПроверка прошла успешно\n");
-//            return "\nПроверка прошла успешно\n";
+            System.out.println("Проверка прошла успешно\n");
             return true;
         }
 
@@ -108,10 +159,9 @@ public class CheckFiles {
         if( !file.isEmpty() )
             buffer.append("\nЭти элементы отсутствуют в списке aliases: ").append(Arrays.toString(file.toArray())).append("\n");
 
-        System.out.println(buffer.toString());
+        System.out.println(buffer);
 
         return false;
-//        return buffer.toString();
     }
 
 }

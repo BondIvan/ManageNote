@@ -7,10 +7,7 @@ import Commands.WithParameters.Add;
 import Commands.WithParameters.Delete;
 import Commands.WithParameters.Get;
 import Commands.WithParameters.Replace;
-import Commands.WithoutParameters.CopyFile;
-import Commands.WithoutParameters.Exit;
-import Commands.WithoutParameters.Help;
-import Commands.WithoutParameters.Save;
+import Commands.WithoutParameters.*;
 import Encrypting.Security.BackupCopy.BackupFile;
 import Encrypting.Security.Encryption_AES.AES_GCM;
 import Encrypting.Security.MasterPassword.Validation;
@@ -134,6 +131,7 @@ public class StartConsole {
         commandFactory.registerCommand("exit", Exit.class);
         commandFactory.registerCommand("help", Help.class);
         commandFactory.registerCommand("save", Save.class);
+        commandFactory.registerCommand("check", CheckFiles.class);
 
         return commandFactory;
     }
