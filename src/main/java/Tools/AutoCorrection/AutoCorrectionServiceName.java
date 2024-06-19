@@ -1,5 +1,7 @@
 package Tools.AutoCorrection;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class AutoCorrectionServiceName {
@@ -22,7 +24,10 @@ public class AutoCorrectionServiceName {
 //    }
 
     // Сравнение максимальной последовательности искомого слова с каждым словом из словаря
-    public static String autoCorrect(String serviceName, Set<String> dictionary) {
+    public static String getOneBestMatch(String serviceName, Set<String> dictionary) {
+
+        long start = System.currentTimeMillis();
+
         String bestMatch = serviceName;
         int maxSequenceLength = 0;
 
@@ -34,7 +39,43 @@ public class AutoCorrectionServiceName {
             }
         }
 
+        long end = System.currentTimeMillis();
+
+        System.out.println("One: " + (end-start));
+
         return bestMatch;
+    }
+
+    public static List<String> getThreeBestMatch(String serviceName, Set<String> dictionary) {
+
+        long start = System.currentTimeMillis();
+
+        List<String> threeMatch = new ArrayList<>();
+
+        int maxSequenceLength = 0;
+        String cycleBestMatch = "";
+        for(int i = 0; i < 3; i++) {
+            for (String candidate : dictionary) {
+                if(threeMatch.contains(candidate))
+                    continue;
+
+                int currSequenceLength = findMaxSequenceLength(serviceName, candidate);
+                if(currSequenceLength > maxSequenceLength) {
+                    maxSequenceLength = currSequenceLength;
+                    cycleBestMatch = candidate;
+                }
+            }
+
+            threeMatch.add(cycleBestMatch);
+            cycleBestMatch = "";
+            maxSequenceLength = 0;
+        }
+
+        long end = System.currentTimeMillis();
+
+        System.out.println("Three: " + (end-start));
+
+        return threeMatch;
     }
 
     // Метод: поиск максимальной последовательности

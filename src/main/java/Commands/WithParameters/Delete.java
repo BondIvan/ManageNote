@@ -50,7 +50,7 @@ public class Delete implements Commands {
         List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, serviceName); // Содержит необходимы-й/е аккаунт-/ы
 
         if(searchedServices.isEmpty()) {
-            String possibleVariant = AutoCorrectionServiceName.autoCorrect(serviceName, Dictionaries.uniqueServiceNames);
+            String possibleVariant = AutoCorrectionServiceName.getOneBestMatch(serviceName, Dictionaries.uniqueServiceNames);
             System.out.println("Возможно вы имели в виду: " + possibleVariant);
 
             throw new AccessNotFoundException("Сервис не найден");
