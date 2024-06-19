@@ -145,7 +145,7 @@ public class AES_GCM {
     }
 
     // Получить пароль от защищённого хранилища
-    private static char[] getKeyStorePassword() {
+    public static char[] getKeyStorePassword() {
         return storePassword.toCharArray();
     }
 
