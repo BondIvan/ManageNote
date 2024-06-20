@@ -61,12 +61,12 @@ public class StartConsole {
         // Мастер-пароль
         masterPassword();
 
+        // Чтение сервисов из файла
+        NOTES = UsefulMethods.getAllNoteFromFile(PATH);
+
         // Создание бэкапов важных файлов
         BackupFile backupFile = new BackupFile();
         System.out.println(backupFile.autoCreate());
-
-        // Чтение сервисов из файла
-        NOTES = UsefulMethods.getAllNoteFromFile(PATH);
 
         // Указание с каким файлом идёт работа
         String currentFile = Paths.get(PATH).getFileName().toString();
