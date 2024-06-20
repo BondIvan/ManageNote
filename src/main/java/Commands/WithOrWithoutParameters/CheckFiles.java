@@ -52,7 +52,7 @@ public class CheckFiles implements Commands {
 
     public boolean inspect(boolean simulationDelay) throws IOException {
 
-        List<NoteEntity> list = UsefulMethods.getAllNoteFromFile(StartConsole.PATH);
+        List<NoteEntity> list = StartConsole.NOTES;
         List<String> ids = list.stream()
                 .map(note -> note.getId().toLowerCase())
                 .toList();
