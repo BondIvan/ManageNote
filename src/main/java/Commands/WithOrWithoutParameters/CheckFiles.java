@@ -50,7 +50,7 @@ public class CheckFiles implements Commands {
 
     }
 
-    private boolean inspect(boolean simulationDelay) throws IOException {
+    public boolean inspect(boolean simulationDelay) throws IOException {
 
         List<NoteEntity> list = UsefulMethods.getAllNoteFromFile(StartConsole.PATH);
         List<String> ids = list.stream()
@@ -61,10 +61,12 @@ public class CheckFiles implements Commands {
             PasswordStorage passwordStorage = new PasswordStorage();
             List<String> aliases = passwordStorage.getAliases();
 
-            System.out.println("Первая проверка:");
+            if(simulationDelay)
+                System.out.println("Первая проверка:");
             boolean checkKeys =  checkKeys(list, simulationDelay);
 
-            System.out.println("Вторая проверка:");
+            if(simulationDelay)
+                System.out.println("Вторая проверка:");
             boolean checkAliases = checkAliases(aliases, ids, simulationDelay);
 
             return checkKeys && checkAliases;
@@ -90,7 +92,7 @@ public class CheckFiles implements Commands {
                 if (note.getPassword(true) == null)
                     passwordWithNullResult.add(note.getPassword(false));
 
-            System.out.println(passwordWithNullResult.isEmpty() ? "Проверка прошла успешно" : passwordWithNullResult.toString());
+            System.out.println(passwordWithNullResult.isEmpty() ? "" : passwordWithNullResult.toString());
             return passwordWithNullResult.isEmpty();
         }
 
@@ -150,7 +152,9 @@ public class CheckFiles implements Commands {
 
         StringBuilder buffer = new StringBuilder();
         if( alias.isEmpty() && file.isEmpty() ) {
-            System.out.println("Проверка прошла успешно\n");
+            if(simulationDelay)
+                System.out.println("Проверка прошла успешно\n");
+
             return true;
         }
 

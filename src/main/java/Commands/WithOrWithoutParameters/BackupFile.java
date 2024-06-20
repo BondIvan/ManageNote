@@ -1,4 +1,10 @@
-package Encrypting.Security.BackupCopy;
+package Commands.WithOrWithoutParameters;
+
+import Commands.Commands;
+import OptionsExceptions.AccessNotFoundException;
+import OptionsExceptions.IncorrectValueException;
+import OptionsExceptions.UnknownArgsException;
+import Tools.UsefulMethods;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,29 +15,74 @@ import java.nio.file.StandardCopyOption;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Stream;
 
-public class BackupFile {
+public class BackupFile implements Commands {
 
     // Папка с бэкапами
     private static final String path_to_backup_folder = "C:\\Users\\ivanb\\Documents\\Backups\\";
     // Файлы для бэкапа
     private static final Path[] files_need_backup = {
-        Paths.get("C:\\My place\\Java projects\\ItsClone\\ManageNote\\Files\\Txt\\Access.txt"),
-        Paths.get("C:\\My place\\Java projects\\ItsClone\\ManageNote\\Files\\Txt\\TestingAccess.txt"),
-        Paths.get("C:\\My place\\Java projects\\ItsClone\\ManageNote\\Files\\Storage\\KeysStorage.ks")
+            Paths.get("C:\\My place\\Java projects\\ItsClone\\ManageNote\\Files\\Txt\\Access.txt"),
+            Paths.get("C:\\My place\\Java projects\\ItsClone\\ManageNote\\Files\\Txt\\TestingAccess.txt"),
+            Paths.get("C:\\My place\\Java projects\\ItsClone\\ManageNote\\Files\\Storage\\KeysStorage.ks")
     };
 
-    public void create() throws IOException {
+    @Override
+    public String perform(String postfix) throws IOException, UnknownArgsException, AccessNotFoundException, IncorrectValueException {
+
+        if(postfix.isEmpty())
+            throw new UnknownArgsException("Нужно указать параметр");
+
+        String[] args = UsefulMethods.makeArgsTrue(postfix);
+
+        if (args.length > 1)
+            throw new UnknownArgsException("Параметров больше чем нужно");
+        if (!args[0].equals("make"))
+            throw new UnknownArgsException("Неверный параметр");
+
+        CheckFiles checkFiles = new CheckFiles();
+        if(checkFiles.inspect(true))
+            return manualCreate();
+        else
+            return "Файлы не прошли проверку";
+    }
+
+    public String manualCreate() throws IOException {
 
         Path folder = Paths.get(path_to_backup_folder);
-        List<File> files = Files.list(folder)
-                .map(Path::toFile)
-                .toList();
+        List<File> files = getFilesFromFolder(folder);
 
+        StringJoiner joiner = new StringJoiner("\n");
+        for (Path path : files_need_backup) {
+            String name = path.getFileName().toString();
+
+            Optional<File> optionalFile = files.stream()
+                    .filter(file -> file.getName().contains("copy_".concat(name)))
+                    .findFirst();
+
+            if(optionalFile.isPresent()) {
+                File file = optionalFile.get();
+                Files.delete(file.toPath());
+            }
+            createBackup(path);
+            joiner.add("Создан новый бэкап для файла - " + name);
+        }
+
+        return joiner.toString();
+    }
+
+    public String autoCreate() throws IOException {
+
+        CheckFiles checkFiles = new CheckFiles();
+        if(!checkFiles.inspect(false))
+            return "Файлы не прошли проверку";
+
+        Path folder = Paths.get(path_to_backup_folder);
+        List<File> files = getFilesFromFolder(folder);
+
+        StringJoiner joiner = new StringJoiner("\n");
         for (Path path : files_need_backup) {
             String name = path.getFileName().toString();
             files.stream()
@@ -42,23 +93,29 @@ public class BackupFile {
                         if (checkTimeInterval(fileName)) {
                             try {
                                 Files.delete(file.toPath());
-                                System.out.println("Создание нового бэкапа для файла - " + name);
                                 createBackup(path);
+                                joiner.add("Создан новый бэкап для файла - " + name);
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
                         }
-                    }, () -> {
+                    }, () -> { // Бэкап файла нету
                         try {
-                            System.out.println("Создание нового бэкапа для файла " + name);
                             createBackup(path);
+                            joiner.add("Создан новый бэкап для файла - " + name);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
                     });
-
         }
 
+        return joiner + "\n";
+    }
+
+    private List<File> getFilesFromFolder(Path folder) throws IOException {
+        try (Stream<Path> pathStream = Files.list(folder)) {
+            return pathStream.map(Path::toFile).toList();
+        }
     }
 
     // Создать бэкап

@@ -2,14 +2,17 @@ package Source;
 
 import Commands.CommandFactory;
 import Commands.Commands;
+import Commands.WithOrWithoutParameters.BackupFile;
 import Commands.WithOrWithoutParameters.CheckFiles;
 import Commands.WithOrWithoutParameters.GetAll;
 import Commands.WithParameters.Add;
 import Commands.WithParameters.Delete;
 import Commands.WithParameters.Get;
 import Commands.WithParameters.Replace;
-import Commands.WithoutParameters.*;
-import Encrypting.Security.BackupCopy.BackupFile;
+import Commands.WithoutParameters.CopyFile;
+import Commands.WithoutParameters.Exit;
+import Commands.WithoutParameters.Help;
+import Commands.WithoutParameters.Save;
 import Encrypting.Security.Encryption_AES.AES_GCM;
 import Encrypting.Security.MasterPassword.Validation;
 import Entity.NoteEntity;
@@ -60,7 +63,7 @@ public class StartConsole {
 
         // Создание бэкапов важных файлов
         BackupFile backupFile = new BackupFile();
-        backupFile.create();
+        System.out.println(backupFile.autoCreate());
 
         // Чтение сервисов из файла
         NOTES = UsefulMethods.getAllNoteFromFile(PATH);
@@ -133,6 +136,7 @@ public class StartConsole {
         commandFactory.registerCommand("help", Help.class);
         commandFactory.registerCommand("save", Save.class);
         commandFactory.registerCommand("check", CheckFiles.class);
+        commandFactory.registerCommand("backup", BackupFile.class);
 
         return commandFactory;
     }
