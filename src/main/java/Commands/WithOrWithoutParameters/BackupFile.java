@@ -82,7 +82,7 @@ public class BackupFile implements Commands {
         Path folder = Paths.get(path_to_backup_folder);
         List<File> files = getFilesFromFolder(folder);
 
-        StringJoiner joiner = new StringJoiner("\n");
+        StringBuilder infoResult = new StringBuilder();
         for (Path path : files_need_backup) {
             String name = path.getFileName().toString();
             files.stream()
@@ -94,7 +94,7 @@ public class BackupFile implements Commands {
                             try {
                                 Files.delete(file.toPath());
                                 createBackup(path);
-                                joiner.add("Создан новый бэкап для файла - " + name);
+                                infoResult.append("Создан новый бэкап для файла - ").append(name).append("\n");
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
@@ -102,14 +102,14 @@ public class BackupFile implements Commands {
                     }, () -> { // Бэкап файла нету
                         try {
                             createBackup(path);
-                            joiner.add("Создан новый бэкап для файла - " + name);
+                            infoResult.append("Создан новый бэкап для файла - ").append(name).append("\n");
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
                     });
         }
 
-        return joiner + "\n";
+        return infoResult.toString();
     }
 
     private List<File> getFilesFromFolder(Path folder) throws IOException {

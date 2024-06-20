@@ -46,7 +46,7 @@ public class Add implements Commands {
 
         String[] numberOfAccount = {"1-st", "2-nd", "3-rd", "4-th", "5-th", "6-th", "7-th", "8-th", "9-th", "10-th"}; // 10 "аккаунтов" максимум
 
-        System.out.println( "Добавить " + numberOfAccount[searchedServices.size()] + " сервис с такими данными ? (y/n):\n"
+        System.out.println( "Будет добавлен " + numberOfAccount[searchedServices.size()] + " сервис с такими данными:\n"
                 + serviceName +
                 "\nLogin: " + serviceLogin +
                 "\nPassword: " + servicePassword );
