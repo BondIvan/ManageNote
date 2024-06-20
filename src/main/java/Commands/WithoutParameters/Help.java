@@ -10,13 +10,15 @@ public class Help implements Commands {
     @Override
     public String perform(String postfix) {
         return """
-                        Get access: -get- [название]
+                        Get access: -get- [name] / [name] [login]
                         Get all services: -getall- [] / [date]
-                        Add new access: -add- [название] [login] [password]
-                        Replace access: -replace- [название] [service/login/password] [новая строка]
-                        Delete access: -delete- [название]
-                        Save file: -save-
+                        Add access: -add- [name] [login] [password]
+                        Replace access: -replace- [name] [service/login/password] [newString] / [name] [login] [service/login/password] [newString]
+                        Delete access: -delete- [name] / [name] [login]
+                        Create a backup: -backup- [make]
+                        Check important files: -check- [true (with delay)] / [false (without delay)]
                         Copy file to clipboard  windows: -copyfile-
+                        Save file: -save-
                         Help: -help-
                         Exit: -exit-
                         """;
