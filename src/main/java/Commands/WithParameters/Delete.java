@@ -29,49 +29,53 @@ public class Delete implements Commands {
     @Override
     public String perform(String postfix) throws UnknownArgsException, AccessNotFoundException {
 
-        String[] args = UsefulMethods.makeArgsTrue(postfix); // Разбитие postfix-а на состовляющие (конкретные аргументы команды)
-
-        if(args.length == 0)
+        if(postfix.isEmpty())
             throw  new UnknownArgsException("Нет параметров");
+
+        // Разбитие postfix-а на состовляющие (конкретные аргументы команды)
+        String[] args = UsefulMethods.makeArgsTrue(postfix);
+
         if(args.length > 2)
             throw new UnknownArgsException("Параметров больше чем нужно");
 
-        // [serviceName] + [login]
+        // [serviceName] + [serviceLogin]
         if(args.length > 1) {
-            return deleteNoteByLogin(args[0], args[1]);
+            return deleteNote(args[0], args[1]);
         }
 
         // [serviceName]
-        return deleteNote(args[0]);
+        return deleteNote(args[0], null);
     }
 
-    public String deleteNote(String serviceName) throws AccessNotFoundException {
+    public String deleteNote(String serviceName, String serviceLogin) throws AccessNotFoundException {
 
-        List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, serviceName); // Содержит необходимы-й/е аккаунт-/ы
+        List<NoteEntity> accounts = UsefulMethods.getAllAccountsForOneService(listWithNotes, serviceName);
 
-        if(searchedServices.isEmpty()) {
+        if(accounts.isEmpty()) {
             String possibleVariant = AutoCorrectionServiceName.getOneBestMatch(serviceName, Dictionaries.uniqueServiceNames);
             System.out.println("Возможно вы имели в виду: " + possibleVariant);
+
+            System.out.println( AutoCorrectionServiceName.getThreeBestMatch(serviceName, Dictionaries.uniqueServiceNames) );
 
             throw new AccessNotFoundException("Сервис не найден");
         }
 
-        // [serviceName] + [login]
-        if(searchedServices.size() > 1) {
+        boolean existLogin = serviceLogin != null && !serviceLogin.isEmpty();
+        if(accounts.size() > 1 && !existLogin) {
             System.out.println("Укажите в команде логин аккаунта, который необходимо удалить");
-
             // Отсортировать все аккаунты сервиса по названию + вывести их названия и логины
-            UsefulMethods.sortNoteEntityByServiceName( listWithNotes.stream()
+            UsefulMethods.sortNoteEntityByServiceName(listWithNotes.stream()
                     .filter(note -> note.getServiceName().split(" ")[0].equalsIgnoreCase(serviceName))
-                    .collect(Collectors.toList()) ).forEach((note) -> System.out.println(note.getServiceName() + " -> " + note.getLogin()));
+                    .collect(Collectors.toList())).forEach((note) -> System.out.println(note.getServiceName() + " -> " + note.getLogin()));
 
             return "Теперь введите команду";
         }
 
+        NoteEntity deletedNote = existLogin ?
+                UsefulMethods.getAccountFromServiceByLogin(accounts, serviceName, serviceLogin) : accounts.get(0);
         try {
-            NoteEntity deletedNote = searchedServices.get(0);
-            String serviceID = deletedNote.getId();
 
+            String serviceID = deletedNote.getId();
             AES_GCM.deleteKeyFromStorage(serviceID);
 
             listWithNotes.remove(deletedNote);
@@ -86,24 +90,4 @@ public class Delete implements Commands {
         return "Удалено";
     }
 
-    public String deleteNoteByLogin(String serviceName, String serviceLogin) throws AccessNotFoundException {
-
-        NoteEntity deletedNote = UsefulMethods.getAccountFromServiceByLogin(listWithNotes, serviceName, serviceLogin);
-
-        try {
-            String serviceID = deletedNote.getId();
-            
-            AES_GCM.deleteKeyFromStorage(serviceID);
-
-            listWithNotes.remove(deletedNote);
-            UsefulMethods.changingNameWhenRemove(listWithNotes, serviceName);
-
-            CheckingForUpdate.isUpdated = true;
-
-        } catch (Exception e) {
-            return "Не удалось удалить, тип ошибки - " + e.getMessage();
-        }
-
-        return "Удалено";
-    }
 }
