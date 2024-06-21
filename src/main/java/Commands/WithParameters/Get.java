@@ -9,7 +9,6 @@ import Tools.AutoCorrection.AutoCorrectionServiceName;
 import Tools.AutoCorrection.Dictionaries;
 import Tools.UsefulMethods;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Get implements Commands {
@@ -36,36 +35,28 @@ public class Get implements Commands {
 
         // [serviceName] + [login]
         if(args.length > 1) {
-            return printNotes( List.of(getNoteByLogin(args[0], args[1])) );
+            return printNotes( getNote(args[0], args[1]) );
         }
 
         // [serviceName]
-        return printNotes( getListWithNotes(args[0]) );
+        return printNotes( getNote(args[0], null) );
     }
 
-    public List<NoteEntity> getListWithNotes(String serviceName) throws AccessNotFoundException {
+    public List<NoteEntity> getNote(String serviceName, String serviceLogin) throws AccessNotFoundException {
 
         List<NoteEntity> accounts = UsefulMethods.getAllAccountsForOneService(listWithNotes, serviceName);
 
-        if( accounts.isEmpty() ) {
+        if(accounts.isEmpty()) {
             String possibleVariant = AutoCorrectionServiceName.getOneBestMatch(serviceName, Dictionaries.uniqueServiceNames);
-
             System.out.println( AutoCorrectionServiceName.getThreeBestMatch(serviceName, Dictionaries.uniqueServiceNames) );
 
             throw new AccessNotFoundException("Сервис не найден.\n" + "Возможно вы имели в виду: " + possibleVariant);
         }
 
-        return UsefulMethods.sortNoteEntityByServiceName(accounts);
-    }
+        if(serviceLogin == null || serviceLogin.isEmpty())
+            return UsefulMethods.sortNoteEntityByServiceName(accounts);
 
-    public NoteEntity getNoteByLogin(String serviceName, String serviceLogin) throws AccessNotFoundException {
-
-        List<NoteEntity> service = UsefulMethods.getAllAccountsForOneService(listWithNotes, serviceName);
-
-        if(service.isEmpty())
-            throw new AccessNotFoundException("Сервис не найден");
-
-        return UsefulMethods.getAccountFromServiceByLogin(listWithNotes, serviceName, serviceLogin);
+        return List.of( UsefulMethods.getAccountFromServiceByLogin(accounts, serviceName, serviceLogin) );
     }
 
     private String printNotes(List<NoteEntity> notes) {
