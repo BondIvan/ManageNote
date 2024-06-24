@@ -11,6 +11,7 @@ import Tools.AutoCorrection.Dictionaries;
 import Tools.CheckingForUpdate;
 import Tools.UsefulMethods;
 
+import java.security.KeyStoreException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +28,7 @@ public class Replace implements Commands {
     }
 
     @Override
-    public String perform(String postfix) throws UnknownArgsException, AccessNotFoundException, IncorrectValueException {
+    public String perform(String postfix) throws UnknownArgsException, AccessNotFoundException, IncorrectValueException, KeyStoreException {
 
         if(postfix.isEmpty())
             throw  new UnknownArgsException("Нет параметров");
@@ -54,7 +55,7 @@ public class Replace implements Commands {
         return replace(args[0], null, replaceType, args[2]);
     }
 
-    public String replace(String serviceName, String serviceLogin, String replaceType, String newString) throws AccessNotFoundException, IncorrectValueException, UnknownArgsException {
+    public String replace(String serviceName, String serviceLogin, String replaceType, String newString) throws AccessNotFoundException, IncorrectValueException, UnknownArgsException, KeyStoreException {
 
         List<NoteEntity> accounts = UsefulMethods.getAllAccountsForOneService(listWithNotes, serviceName);
 

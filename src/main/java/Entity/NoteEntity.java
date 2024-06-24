@@ -4,6 +4,8 @@ import Encrypting.Security.Encryption_AES.AES_GCM;
 import OptionsExceptions.UnknownArgsException;
 import de.huxhorn.sulky.ulid.ULID;
 
+import java.security.KeyStoreException;
+
 public class NoteEntity {
     private static final ULID ULID = new ULID(); // Генерация уникальных id
     private final String id;
@@ -52,17 +54,15 @@ public class NoteEntity {
         }
 
     }
-    public String getPassword(boolean needDecrypt) { // needDecrypt - будет говорить, нужно ли расшифровать пароль
+    public String getPassword(boolean needDecrypt) throws KeyStoreException { // needDecrypt - будет говорить, нужно ли расшифровать пароль
 
         try {
             AES_GCM aesGcm = new AES_GCM();
 
             return needDecrypt ? aesGcm.decrypt(this.password, this.id) : this.password;
         } catch (Exception e) {
-            System.out.println("Не удалось вывести пароль, тип ошибки - " + e.getMessage());
+            throw new KeyStoreException("Не удалось задать пароль.\nОшибка получения доступа к защищённому хранилищу.\n" + e.getMessage());
         }
-
-        return null;
     }
 
     private String generateID() {
@@ -77,6 +77,10 @@ public class NoteEntity {
     @Override
     public String toString() { //TODO Подумать, нужно ли здесь расшифровывать пароль
 
-        return serviceName + "\nLogin: " + login + "\nPassword: " + getPassword(true);
+        try {
+            return serviceName + "\nLogin: " + login + "\nPassword: " + getPassword(true);
+        } catch (KeyStoreException e) {
+            return "Ошибка получения доступа к защищённому хранилищу.\n" + e.getMessage();
+        }
     }
 }

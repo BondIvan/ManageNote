@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
@@ -111,7 +112,7 @@ public class StartConsole {
                 }
             }
         } else {
-            System.out.print("Задайте мастер-пароль: "); // asd
+            System.out.print("Задайте мастер-пароль: ");
             char[] inputPassword = inputLine.nextLine().toCharArray();
             validation.createMasterPassword(inputPassword);
             Arrays.fill(inputPassword, '\0');
@@ -187,7 +188,7 @@ public class StartConsole {
                     System.out.println( save.perform("") );
                 }
                 System.out.println("\nВыход из приложения");
-            } catch (IOException e) {
+            } catch (IOException | KeyStoreException e) {
                 throw new RuntimeException(e);
             }
         });

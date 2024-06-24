@@ -4,6 +4,7 @@ import Commands.Commands;
 import Tools.CheckingForUpdate;
 
 import java.io.IOException;
+import java.security.KeyStoreException;
 
 public class Exit implements Commands {
 
@@ -11,7 +12,7 @@ public class Exit implements Commands {
     }
 
     @Override
-    public String perform(String postfix) throws IOException {
+    public String perform(String postfix) throws IOException, KeyStoreException {
 
         if(CheckingForUpdate.isUpdated) {
             Save save = new Save();

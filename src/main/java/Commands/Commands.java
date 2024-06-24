@@ -5,10 +5,11 @@ import OptionsExceptions.IncorrectValueException;
 import OptionsExceptions.UnknownArgsException;
 
 import java.io.IOException;
+import java.security.KeyStoreException;
 
 public interface Commands {
 
     // Метод для выполнения команды
-    String perform(String postfix) throws IOException, UnknownArgsException, AccessNotFoundException, IncorrectValueException;
+    String perform(String postfix) throws IOException, UnknownArgsException, AccessNotFoundException, IncorrectValueException, KeyStoreException;
 
 }

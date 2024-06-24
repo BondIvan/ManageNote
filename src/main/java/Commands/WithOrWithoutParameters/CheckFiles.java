@@ -79,7 +79,7 @@ public class CheckFiles implements Commands {
     }
 
     // Проверка, соответствует ли ключ паролю
-    private boolean checkKeys(List<NoteEntity> list, boolean simulationDelay) {
+    private boolean checkKeys(List<NoteEntity> list, boolean simulationDelay) throws KeyStoreException {
 
         if (list.isEmpty())
             return false;

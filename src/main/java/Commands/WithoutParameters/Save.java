@@ -7,6 +7,7 @@ import Tools.CheckingForUpdate;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.security.KeyStoreException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -26,7 +27,7 @@ public class Save implements Commands {
     }
 
     @Override
-    public String perform(String postfix) throws IOException {
+    public String perform(String postfix) throws IOException, KeyStoreException {
 
         if(CheckingForUpdate.isUpdated)
             return "Файл сохранён: " + saving(listWithNotes);
@@ -34,7 +35,7 @@ public class Save implements Commands {
         return "Изменений не произошло";
     }
 
-    private boolean saving(List<NoteEntity> listWithNotesForSave) throws IOException {
+    private boolean saving(List<NoteEntity> listWithNotesForSave) throws IOException, KeyStoreException {
 
 //        Scanner confirm = new Scanner(System.in);
 //        System.out.println("Сохранить файл ? (y/n)");
