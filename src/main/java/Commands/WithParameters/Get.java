@@ -26,14 +26,16 @@ public class Get implements Commands {
     @Override
     public String perform(String postfix) throws UnknownArgsException, AccessNotFoundException {
 
-        String[] args = UsefulMethods.makeArgsTrue(postfix); // Разбитие postfix-а на состовляющие (конкретные аргументы команды)
-
-        if(args.length == 0)
+        if(postfix.isEmpty())
             throw  new UnknownArgsException("Нет параметров");
+
+        // Разбитие postfix-а на состовляющие (конкретные аргументы команды)
+        String[] args = UsefulMethods.makeArgsTrue(postfix);
+
         if(args.length > 2)
             throw new UnknownArgsException("Параметров больше чем нужно");
 
-        // [serviceName] + [login]
+        // [serviceName] + [serviceLogin]
         if(args.length > 1) {
             return printNotes( getNote(args[0], args[1]) );
         }
@@ -48,9 +50,11 @@ public class Get implements Commands {
 
         if(accounts.isEmpty()) {
             String possibleVariant = AutoCorrectionServiceName.getOneBestMatch(serviceName, Dictionaries.uniqueServiceNames);
+            System.out.println("Возможно вы имели в виду: " + possibleVariant);
+
             System.out.println( AutoCorrectionServiceName.getThreeBestMatch(serviceName, Dictionaries.uniqueServiceNames) );
 
-            throw new AccessNotFoundException("Сервис не найден.\n" + "Возможно вы имели в виду: " + possibleVariant);
+            throw new AccessNotFoundException("Сервис не найден");
         }
 
         if(serviceLogin == null || serviceLogin.isEmpty())
