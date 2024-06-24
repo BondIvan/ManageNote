@@ -80,10 +80,8 @@ public class PasswordStorage {
     // Удалить ключ из keyStore
     public void deleteKey(KeyStore keyStore, String aliasID, char[] storePassword) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
 
-        if(!keyStore.containsAlias(aliasID)) {
-            System.out.println("В keyStore нет такого ID");
-            return;
-        }
+        if(!keyStore.containsAlias(aliasID))
+            throw new KeyStoreException("В keyStore такого ID нет");
 
         keyStore.deleteEntry(aliasID);
 
@@ -92,8 +90,6 @@ public class PasswordStorage {
         } finally { // Очистка чувствиельных данных из памяти
             Arrays.fill(storePassword, '\0');
         }
-
-        System.out.println("Ключ удален из keyStore");
     }
 
     // Получить все aliases из KeyStore
