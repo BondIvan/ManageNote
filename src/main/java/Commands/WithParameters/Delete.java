@@ -11,6 +11,10 @@ import Tools.AutoCorrection.Dictionaries;
 import Tools.CheckingForUpdate;
 import Tools.UsefulMethods;
 
+import java.io.IOException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -84,7 +88,7 @@ public class Delete implements Commands {
 
             CheckingForUpdate.isUpdated = true;
 
-        } catch (Exception e) {
+        } catch (CertificateException | KeyStoreException | IOException | NoSuchAlgorithmException e) {
             return "Не удалось удалить, тип ошибки - " + e.getMessage();
         }
 
