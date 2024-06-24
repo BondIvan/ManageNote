@@ -29,6 +29,9 @@ public class Replace implements Commands {
     @Override
     public String perform(String postfix) throws UnknownArgsException, AccessNotFoundException, IncorrectValueException {
 
+        if(postfix.isEmpty())
+            throw  new UnknownArgsException("Нет параметров");
+
         String[] args = UsefulMethods.makeArgsTrue(postfix);
 
         if(args.length > 4)
@@ -43,77 +46,41 @@ public class Replace implements Commands {
 
         // [serviceName] [login] [type] [newString]
         if(args.length > 3) {
-            return replaceNoteByLogin(args[0], args[1], replaceType, args[3]);
+            return replace(args[0], args[1], replaceType, args[3]);
         }
 
         // [serviceName] [type] [newString]
-        return replaceNote(args[0], replaceType, args[2]);
+        return replace(args[0], null, replaceType, args[2]);
     }
 
-    // [serviceName] [login] [type] [newString]
-    public String replaceNoteByLogin(String serviceName, String serviceLogin, String replaceType, String newString) throws AccessNotFoundException, IncorrectValueException, UnknownArgsException {
+    public String replace(String serviceName, String serviceLogin, String replaceType, String newString) throws AccessNotFoundException, IncorrectValueException, UnknownArgsException {
 
-        NoteEntity replacedNote = UsefulMethods.getAccountFromServiceByLogin(listWithNotes, serviceName, serviceLogin);
+        List<NoteEntity> accounts = UsefulMethods.getAllAccountsForOneService(listWithNotes, serviceName);
 
-        //Тернарный оператор с 3 условиями (вложенные)
-        System.out.println( "Будут произведены следующие изменения в сервисе " + replacedNote.getServiceName() + " с параметром " + replaceType + ": "
-                + ( replaceType.equals("service") ? replacedNote.getServiceName()
-                :replaceType.equals("login") ? replacedNote.getLogin()
-                :replacedNote.getPassword(true) )
-                + " -> " + newString );
-
-        switch (replaceType) {
-
-            case "service" -> {
-                replaceServiceName(replacedNote, newString); // Название нового сервиса
-            }
-            case "login" -> {
-                List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, serviceName);
-
-                // Если какого-либо аккаунта, одного сервиса, уже есть такой логин
-                if (searchedServices.stream().anyMatch(note -> note.getLogin().equals(newString)))
-                    throw new IncorrectValueException("У этого сервиса такой логин уже существует");
-
-                replaceServiceLogin(replacedNote, newString); // Replacement without checks
-
-            }
-            case "password" -> {
-                replaceServicePassword(replacedNote, newString); // Replacement without checks
-            }
-            default -> {
-                throw new UnknownArgsException("Не верный тип параметра");
-            }
-        }
-
-        CheckingForUpdate.isUpdated = true;
-        return "Заменено " + replaceType + " у сервиса";
-    }
-
-    // [serviceName] [type] [newString]
-    public String replaceNote(String serviceName, String replaceType, String newString) throws AccessNotFoundException, IncorrectValueException, UnknownArgsException {
-
-        List<NoteEntity> searchedServices = UsefulMethods.getAllAccountsForOneService(listWithNotes, serviceName); // Содержит необходимы-й/е аккаунт-/ы
-
-        if(searchedServices.isEmpty()) {
+        if(accounts.isEmpty()) {
             String possibleVariant = AutoCorrectionServiceName.getOneBestMatch(serviceName, Dictionaries.uniqueServiceNames);
             System.out.println("Возможно вы имели в виду: " + possibleVariant);
+
+            System.out.println( AutoCorrectionServiceName.getThreeBestMatch(serviceName, Dictionaries.uniqueServiceNames) );
 
             throw new AccessNotFoundException("Сервис не найден");
         }
 
-        if(searchedServices.size() > 1) {
-            System.out.println("Укажите в команде логин аккаунта, который необходимо удалить");
-
+        boolean existLogin = serviceLogin != null && !serviceLogin.isEmpty();
+        if(accounts.size() > 1 && !existLogin) {
+            System.out.println("Укажите в команде логин аккаунта, который необходимо изменить");
             // Отсортировать все аккаунты сервиса по названию + вывести их названия и логины
-            UsefulMethods.sortNoteEntityByServiceName( listWithNotes.stream()
+            UsefulMethods.sortNoteEntityByServiceName(listWithNotes.stream()
                     .filter(note -> note.getServiceName().split(" ")[0].equalsIgnoreCase(serviceName))
-                    .collect(Collectors.toList()) ).forEach((note) -> System.out.println(note.getServiceName() + " -> " + note.getLogin()));
+                    .collect(Collectors.toList())).forEach((note) -> System.out.println(note.getServiceName() + " -> " + note.getLogin()));
 
             return "Теперь введите команду";
         }
 
-        // [serviceName] [type] [newString]
-        NoteEntity replacedNote = searchedServices.get(0);
+        // [serviceName] [serviceLogin] [replaceType] : [serviceName] [replaceType]
+        NoteEntity replacedNote = existLogin ?
+                UsefulMethods.getAccountFromServiceByLogin(accounts, serviceName, serviceLogin) : accounts.get(0);
+
         //Тернарный оператор с 3 условиями (вложенные)
         System.out.println( "Будут произведены следующие изменения в сервисе " + replacedNote.getServiceName() + " с параметром " + replaceType + ": "
                 + ( replaceType.equals("service") ? replacedNote.getServiceName()
@@ -122,22 +89,18 @@ public class Replace implements Commands {
                 + " -> " + newString );
 
         switch (replaceType) {
-            case "service" -> {
-                replaceServiceName(replacedNote, newString); // Название нового сервиса
-            }
-            case "login" -> {
-                // Это единственный аккаунт у сервиса
-                replaceServiceLogin(replacedNote, newString); // Replacement without checks
-            }
-            case "password" -> {
-                replaceServicePassword(replacedNote, newString); // Replacement without checks
-            }
-            default -> {
+            case "service" ->
+                replaceServiceName(replacedNote, newString);
+            case "login" ->
+                replaceServiceLogin(accounts, replacedNote, newString);
+            case "password" ->
+                replaceServicePassword(replacedNote, newString);
+            default ->
                 throw new UnknownArgsException("Не верный тип параметра");
-            }
         }
 
         CheckingForUpdate.isUpdated = true;
+
         return "Заменено " + replaceType + " у сервиса";
     }
 
@@ -191,14 +154,18 @@ public class Replace implements Commands {
         UsefulMethods.changingNameWhenAdd(listWithNotes, newNameReplacedNote); // Переименовывание сервиса с новым названием
     }
 
-    public void replaceServiceLogin(NoteEntity replacedNote, String newLoginReplacedNote) {
+    public void replaceServiceLogin(List<NoteEntity> accounts, NoteEntity replacedNote, String newLoginReplacedNote) throws IncorrectValueException {
 
-        replacedNote.setLogin(newLoginReplacedNote); // Replacement without checks
+        // Проверяет сушествует ли сервис с таким же логином
+        if(accounts.stream().anyMatch(note -> note.getLogin().equalsIgnoreCase(newLoginReplacedNote)))
+            throw new IncorrectValueException("У этого сервиса такой логин уже существует");
+
+        replacedNote.setLogin(newLoginReplacedNote);
     }
 
     public void replaceServicePassword(NoteEntity replacedNote, String newPasswordReplacedNote) throws UnknownArgsException {
 
-        replacedNote.setPassword(newPasswordReplacedNote); // Replacement without checks
+        replacedNote.setPassword(newPasswordReplacedNote);
     }
 
 }
