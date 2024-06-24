@@ -168,7 +168,10 @@ public class StartConsole {
 
             System.out.println(command.perform(postfix) + "\n");
 
-            dictionaries.fillingDictionaries(NOTES); // Обновление словаря, после изменения главного списка (удаление, добавление, изменение сервиса)
+            // Обновление словаря, после изменения главного списка (удаление, добавление, изменение сервиса)
+            if(command instanceof Add || command instanceof Delete || command instanceof Replace)
+                dictionaries.fillingDictionaries(NOTES);
+
         } catch (Exception e) {
             System.out.println("Ошибка с сообщением: " + e.getMessage());
         }
