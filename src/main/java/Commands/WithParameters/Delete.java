@@ -71,6 +71,7 @@ public class Delete implements Commands {
             return "Теперь введите команду";
         }
 
+        // [serviceName] : [serviceLogin] [serviceName]
         NoteEntity deletedNote = existLogin ?
                 UsefulMethods.getAccountFromServiceByLogin(accounts, serviceName, serviceLogin) : accounts.get(0);
         try {

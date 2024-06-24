@@ -32,6 +32,7 @@ public class Replace implements Commands {
         if(postfix.isEmpty())
             throw  new UnknownArgsException("Нет параметров");
 
+        // Разбитие postfix-а на состовляющие (конкретные аргументы команды)
         String[] args = UsefulMethods.makeArgsTrue(postfix);
 
         if(args.length > 4)
