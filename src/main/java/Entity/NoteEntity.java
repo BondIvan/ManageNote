@@ -61,7 +61,7 @@ public class NoteEntity {
 
             return needDecrypt ? aesGcm.decrypt(this.password, this.id) : this.password;
         } catch (Exception e) {
-            throw new KeyStoreException("Не удалось задать пароль.\nОшибка получения доступа к защищённому хранилищу.\n" + e.getMessage());
+            throw new KeyStoreException("Не удалось получить пароль.\nОшибка получения доступа к защищённому хранилищу.\n" + e.getMessage());
         }
     }
 
