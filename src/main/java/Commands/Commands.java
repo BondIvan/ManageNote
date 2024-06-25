@@ -10,6 +10,6 @@ import java.security.KeyStoreException;
 public interface Commands {
 
     // Метод для выполнения команды
-    String perform(String postfix) throws IOException, UnknownArgsException, AccessNotFoundException, IncorrectValueException, KeyStoreException;
+    String perform(String postfix) throws UnknownArgsException, AccessNotFoundException, IncorrectValueException;
 
 }

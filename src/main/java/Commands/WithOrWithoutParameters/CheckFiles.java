@@ -20,7 +20,7 @@ import java.util.List;
 public class CheckFiles implements Commands {
 
     @Override
-    public String perform(String postfix) throws IOException, UnknownArgsException, AccessNotFoundException, IncorrectValueException {
+    public String perform(String postfix) throws UnknownArgsException, AccessNotFoundException, IncorrectValueException {
 
         boolean resultChecking;
         if(!postfix.isEmpty()) {
@@ -50,7 +50,7 @@ public class CheckFiles implements Commands {
 
     }
 
-    public boolean inspect(boolean simulationDelay) throws IOException {
+    public boolean inspect(boolean simulationDelay) {
 
         List<NoteEntity> list = StartConsole.NOTES;
         List<String> ids = list.stream()
@@ -71,7 +71,7 @@ public class CheckFiles implements Commands {
 
             return checkKeys && checkAliases;
 
-        } catch (CertificateException | KeyStoreException | NoSuchAlgorithmException e) {
+        } catch (CertificateException | KeyStoreException | NoSuchAlgorithmException | IOException e) {
             System.out.println("Не удалось провести проверку. Ошибка связана проблемой с вызовом хранилища, текст ошибки: " + e.getMessage());
             return false;
         }

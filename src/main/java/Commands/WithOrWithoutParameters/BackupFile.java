@@ -30,7 +30,7 @@ public class BackupFile implements Commands {
     };
 
     @Override
-    public String perform(String postfix) throws IOException, UnknownArgsException, AccessNotFoundException, IncorrectValueException {
+    public String perform(String postfix) throws UnknownArgsException, AccessNotFoundException, IncorrectValueException {
 
         if(postfix.isEmpty())
             throw new UnknownArgsException("Нужно указать параметр");
@@ -49,7 +49,7 @@ public class BackupFile implements Commands {
             return "Файлы не прошли проверку";
     }
 
-    public String manualCreate() throws IOException {
+    public String manualCreate() {
 
         Path folder = Paths.get(path_to_backup_folder);
         List<File> files = getFilesFromFolder(folder);
@@ -63,17 +63,25 @@ public class BackupFile implements Commands {
                     .findFirst();
 
             if(optionalFile.isPresent()) {
-                File file = optionalFile.get();
-                Files.delete(file.toPath());
+                try {
+                    File file = optionalFile.get();
+                    Files.delete(file.toPath());
+                } catch (IOException e) {
+                    System.out.println("Ошибка удаления файла бэкапа: " + e.getMessage());
+                }
             }
-            createBackup(path);
-            joiner.add("Создан новый бэкап для файла - " + name);
+            try {
+                createBackup(path);
+                joiner.add("Создан новый бэкап для файла - " + name);
+            } catch (IOException e) {
+                System.out.println("Ошибка создания нового файла бэкапа: " + e.getMessage());
+            }
         }
 
         return joiner.toString();
     }
 
-    public String autoCreate() throws IOException {
+    public String autoCreate() {
 
         CheckFiles checkFiles = new CheckFiles();
         if(!checkFiles.inspect(false))
@@ -104,7 +112,7 @@ public class BackupFile implements Commands {
                             createBackup(path);
                             infoResult.append("Создан новый бэкап для файла - ").append(name).append("\n");
                         } catch (IOException e) {
-                            throw new RuntimeException(e);
+                            System.out.println("Ошибка создания нового файла бэкапа");
                         }
                     });
         }
@@ -112,9 +120,12 @@ public class BackupFile implements Commands {
         return infoResult.toString();
     }
 
-    private List<File> getFilesFromFolder(Path folder) throws IOException {
+    private List<File> getFilesFromFolder(Path folder) {
         try (Stream<Path> pathStream = Files.list(folder)) {
             return pathStream.map(Path::toFile).toList();
+        } catch (IOException e) {
+            System.out.println("Не удалось прочитать директорию");
+            return null;
         }
     }
 

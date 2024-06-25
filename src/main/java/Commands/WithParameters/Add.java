@@ -9,7 +9,6 @@ import Tools.CheckingForUpdate;
 import Tools.UsefulMethods;
 
 import java.util.List;
-import java.util.Scanner;
 
 public class Add implements Commands {
 

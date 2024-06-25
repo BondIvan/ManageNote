@@ -11,7 +11,6 @@ import Tools.AutoCorrection.Dictionaries;
 import Tools.CheckingForUpdate;
 import Tools.UsefulMethods;
 
-import java.security.KeyStoreException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +27,7 @@ public class Replace implements Commands {
     }
 
     @Override
-    public String perform(String postfix) throws UnknownArgsException, AccessNotFoundException, IncorrectValueException, KeyStoreException {
+    public String perform(String postfix) throws UnknownArgsException, AccessNotFoundException, IncorrectValueException {
 
         if(postfix.isEmpty())
             throw  new UnknownArgsException("Нет параметров");
@@ -55,7 +54,7 @@ public class Replace implements Commands {
         return replace(args[0], null, replaceType, args[2]);
     }
 
-    public String replace(String serviceName, String serviceLogin, String replaceType, String newString) throws AccessNotFoundException, IncorrectValueException, UnknownArgsException, KeyStoreException {
+    public String replace(String serviceName, String serviceLogin, String replaceType, String newString) throws AccessNotFoundException, IncorrectValueException, UnknownArgsException {
 
         List<NoteEntity> accounts = UsefulMethods.getAllAccountsForOneService(listWithNotes, serviceName);
 
@@ -88,11 +87,11 @@ public class Replace implements Commands {
                 UsefulMethods.getAccountFromServiceByLogin(accounts, serviceName, serviceLogin) : accounts.get(0);
 
         //Тернарный оператор с 3 условиями (вложенные)
-        System.out.println( "Будут произведены следующие изменения в сервисе " + replacedNote.getServiceName() + " с параметром " + replaceType + ": "
-                + ( replaceType.equals("service") ? replacedNote.getServiceName()
-                :replaceType.equals("login") ? replacedNote.getLogin()
-                :replacedNote.getPassword(true) )
-                + " -> " + newString );
+//        System.out.println( "Будут произведены следующие изменения в сервисе " + replacedNote.getServiceName() + " с параметром " + replaceType + ": "
+//                + ( replaceType.equals("service") ? replacedNote.getServiceName()
+//                :replaceType.equals("login") ? replacedNote.getLogin()
+//                :replacedNote.getPassword(true) )
+//                + " -> " + newString );
 
         switch (replaceType) {
             case "service" ->
