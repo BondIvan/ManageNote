@@ -50,9 +50,13 @@ public class Get implements Commands {
 
         if(accounts.isEmpty()) {
             String possibleVariant = AutoCorrectionServiceName.getOneBestMatch(serviceName, Dictionaries.uniqueServiceNames);
-            System.out.println("Возможно вы имели в виду: " + possibleVariant);
 
-            System.out.println( AutoCorrectionServiceName.getThreeBestMatch(serviceName, Dictionaries.uniqueServiceNames) );
+            if(possibleVariant == null) {
+                System.out.println("Ничего не найдено. Наиболее подходящие варианты:");
+                System.out.println(AutoCorrectionServiceName.getAllBestMatch(serviceName, Dictionaries.uniqueServiceNames));
+            }
+            else
+                System.out.println("Возможно вы имели в виду: " + possibleVariant);
 
             throw new AccessNotFoundException("Сервис не найден");
         }

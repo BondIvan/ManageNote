@@ -1,8 +1,6 @@
 package Tools.AutoCorrection;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class AutoCorrectionServiceName {
 
@@ -24,58 +22,70 @@ public class AutoCorrectionServiceName {
 //    }
 
     // Сравнение максимальной последовательности искомого слова с каждым словом из словаря
-    public static String getOneBestMatch(String serviceName, Set<String> dictionary) {
+    public static String getOneBestMatch(String inputName, Set<String> dictionary) {
 
-        long start = System.currentTimeMillis();
+        Map<String, Integer> map = new HashMap<>();
 
-        String bestMatch = serviceName;
+        String lowerCaseInputName = inputName.toLowerCase(); // Нижний регистр чтобы избежать различий в регистре
         int maxSequenceLength = 0;
-
         for (String candidate : dictionary) {
-            int sequenceLength = findMaxSequenceLength(serviceName, candidate);
-            if (sequenceLength > maxSequenceLength) {
+            int sequenceLength = findMaxSequenceLength(lowerCaseInputName, candidate.toLowerCase());
+            map.put(candidate, sequenceLength);
+            if (sequenceLength > maxSequenceLength)
                 maxSequenceLength = sequenceLength;
-                bestMatch = candidate;
-            }
         }
 
-        long end = System.currentTimeMillis();
+        // Найти максимальное значение sequenceLength в карте
+        int max = Collections.max(map.values());
 
-        System.out.println("One: " + (end-start));
+        // Создать список с названиями сервисом у которых максимальное значение sequenceLength
+        List<String> maxSequenceList = new ArrayList<>();
+        for(Map.Entry<String, Integer> entry: map.entrySet()) {
+            if(entry.getValue() == max)
+                maxSequenceList.add(entry.getKey());
+        }
+
+        String bestMatch = substringSearch(maxSequenceList, lowerCaseInputName);
 
         return bestMatch;
     }
 
-    public static List<String> getThreeBestMatch(String serviceName, Set<String> dictionary) {
+    // Метод поиска подстроки.
+    public static String substringSearch(List<String> serviceList, String input) {
 
-        long start = System.currentTimeMillis();
-
-        List<String> threeMatch = new ArrayList<>();
-
-        int maxSequenceLength = 0;
-        String cycleBestMatch = "";
-        for(int i = 0; i < 3; i++) {
-            for (String candidate : dictionary) {
-                if(threeMatch.contains(candidate))
-                    continue;
-
-                int currSequenceLength = findMaxSequenceLength(serviceName, candidate);
-                if(currSequenceLength > maxSequenceLength) {
-                    maxSequenceLength = currSequenceLength;
-                    cycleBestMatch = candidate;
-                }
-            }
-
-            threeMatch.add(cycleBestMatch);
-            cycleBestMatch = "";
-            maxSequenceLength = 0;
+        for (String serviceName : serviceList) {
+            if (serviceName.toLowerCase().contains(input))
+                return serviceName;
         }
 
-        long end = System.currentTimeMillis();
+        return null;
+    }
 
-        System.out.println("Three: " + (end-start));
+    // Список
+    public static List<String> getAllBestMatch(String inputName, Set<String> dictionary) {
 
-        return threeMatch;
+        Map<String, Integer> map = new HashMap<>();
+
+        String lowerCaseInputName = inputName.toLowerCase(); // Нижний регистр чтобы избежать различий в регистре
+        int maxSequenceLength = 0;
+        for (String candidate : dictionary) {
+            int sequenceLength = findMaxSequenceLength(lowerCaseInputName, candidate.toLowerCase());
+            map.put(candidate, sequenceLength);
+            if (sequenceLength > maxSequenceLength)
+                maxSequenceLength = sequenceLength;
+        }
+
+        // Найти максимальное значение sequenceLength в карте
+        int max = Collections.max(map.values());
+
+        // Создать список с названиями сервисом у которых максимальное значение sequenceLength
+        List<String> maxSequenceList = new ArrayList<>();
+        for(Map.Entry<String, Integer> entry: map.entrySet()) {
+            if(entry.getValue() == max)
+                maxSequenceList.add(entry.getKey());
+        }
+
+        return maxSequenceList;
     }
 
     // Метод: поиск максимальной последовательности
