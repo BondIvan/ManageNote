@@ -183,14 +183,10 @@ public class StartConsole {
 
         return new Thread(() -> {
             Save save = new Save();
-            try {
-                if(CheckingForUpdate.isUpdated) {
-                    System.out.println( save.perform("") );
-                }
-                System.out.println("\nВыход из приложения");
-            } catch (IOException | KeyStoreException e) {
-                throw new RuntimeException(e);
+            if(CheckingForUpdate.isUpdated) {
+                System.out.println( save.perform("") );
             }
+            System.out.println("\nВыход из приложения");
         });
     }
 }
