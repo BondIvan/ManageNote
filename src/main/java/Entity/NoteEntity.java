@@ -77,8 +77,12 @@ public class NoteEntity {
     @Override
     public String toString() { //TODO Подумать, нужно ли здесь расшифровывать пароль
 
+        // Управление CMD в Windows
+        String underlined = "\033[4m"; // Подчёркнутый текст
+        String resetText = "\033[0m"; // Сбросить свойства текста
+
         try {
-            return serviceName + "\nLogin: " + login + "\nPassword: " + getPassword(true);
+            return serviceName + "\nLogin: " + login + "\nPassword: " + underlined + getPassword(true) + resetText;
         } catch (KeyStoreException e) {
             return "Ошибка получения доступа к защищённому хранилищу.\n" + e.getMessage();
         }
