@@ -9,4 +9,4 @@
 /.DS_Store
 /ManageNote.iml
 /target
-/Files/META-INF/*
+/src/main/java/Source/ManageNote.jar
