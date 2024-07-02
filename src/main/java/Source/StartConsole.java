@@ -25,17 +25,16 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.security.auth.DestroyFailedException;
+import java.io.Console;
 import java.io.IOException;
+import java.io.InvalidObjectException;
 import java.nio.file.Paths;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class StartConsole {
 
@@ -88,15 +87,18 @@ public class StartConsole {
 
     }
 
-    private static void masterPassword() throws DestroyFailedException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, BadPaddingException, InvalidKeyException {
+    private static void masterPassword() throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, BadPaddingException, InvalidKeyException {
 
-        Scanner inputLine = new Scanner(System.in);
+        Console console = System.console();
+
+        if(console == null)
+            throw new InvalidObjectException("Ошибка консоли");
+
         Validation validation = new Validation();
         if(validation.isExist()) {
             int max_attempts = 3;
             for (int i = 1; i <= max_attempts; i++) {
-                System.out.print("Введите мастер-пароль: ");
-                String input = inputLine.nextLine();
+                String input = String.valueOf(console.readPassword("Введите мастер-пароль: "));
                 if (validation.checkInputPassword(input)) {
                     System.out.println("Мастер-пароль верный");
                     AES_GCM.transferKeyStorePassword(input);
@@ -112,8 +114,7 @@ public class StartConsole {
                 }
             }
         } else {
-            System.out.print("Задайте мастер-пароль: ");
-            char[] inputPassword = inputLine.nextLine().toCharArray();
+            char[] inputPassword = console.readPassword("Задайте мастер-пароль: ");
             validation.createMasterPassword(inputPassword);
             Arrays.fill(inputPassword, '\0');
         }

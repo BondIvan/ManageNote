@@ -25,7 +25,7 @@ public class Validation {
     private static final int GCM_TAG_LENGTH = 128;
     private static final int SALT_LENGTH = 16;
 
-    public boolean checkInputPassword(String inputPassword) throws NoSuchPaddingException, IllegalBlockSizeException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, BadPaddingException, InvalidKeyException, DestroyFailedException, InvalidAlgorithmParameterException {
+    public boolean checkInputPassword(String inputPassword) throws NoSuchPaddingException, IllegalBlockSizeException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
 
         char[] inputForValidate = inputPassword.toCharArray();
         byte[] salt = Files.readAllBytes(Paths.get(PATH_SALT));
@@ -53,7 +53,7 @@ public class Validation {
     }
 
     // Создать мастер-пароль
-    public void createMasterPassword(char[] inputNewPassword) throws IOException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, InvalidKeySpecException, BadPaddingException, InvalidKeyException, DestroyFailedException, InvalidAlgorithmParameterException {
+    public void createMasterPassword(char[] inputNewPassword) throws IOException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, InvalidKeySpecException, BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
 
         if(!Files.exists(Paths.get(PATH_SALT)) || !Files.exists(Paths.get(PATH_VALIDATION))) {
             byte[] salt = generateSalt();
@@ -88,7 +88,7 @@ public class Validation {
         return iv;
     }
 
-    private byte[] createValidation(char[] password, byte[] salt, byte[] IV) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException, DestroyFailedException {
+    private byte[] createValidation(char[] password, byte[] salt, byte[] IV) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
 
         // Генерация ключа на основе мастер-пароля и соли
         SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
