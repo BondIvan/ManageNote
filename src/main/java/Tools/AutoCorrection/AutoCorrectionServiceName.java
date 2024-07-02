@@ -78,12 +78,12 @@ public class AutoCorrectionServiceName {
         // Найти максимальное значение sequenceLength в карте
         int max = Collections.max(map.values());
 
-        // Создать список с названиями сервисом у которых максимальное значение sequenceLength
-        List<String> maxSequenceList = new ArrayList<>();
-        for(Map.Entry<String, Integer> entry: map.entrySet()) {
-            if(entry.getValue() == max)
-                maxSequenceList.add(entry.getKey());
-        }
+        // Список с названиями сервисом у которых максимальное значение sequenceLength
+        List<String> maxSequenceList = map.entrySet().stream()
+                .filter(entry -> entry.getValue() == max)
+                .map(Map.Entry::getKey)
+                .limit(5)
+                .toList();
 
         return maxSequenceList;
     }
