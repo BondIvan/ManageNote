@@ -13,7 +13,7 @@ public class Help implements Commands {
                         Get access: -get- ([cb] || + && [show]) + name || + login
                         Get all services: -getall- [] / [date]
                         Add access: -add- [name] [login] [password]
-                        Replace access: -replace- [name] [service/login/password] [newString] / [name] [login] [service/login/password] [newString]
+                        Replace access: -replace- [name] [name/login/password] [newString] / [name] [login] [name/login/password] [newString]
                         Delete access: -delete- [name] / [name] [login]
                         Create a backup: -backup- [make]
                         Check important files: -check- [true (with delay)] / [false (without delay)]
