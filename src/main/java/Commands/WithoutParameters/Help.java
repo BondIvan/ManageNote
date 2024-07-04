@@ -10,7 +10,7 @@ public class Help implements Commands {
     @Override
     public String perform(String postfix) {
         return """
-                        Get access: -get- [name] / [name] [login]
+                        Get access: -get- ([cb] || + && [show]) + name || + login
                         Get all services: -getall- [] / [date]
                         Add access: -add- [name] [login] [password]
                         Replace access: -replace- [name] [service/login/password] [newString] / [name] [login] [service/login/password] [newString]
