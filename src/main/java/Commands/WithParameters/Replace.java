@@ -40,7 +40,7 @@ public class Replace implements Commands {
         if(args.length < 3)
             throw new UnknownArgsException("Параметров меньше чем нужно");
 
-        List<String> types = List.of("service", "login", "password");
+        List<String> types = List.of("name", "login", "password");
         String replaceType = args.length == 3 ? args[1] : args[2];
         if(!types.contains(replaceType))
             throw new UnknownArgsException("Неизвестный параметр");
@@ -94,7 +94,7 @@ public class Replace implements Commands {
 //                + " -> " + newString );
 
         switch (replaceType) {
-            case "service" ->
+            case "name" ->
                 replaceServiceName(replacedNote, newString);
             case "login" ->
                 replaceServiceLogin(accounts, replacedNote, newString);
@@ -106,7 +106,7 @@ public class Replace implements Commands {
 
         CheckingForUpdate.isUpdated = true;
 
-        return "Заменено " + replaceType + " у сервиса";
+        return "Заменено " + replaceType + " у сервиса " + serviceName;
     }
 
     // Обработка всех возможных проблем при изменении названия сервиса (аккаунта)
