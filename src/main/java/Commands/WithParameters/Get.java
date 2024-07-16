@@ -43,7 +43,7 @@ public class Get implements Commands {
         // Разбитие postfix-а на состовляющие (конкретные аргументы команды)
         String[] args = UsefulMethods.makeArgsTrue(postfix);
 
-        if(args.length < 1)
+        if(args.length < 2)
             throw  new UnknownArgsException("Параметров меньше чем нужно");
         if(args.length > 4)
             throw new UnknownArgsException("Параметров больше чем нужно");
